@@ -1,0 +1,44 @@
+<template>
+    <lightning-card>
+
+
+        <div class="slds-text-heading_large">
+        <div class="slds-text-align_center">Work Type Name</div>
+        </div>
+
+
+        <div class="slds-m-around_medium">
+           <div class="slds-border_bottom"></div>
+        </div>
+        
+        <div class="slds-m-horizontal_small">
+          
+           <lightning-input label="Work Type Name" onchange={changeHandler} required></lightning-input>
+           
+        </div>
+        <div class="slds-m-horizontal_small">
+          
+           <lightning-input label="Description" onchange={changeHandler}></lightning-input>
+        </div>
+        <div class="slds-m-horizontal_small">
+         
+           <lightning-input label="Estimated Duration" onchange={changeHandler} required></lightning-input>
+        </div>
+        <div class="slds-m-horizontal_small">
+          
+           <lightning-input label="Duration Type" onchange={changeHandler} required></lightning-input>
+        </div>
+        <div class="slds-m-around_medium">
+          <lightning-input label="Auto-Create Service Appointment" class="slds-p-left" type="checkbox" checked={checkboxVal} >
+          </lightning-input >
+        </div>
+        
+        <div class="slds-p-right_medium">
+           <div class="slds-clearfix">
+            <lightning-button label="Next" variant="brand" onclick={openNewRecord} class="slds-float_right">
+            </lightning-button>
+           </div>
+        </div>
+         
+    </lightning-card>
+</template>

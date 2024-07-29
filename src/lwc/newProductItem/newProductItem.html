@@ -1,0 +1,93 @@
+<template>
+    <lightning-card>
+       
+        <div class="slds-text-heading_large">
+        <div class="slds-text-align_center">New Product Item</div>
+        </div>
+
+        <div class="slds-m-around_medium">
+           <div class="slds-border_bottom"></div>
+        </div>
+        
+        <div class="c-container">
+            <lightning-layout>
+                <lightning-layout-item padding="around-small">
+                 
+                    <div class="slds-m-horizontal_small">
+                        <div class="slds-form-element">
+                            <label class="slds-form-element__label"><abbr class="slds-required" title="required">*</abbr>Product Name</label>
+                            <div class="slds-form-element__control">
+                              <div class="slds-select_container">
+                                <select class="slds-select" data-id="product2" name="product2" onchange={handleChange} required="">
+                                    <template for:each={product2s.data} for:item="product2" >
+                
+                                        <option key={product2.Id} value={product2.Id} >{product2.Name} </option>
+                        
+                                    </template>
+                                </select>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                </lightning-layout-item>
+                <lightning-layout-item padding="around-small">
+                   
+                    <div class="slds-m-horizontal_small">
+                        <div class="slds-form-element">
+                            <label class="slds-form-element__label"><abbr class="slds-required" title="required">*</abbr>Location</label>
+                            <div class="slds-form-element__control">
+                              <div class="slds-select_container">
+                                <select class="slds-select" data-id="location" name="location" onchange={handleChange} required="">
+                                    <template for:each={locations.data} for:item="location" >
+                
+                                        <option key={location.Id} value={location.Id} >{location.Name} </option>
+                        
+                                    </template>
+                                </select>
+                              </div>
+                            </div>
+                          </div>
+                        </div>  
+                </lightning-layout-item>
+             </lightning-layout>
+        </div>
+
+        <div class="c-container">
+        <lightning-layout>
+        <lightning-layout-item padding="around-small">     
+            <div class="slds-m-horizontal_small">
+                <lightning-input name="quantityOnHand" label="Quantity On Hand" onchange={handleChange} required></lightning-input>
+            </div>
+        </lightning-layout-item>
+
+        <lightning-layout-item padding="around-small">
+            <div class="slds-m-horizontal_small">
+            <lightning-combobox
+                options={picklistValues} label="Quantity Unit Of Measure" onchange={handleChange} name="quantityUnitOfMeasure" 
+            ></lightning-combobox>
+            </div>
+        </lightning-layout-item>
+
+        </lightning-layout>
+        </div>
+
+        <div class="demo-only demo-only--sizing slds-grid slds-wrap">
+        <div class="slds-size_1-of-2">
+          <div class="slds-m-horizontal_small">
+        <lightning-input name="serialNumber" label="Serial Number" onchange={handleChange} ></lightning-input>
+          </div>
+          </div>
+        </div>
+
+        <div class="slds-p-right_medium">
+          <div class="slds-m-top_small">
+            <div class="slds-clearfix">
+            <lightning-button label="Next" variant="brand" onclick={createProductItem} class="slds-float_right">
+            </lightning-button>
+            </div>
+          </div>
+        </div>
+     
+    </lightning-card>
+</template>

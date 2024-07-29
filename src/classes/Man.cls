@@ -1,12 +1,9 @@
-/**
- * Created by andrey on 7/26/24.
- */
-public with sharing class Man {
+public with sharing class Man extends Inhabitant{
     public Man() {
 
     }
 
-    String name;
+    String name; 
     String colour;
 
     public void eat(){
@@ -20,13 +17,13 @@ public with sharing class Man {
     public void workout(){
         System.debug('Men workout');
     }
-//    List<Black>black;
-//    List<White>white;
-//    List<Yellow>yellow;
-
-    public Man(String name, String colour){
-        this.name = name;
-        this.colour = colour;
+    List<Black>black;
+    List<White>white;
+    List<Yellow>yellow;
+  
+    public Men(String name, String colour){
+      this.name = name;
+      this.colour = colour;
     }
-
+    
 }

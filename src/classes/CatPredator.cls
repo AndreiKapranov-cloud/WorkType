@@ -1,15 +1,12 @@
-/**
- * Created by andrey on 7/26/24.
- */
-public with sharing class CatPredator {
+public with sharing class CatPredator extends Predator{
     public catPredator() {
 
     }
     public String species;
-
-    public CatPredator(String species){
+    public String colour;
+    public CatPredator(String species, String colour){
         this.species = species;
-
-    }
+        this.colour = colour;
+       }
 
 }

@@ -4,11 +4,9 @@ public with sharing class ArcticMammal {
     }
 
     public String species;
-    public String colour;
 
-    public ArcticMammal(String species, String colour){
+    public ArcticMammal(String species){
         this.species = species;
-        this.colour = colour;
        }
 
 }

@@ -50,17 +50,19 @@ public with sharing class ServletJSONWrapperPlay {
 
 
 
-       List<Map<String, Object>> m5 = (List<Map<String, Object>>) m3;
+      // List<Map<String, Object>> m5 = (List<Map<String, Object>>) m3;
 
         List<Map<String, Object>> m5 = new List<Map<String, Object>>();
 
 
+        m5.add((Map<String, Object>) m3[0]);
+        m5.add((Map<String, Object>) m3[1]);
+        m5.add((Map<String, Object>) m3[2]);
+        m5.add((Map<String, Object>) m3[3]);
+        m5.add((Map<String, Object>) m3[4]);
 
-       for((Map<String, Object>)Object objList : m3){
 
-           m5
 
-    }
 
 
     //   List<Map<String, Object>> m5 = (List<Map<String, Object>>) m3;
@@ -74,7 +76,7 @@ public with sharing class ServletJSONWrapperPlay {
         System.debug(m3);
         System.debug(m3);
         System.debug(m4);
-      //  System.debug(m5);
+       System.debug(m5);
 
 //        System.debug('useJsp = ' + useJSP);
 //       // System.debug('betaServer = ' + servList[4].init_param.betaServer);

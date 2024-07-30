@@ -6,7 +6,6 @@ public with sharing class JSONServlet {
      public String servlet_name;
      public String servlet_class;
      public Map<String,Object> init_param;
-     public Map<String,Object> init_param;
 
 
      public String configGlossary_installationAt;

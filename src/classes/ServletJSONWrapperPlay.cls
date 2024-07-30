@@ -23,26 +23,63 @@ public with sharing class ServletJSONWrapperPlay {
 //       .+?(?="/";")
 
 
-        ServletJSONWrapper servletJSONWrapper = (ServletJSONWrapper)JSON.deserialize(modifiedJSON, ServletJSONWrapper.class);
+    //    ServletJSONWrapper servletJSONWrapper = (ServletJSONWrapper)JSON.deserialize(modifiedJSON, ServletJSONWrapper.class);
 
-        System.debug(JSON.serializePretty(servletJSONWrapper,true));
+   //     System.debug(JSON.serializePretty(servletJSONWrapper,true));
       //  "cacheTemplatesStore
       //       jsp
       //     "betaServer":true
-       List<JSONServlet>servList = servletJSONWrapper.web_app.servlet;
-       JSONServlet jSONServlet = (JSONServlet) servList[0];
+//       List<JSONServlet>servList = servletJSONWrapper.web_app.servlet;
+//       JSONServlet jSONServlet = (JSONServlet) servList[0];
 
-       String useJSP = jSONServlet.init_param.get('useJSP');
+//       String useJSP = jSONServlet.init_param.get('useJSP');
+//
+//        String cacheTemplatesStore = jSONServlet.init_param.get('cacheTemplatesStore');
 
-        String cacheTemplatesStore = jSONServlet.init_param.get('cacheTemplatesStore');
+    //    JSONServlet jSONServletCofal = servList[4];
 
-        JSONServlet jSONServletCofal = servList[4];
+        Map<String, Object> m = (Map<String, Object>) JSON.deserializeUntyped(jsonString);
+
+        Map<String, Object> m2 = (Map<String, Object>) m.get('web-app');
 
 
-        System.debug('useJsp = ' + useJSP);
-        System.debug('betaServer = ' + servList[4].init_param.betaServer);
-        System.debug('cacheTemplatesStore = ' + cacheTemplatesStore);
-        System.debug(servletJSONWrapper.web_app.servlet[4].servlet_name);
+
+        List<Object> m3 =  (List<Object>)m2.get('servlet');
+
+         Map<String, Object> m4 = (Map<String, Object>) m3[0];
+
+
+
+       List<Map<String, Object>> m5 = (List<Map<String, Object>>) m3;
+
+        List<Map<String, Object>> m5 = new List<Map<String, Object>>();
+
+
+
+       for((Map<String, Object>)Object objList : m3){
+
+           m5
+
+    }
+
+
+    //   List<Map<String, Object>> m5 = (List<Map<String, Object>>) m3;
+
+
+
+
+        System.debug(m);
+        System.debug(m2);
+        System.debug(m2.keySet());
+        System.debug(m3);
+        System.debug(m3);
+        System.debug(m4);
+      //  System.debug(m5);
+
+//        System.debug('useJsp = ' + useJSP);
+//       // System.debug('betaServer = ' + servList[4].init_param.betaServer);
+//        System.debug('cacheTemplatesStore = ' + cacheTemplatesStore);
+//        System.debug(servletJSONWrapper.web_app.servlet[4].servlet_name);
 
 
     }

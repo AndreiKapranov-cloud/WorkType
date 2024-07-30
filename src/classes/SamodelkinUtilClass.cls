@@ -131,7 +131,7 @@ mammals.put('arcticMammals',arcticMammals);
 
 
 
-List <String> belarusians = new List<String>{'Vasil Bykau','Uladzimir Karatkevich'};
+List <String> belarusians = new List<String>{'Vasil Bykau','Uladzimir Karatkevic'};
 List <String> ukrainians = new List<String>{'Nikolay Gogol','Taras Shevchenko'};
 
 
@@ -167,7 +167,7 @@ yellow.put('chineese',chineese);
 
 Map<String,Map<String,List<String>>>animals = new Map<String,Map<String,List<String>>>();
 animals.put('fishes',fishes);
-animals.put('predators',predators);
+ animals.put('predators',predators);
 animals.put('mammals',mammals);
 
 
@@ -187,7 +187,7 @@ inhabitants.put('men',men);
 
 
 System.debug(JSON.serializePretty(inhabitants));
-System.debug(inhabitants);
+
 
 return inhabitants;
 

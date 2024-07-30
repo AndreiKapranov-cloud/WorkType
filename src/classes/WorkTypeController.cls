@@ -2,14 +2,14 @@ public with sharing class WorkTypeController {
     public WorkTypeController() {
 
     }
-    @AuraEnabled()
+    @AuraEnabled(cacheable=true)
     public static List<WorkType> getWorkTypes() {
         return [
             SELECT Id,Name FROM WorkType LIMIT 200
        ];
     }
    
-    @AuraEnabled()
+    @AuraEnabled(cacheable=true)
     public static WorkType createWorkTypeApexMethod(String workTypeName,String description,Decimal estimatedDuration,String durationType) {
        
         WorkType workTypeRecord = new WorkType();
@@ -30,7 +30,7 @@ public with sharing class WorkTypeController {
       return workTypeRecord;
     }
 
-    @AuraEnabled()
+    @AuraEnabled(cacheable=true)
     public static List<Map<String, String>> getDurationTypePicklistValues() {
         List<Schema.PicklistEntry> entries = WorkType.DurationType.getDescribe().getPicklistValues();
         List<Map<String, String>> values = new List<Map<String, String>>();
@@ -43,7 +43,7 @@ public with sharing class WorkTypeController {
         return values;
     }
 
-    @AuraEnabled()
+    @AuraEnabled(cacheable=true)
     public static List<String> getPicklistValuesUsingApex(String sObjectType,String field) {
         List<String> picklistValues = new List<String>();
         try{

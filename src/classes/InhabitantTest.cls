@@ -115,6 +115,6 @@ public with sharing class InhabitantTest {
             System.debug(item);
         }
 
-       // System.debug(JSON.serializePretty(inhabitant));
+        System.debug(JSON.serializePretty(inhabitant));
     }
 }

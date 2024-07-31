@@ -22,7 +22,7 @@
             <label class="slds-form-element__label"><abbr class="slds-required" title="required">*</abbr>Skill Required</label>
             <div class="slds-form-element__control">
               <div class="slds-select_container">
-                <select class="slds-select" name="skillRequired" onchange={handleChange} required="">
+                <select class="slds-select" name="skillRequired" onchange={handleChange} >
                     <template for:each={skills.data} for:item="skill" >
                 
                         <option key={skill.Id} value={skill.Id}>{skill.MasterLabel}</option>

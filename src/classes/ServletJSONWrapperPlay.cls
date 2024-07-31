@@ -13,16 +13,13 @@ public with sharing class ServletJSONWrapperPlay {
 
         List<Object> servletMapsList = (List<Object>) webAppMap.get('servlet');
 
-        List< Map<String, Object>> modifiedServletList = new List< Map<String, Object>>();
-
-
         Map<String, Object> servletMappingMap = (Map<String, Object>) webAppMap.get('servlet-mapping');
-
 
         Map<String, Object> tagLibMap = (Map<String, Object>) webAppMap.get('taglib');
 
 
 
+        List< Map<String, Object>> modifiedServletList = new List< Map<String, Object>>();
 
         for (Integer i = 0; i < servletMapsList.size(); i++) {
 
@@ -43,7 +40,8 @@ public with sharing class ServletJSONWrapperPlay {
                     for (String initParamMapKey : initParamMap.keySet()) {
 
                         Object initParamMapvalue = initParamMap.get(initParamMapKey);
-                        modifiedInitParamMap.put(initParamMapKey.replace('-', '_').replace(':', '_'), initParamMapvalue);
+                        modifiedInitParamMap.put(initParamMapKey.replace('-', '_').replace(':', '_'),
+                                initParamMapvalue);
 
                         modifiedServletMap.put('init_param', modifiedInitParamMap);
 
@@ -95,27 +93,28 @@ public with sharing class ServletJSONWrapperPlay {
         }
 
 
-
-
-
         modifiedWebAppMap.put('servlet',modifiedServletList);
         modifiedWebAppMap.put('servlet_mapping',modifiedServletMappingMap);
         modifiedWebAppMap.put('taglib',modifiedTagLibMap);
 
-
-
         modifiedFatherMap.put('web_app',modifiedWebAppMap);
 
+        String modifiedJSON = JSON.serialize(modifiedFatherMap);
 
 
-       String modifiedJSON = JSON.serialize(modifiedFatherMap);
-
-
-        ServletJSONWrapper servletJSONWrapper = (ServletJSONWrapper)JSON.deserialize(modifiedJSON, ServletJSONWrapper.class);
+        ServletJSONWrapper servletJSONWrapper = (ServletJSONWrapper)JSON.deserialize(modifiedJSON,
+                ServletJSONWrapper.class);
 
 
         System.debug(JSON.serializePretty(servletJSONWrapper,true));
 
+//        useJSP
 
+      //  Boolean useJSP = servletJSONWrapper.web_app.servlet[0].init_param.useJSP;
+    //    System.debug('useJSP =' + useJSP);
+
+
+        System.debug(servletJSONWrapper.web_app.servlet.size());
+        System.debug('adminGroupId: ' + servletJSONWrapper.web_app.servlet[servletJSONWrapper.web_app.servlet.size()-1].init_param.adminGroupID);
     }
 }

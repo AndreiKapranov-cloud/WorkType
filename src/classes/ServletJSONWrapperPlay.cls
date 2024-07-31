@@ -5,83 +5,116 @@
 public with sharing class ServletJSONWrapperPlay {
     public static void play(String jSONString) {
 
-//        String modifiedJSON = jsonString.replace('-','_').
-//                replace('configGlossary:','configGlossary_');
-//
 
-        String modifiedJSON = jsonString.replace('web-', 'web_').
-                replace('servlet-', 'servlet_').replace('taglib-', 'taglib_').
-                replace('init-', 'init_').
-                replace('configGlossary:','configGlossary_');
+        Map<String, Object> fatherMap = (Map<String, Object>) JSON.deserializeUntyped(jsonString);
 
 
-//        String modifiedJSON = jsonString.replace('b-', 'b_').
-//                replace('t-', 't_').
-//                replace('configGlossary:','configGlossary_');
-//
-//
-//       .+?(?="/";")
+        Map<String, Object> webAppMap = (Map<String, Object>) fatherMap.get('web-app');
+
+        List<Object> servletMapsList = (List<Object>) webAppMap.get('servlet');
+
+        List< Map<String, Object>> modifiedServletList = new List< Map<String, Object>>();
 
 
-    //    ServletJSONWrapper servletJSONWrapper = (ServletJSONWrapper)JSON.deserialize(modifiedJSON, ServletJSONWrapper.class);
-
-   //     System.debug(JSON.serializePretty(servletJSONWrapper,true));
-      //  "cacheTemplatesStore
-      //       jsp
-      //     "betaServer":true
-//       List<JSONServlet>servList = servletJSONWrapper.web_app.servlet;
-//       JSONServlet jSONServlet = (JSONServlet) servList[0];
-
-//       String useJSP = jSONServlet.init_param.get('useJSP');
-//
-//        String cacheTemplatesStore = jSONServlet.init_param.get('cacheTemplatesStore');
-
-    //    JSONServlet jSONServletCofal = servList[4];
-
-        Map<String, Object> m = (Map<String, Object>) JSON.deserializeUntyped(jsonString);
-
-        Map<String, Object> m2 = (Map<String, Object>) m.get('web-app');
+        Map<String, Object> servletMappingMap = (Map<String, Object>) webAppMap.get('servlet-mapping');
 
 
-
-        List<Object> m3 =  (List<Object>)m2.get('servlet');
-
-         Map<String, Object> m4 = (Map<String, Object>) m3[0];
-
-
-
-      // List<Map<String, Object>> m5 = (List<Map<String, Object>>) m3;
-
-        List<Map<String, Object>> m5 = new List<Map<String, Object>>();
-
-
-        m5.add((Map<String, Object>) m3[0]);
-        m5.add((Map<String, Object>) m3[1]);
-        m5.add((Map<String, Object>) m3[2]);
-        m5.add((Map<String, Object>) m3[3]);
-        m5.add((Map<String, Object>) m3[4]);
+        Map<String, Object> tagLibMap = (Map<String, Object>) webAppMap.get('taglib');
 
 
 
 
+        for (Integer i = 0; i < servletMapsList.size(); i++) {
 
-    //   List<Map<String, Object>> m5 = (List<Map<String, Object>>) m3;
+            Map<String, Object> servletMap = (Map<String, Object>) servletMapsList[i];
+            Map<String, Object> modifiedServletMap = new Map<String, Object>();
+
+            for (String servMapKey : servletMap.keySet()) {
+                Object servMapvalue = servletMap.get(servMapKey);
+                modifiedServletMap.put(servMapKey.replace('-', '_'), servMapvalue);
+
+
+                Map<String, Object> initParamMap = (Map<String, Object>) servletMap.get('init-param');
+
+                if ((initParamMap != null)) {
+
+                    Map<String, Object> modifiedInitParamMap = new Map<String, Object>();
+
+                    for (String initParamMapKey : initParamMap.keySet()) {
+
+                        Object initParamMapvalue = initParamMap.get(initParamMapKey);
+                        modifiedInitParamMap.put(initParamMapKey.replace('-', '_').replace(':', '_'), initParamMapvalue);
+
+                        modifiedServletMap.put('init_param', modifiedInitParamMap);
+
+                    }
+                }
+            }
+
+            modifiedServletList.add(modifiedServletMap);
+        }
+
+
+
+        Map<String, Object> modifiedFatherMap = new Map<String, Object>();
+
+        for(String fatherMapMapKey : fatherMap.keySet()) {
+
+            Object fatherMapValue = fatherMap.get(fatherMapMapKey);
+            modifiedFatherMap.put(fatherMapMapKey.replace('-', '_'), fatherMapValue);
+
+        }
+
+
+        Map<String, Object> modifiedWebAppMap = new Map<String, Object>();
+
+        for(String webAppMapKey : webAppMap.keySet()) {
+
+            Object servMapValue = webAppMap.get(webAppMapKey);
+            modifiedWebAppMap.put(webAppMapKey.replace('-', '_'), servMapValue);
+
+        }
+
+
+        Map<String, Object> modifiedServletMappingMap = new Map<String, Object>();
+
+         for(String servletMappingMapKey : servletMappingMap.keySet()){
+
+             Object servletMappingMapValue = servletMappingMap.get(servletMappingMapKey);
+             modifiedServletMappingMap.put(servletMappingMapKey.replace('-', '_'), servletMappingMapValue);
+
+         }
+
+        Map<String, Object> modifiedTagLibMap = new Map<String, Object>();
+
+        for(String tagLibMapKey : tagLibMap.keySet()){
+
+            Object tagLibMapValue = tagLibMap.get(tagLibMapKey);
+            modifiedTagLibMap.put(tagLibMapKey.replace('-', '_'), tagLibMapValue);
+
+        }
 
 
 
 
-        System.debug(m);
-        System.debug(m2);
-        System.debug(m2.keySet());
-        System.debug(m3);
-        System.debug(m3);
-        System.debug(m4);
-       System.debug(m5);
 
-//        System.debug('useJsp = ' + useJSP);
-//       // System.debug('betaServer = ' + servList[4].init_param.betaServer);
-//        System.debug('cacheTemplatesStore = ' + cacheTemplatesStore);
-//        System.debug(servletJSONWrapper.web_app.servlet[4].servlet_name);
+        modifiedWebAppMap.put('servlet',modifiedServletList);
+        modifiedWebAppMap.put('servlet_mapping',modifiedServletMappingMap);
+        modifiedWebAppMap.put('taglib',modifiedTagLibMap);
+
+
+
+        modifiedFatherMap.put('web_app',modifiedWebAppMap);
+
+
+
+       String modifiedJSON = JSON.serialize(modifiedFatherMap);
+
+
+        ServletJSONWrapper servletJSONWrapper = (ServletJSONWrapper)JSON.deserialize(modifiedJSON, ServletJSONWrapper.class);
+
+
+        System.debug(JSON.serializePretty(servletJSONWrapper,true));
 
 
     }

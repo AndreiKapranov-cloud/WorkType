@@ -4,9 +4,6 @@
 
 public with sharing class InitParam {
 
-//    public Map<String, Object> init;
-//    Map<String, Object> data = new Map<String, Object>();
-
     public String configGlossary_installationAt;
     public String configGlossary_adminEmail;
     public String configGlossary_poweredBy;

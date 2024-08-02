@@ -38,7 +38,7 @@
                 <div class="slds-form-element__control">
                   <div class="slds-select_container">
                     <select class="slds-select" name="workType" onchange={handleChange}>
-                        <template for:each={workTypes.data} for:item="workType" >
+                        <template for:each={workTypes} for:item="workType" >
 
                             <option key={workType.Id} value={workType.Id}>{workType.Name}</option>
             
@@ -71,7 +71,7 @@
           </template>
 
     <template lwc:elseif={showChildComponent}>
-    <c-new-work-order-line-item  work-type-id={workTypeId} work-order-record-id={workOrderRecordId}></c-new-work-order-line-item>
+    <c-new-work-order-line-item  work-type-id={workTypeId} work-order-record-id={workOrderRecordId} work-order-number = {workOrderNumber}></c-new-work-order-line-item>
     </template>
 
     </lightning-card>

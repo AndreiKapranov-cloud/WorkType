@@ -14,7 +14,7 @@
         
         <div class="slds-m-horizontal_small">
           
-           <lightning-input name="name" label="Work Type Name" onchange={handleChange} ></lightning-input>
+           <lightning-input name="name" label="Work Type Name syuck" onchange={handleChange} ></lightning-input>
            
         </div>
         <div class="slds-m-horizontal_small">
@@ -46,7 +46,13 @@
         </template>
 
         <template lwc:elseif={showNewSkillRequirementComponent}>
-        <c-new-skill-requirement work-type-record-id={workTypeRecordId} work-type-name={workTypeName} work-type-object={workTypeObject}></c-new-skill-requirement>
+
+        <c-new-skill-requirement if:true={isLoaded} work-type-record-id={workTypeRecordId} work-type-name={workTypeName} work-type-object={workTypeObject}></c-new-skill-requirement>
+
+                <div if:false={isLoaded} style="height: 400px; position:relative">
+                    <lightning-spinner variant="base" size="medium"></lightning-spinner>
+                </div>
+
         </template> 
     </lightning-card>
 </template>

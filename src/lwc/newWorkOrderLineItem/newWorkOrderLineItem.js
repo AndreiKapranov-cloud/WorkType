@@ -1,5 +1,6 @@
 import { LightningElement,wire,api} from 'lwc';
 import { getRecord, getFieldValue } from "lightning/uiRecordApi";
+import getWorkTypeNameById from '@salesforce/apex/WorkTypeController.getWorkTypeNameById';
 import WORK_ORDER_NUMBER from "@salesforce/schema/WorkOrder.WorkOrderNumber";
 import { getPicklistValues } from 'lightning/uiObjectInfoApi'
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
@@ -18,23 +19,25 @@ export default class NewWorkOrderLineItem extends LightningElement {
     
     itemStatusPicklistValues = [];
     status;
+    @api workOrderNumber;
     @api workOrderRecordId;
     @api workTypeId;
+    workTypeName;
     description;
 
-    @wire(getRecord, { recordId: "$workOrderRecordId", WORK_ORDER_FIELDS })
-    workOrder;
+    // @wire(getRecord, { recordId: "$workOrderRecordId", WORK_ORDER_FIELDS })
+    // workOrder;
+    //
+    // get workOrderNumber() {
+    //     return getFieldValue(this.workOrder.data, WORK_ORDER_NUMBER);
+    //   }
 
-    get workOrderNumber() {
-        return getFieldValue(this.workOrder.data, WORK_ORDER_NUMBER);
-      }
-
-    @wire(getRecord, { recordId: "$workTypeRecordId", WORK_TYPE_FIELDS })
-    workType;
-
-    get workTypeName() {
-        return getFieldValue(this.workType.data, WORK_TYPE_NAME);
-      }
+    // @wire(getRecord, { recordId: "$workTypeRecordId", WORK_TYPE_FIELDS })
+    // workType;
+    //
+    // get workTypeName() {
+    //     return getFieldValue(this.workType.data, WORK_TYPE_NAME);
+    //   }
 
     handleChange(e) {
 
@@ -45,18 +48,44 @@ export default class NewWorkOrderLineItem extends LightningElement {
         }
       }
 
-    @wire(getPicklistValues, {
-    recordTypeId: RECORD_TYPE_ID,
-    fieldApiName: STATUS,
-    })
-    getPicklistValuesForField({ data, error }) {
-    if (error) {
-        // TODO: Error handling
-        console.error(error)
-    } else if (data) {
-        this.itemStatusPicklistValues = [...data.values];
-      }
-    }
+    connectedCallback() {
+
+        getWorkTypeNameById({
+            id : this.workTypeId
+        })
+            .then(result => {
+                this.workTypeName = result[0].Name;
+                console.log('this.workTypeName: ', this.workTypeName);
+
+            })
+            .catch(error => {
+                console.log(error);
+                this.error = error.message;
+                console.log('error getting workTypeName');
+                console.log(error);
+                this.dispatchEvent(
+                    new ShowToastEvent({
+                        title: 'Error getting workTypeName',
+                        message: error,
+                        variant: 'error'
+                    })
+                );
+            });
+       }
+
+
+        @wire(getPicklistValues, {
+        recordTypeId: RECORD_TYPE_ID,
+        fieldApiName: STATUS,
+        })
+        getPicklistValuesForField({ data, error }) {
+        if (error) {
+            // TODO: Error handling
+            console.error(error)
+        } else if (data) {
+            this.itemStatusPicklistValues = [...data.values];
+          }
+        }
 
 
    
@@ -74,8 +103,8 @@ export default class NewWorkOrderLineItem extends LightningElement {
         fields[WORK_TYPE.fieldApiName] = this.workTypeId;
         fields[DESCRIPTION.fieldApiName] = this.description;
      
-    const recordInput = { apiName: WORK_ORDER_LINE_ITEM_OBJECT.objectApiName, fields:fields};
-    try {
+        const recordInput = { apiName: WORK_ORDER_LINE_ITEM_OBJECT.objectApiName, fields:fields};
+        try {
         const workOrder = await createRecord(recordInput)
 
         .then(record => {
@@ -91,14 +120,14 @@ export default class NewWorkOrderLineItem extends LightningElement {
                 variant: 'success'
             })
         );
-    } catch (error) {
-        this.dispatchEvent(
-            new ShowToastEvent({
-                title: 'Error creating Work Order Line Item record',
-                message: error,
-                variant: 'error'
-            })
-        );
-    }
+        } catch (error) {
+            this.dispatchEvent(
+                new ShowToastEvent({
+                    title: 'Error creating Work Order Line Item record',
+                    message: error,
+                    variant: 'error'
+                })
+            );
+        }
   }
 }

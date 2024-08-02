@@ -1,17 +1,11 @@
-public with sharing class ProductRequiredController {
-    public ProductRequiredController() {
+/**
+ * Created by andrey on 8/1/24.
+ */
 
-    }
-    @AuraEnabled(cacheable=true)
-    public static List<Product2> getProduct2s() {
-        return [
-            SELECT Id,Name FROM Product2 where Description = 'Field Service'
-       ];
-    }
-
+public with sharing class ProductItemController {
     @AuraEnabled(cacheable=true)
     public static List<Map<String, String>> getQuantityUnitOfMeasurePicklistValues() {
-        List<Schema.PicklistEntry> entries = ProductRequired.QuantityUnitOfMeasure.getDescribe().getPicklistValues();
+        List<Schema.PicklistEntry> entries = ProductItem.QuantityUnitOfMeasure.getDescribe().getPicklistValues();
         List<Map<String, String>> values = new List<Map<String, String>>();
         for (Schema.PicklistEntry entry : entries) {
             Map<String, String> valueMap = new Map<String, String>();
@@ -20,5 +14,11 @@ public with sharing class ProductRequiredController {
             values.add(valueMap);
         }
         return values;
+    }
+    @AuraEnabled(cacheable=true)
+    public static List<Schema.Location> getLocations() {
+        return [
+                SELECT Id,Name FROM Location where IsInventoryLocation = true LIMIT 200
+        ];
     }
 }

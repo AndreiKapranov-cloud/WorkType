@@ -19,7 +19,7 @@
                             <div class="slds-form-element__control">
                               <div class="slds-select_container">
                                 <select class="slds-select" data-id="product2" name="product2" onchange={handleChange} required="">
-                                    <template for:each={product2s.data} for:item="product2" >
+                                    <template for:each={product2s} for:item="product2" >
                 
                                         <option key={product2.Id} value={product2.Id} >{product2.Name} </option>
                         
@@ -39,7 +39,7 @@
                             <div class="slds-form-element__control">
                               <div class="slds-select_container">
                                 <select class="slds-select" data-id="location" name="location" onchange={handleChange} required="">
-                                    <template for:each={locations.data} for:item="location" >
+                                    <template for:each={locations} for:item="location" >
                 
                                         <option key={location.Id} value={location.Id} >{location.Name} </option>
                         

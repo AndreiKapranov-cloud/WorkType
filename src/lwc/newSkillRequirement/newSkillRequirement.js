@@ -1,6 +1,4 @@
 import { LightningElement,wire,api,track} from 'lwc';
-import { getRecord, getFieldValue } from "lightning/uiRecordApi";
-import WORK_TYPE_NAME from "@salesforce/schema/WorkType.Name";
 import SKILL_REQUIREMENT_OBJECT from '@salesforce/schema/SkillRequirement';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { createRecord } from 'lightning/uiRecordApi';
@@ -8,51 +6,56 @@ import WORK_TYPE from '@salesforce/schema/SkillRequirement.RelatedRecordId';
 import SKILL from '@salesforce/schema/SkillRequirement.SkillId';
 import SKILL_LEVEL from '@salesforce/schema/SkillRequirement.SkillLevel';
 import getSkills from '@salesforce/apex/SkillController.getSkills';
-import { getFieldDisplayValue } from "lightning/uiRecordApi";
-const WORK_TYPE_FIELDS = [WORK_TYPE_NAME];
-
 
 export default class NewSkillRequirement extends LightningElement {
-    skills;
-    skillData = [];
+
+    skills = [];
     skillRequired;
     skillLevel;
-    defaultSkillValue;
     @api workTypeRecordId;
-
     @api workTypeObject;
     @api workTypeName;
-  
-    workTypeId;
     error;
     showParentComponent = true;
     showChildComponent = false;
-    
 
-    @wire(getSkills) skills;
+    connectedCallback() {
 
-    // @wire(getRecord, { recordId: "$workTypeRecordId", WORK_TYPE_FIELDS })
-    // workType;
-
-    // get workTypeName() {
-    //     return getFieldValue(this.workType.data, WORK_TYPE_NAME);
-    //   }
-
-     
-
+        getSkills()
+            .then(result => {
+                this.skills = result;
+                this.skillRequired = this.skills[0].Id;
+                console.log('this.skillRequired: ', this.skillRequired);
+                console.log('this.skills: ', this.skills);
+            })
+            .catch(error => {
+                console.log(error);
+                this.error = error.message;
+                console.log('error createWorkType');
+                console.log(error);
+                this.dispatchEvent(
+                    new ShowToastEvent({
+                        title: 'Error getting PickList values',
+                        message: error,
+                        variant: 'error'
+                    })
+                );
+            });
+     }
 
     handleChange(e) {
 
-        if (e.target.name === "skillRequired") {
-            this.skillRequired = this.template.querySelector('select.slds-select').value;
+        // if (e.target.name === "skillRequired") {
+        //     this.skillRequired = this.template.querySelector('select.slds-select').value;
+            if (e.target.name === "skillRequired") {
+                this.skillRequired = e.target.value;
         } else if (e.target.name === "skillLevel") {
             this.skillLevel = e.target.value;
         }
       }
 
-    async createSkillRequirement() {
-    console.log('final workTypeRecordId for skill req = ' + this.workTypeRecordId);//без этой строчки не работает
-    
+    createSkillRequirement() {
+
     const fields = {};
 
     console.log('workType Id = ' + this.workTypeRecordId);
@@ -66,15 +69,18 @@ export default class NewSkillRequirement extends LightningElement {
 
     const recordInput = { apiName: SKILL_REQUIREMENT_OBJECT.objectApiName, fields:fields};
     try {
-        const skillRequirement = await createRecord(recordInput);
-        
-        this.dispatchEvent(
-            new ShowToastEvent({
-                title: 'Success',
-                message: 'Skill Requirement created',
-                variant: 'success'
-            })
-        );
+        createRecord(recordInput)
+            .then(r =>{
+                this.dispatchEvent(
+                    new ShowToastEvent({
+                        title: 'Success',
+                        message: 'Skill Requirement created',
+                        variant: 'success'
+                    })
+                );
+            } );
+        this.showParentComponent = false;
+        this.showChildComponent = true;
     } catch (error) {
         this.dispatchEvent(
             new ShowToastEvent({
@@ -83,8 +89,6 @@ export default class NewSkillRequirement extends LightningElement {
                 variant: 'error'
             })
         );
-    }
-    this.showParentComponent = false;
-    this.showChildComponent = true;
+      }
     }
   }

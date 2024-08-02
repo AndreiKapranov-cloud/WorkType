@@ -21,4 +21,24 @@ public with sharing class ProductItemController {
                 SELECT Id,Name FROM Location where IsInventoryLocation = true LIMIT 200
         ];
     }
+
+
+
+
+    @AuraEnabled
+    public static ProductItem createProductItemApexMethod(Id product2Id, Id locationId, Decimal quantityOnHand,String quantityUnitOfMeasure,String SerialNumber) {
+
+        ProductItem productItem = new ProductItem();
+
+        try {
+            productItem = new ProductItem(Product2Id = product2Id, LocationId = locationId, QuantityOnHand = quantityOnHand,QuantityUnitOfMeasure = quantityUnitOfMeasure,
+                    SerialNumber = serialNumber  );
+            insert productItem;
+
+        } catch (Exception e) {
+            System.debug('The following exception has occurred: ' + e.getMessage());
+            throw new AuraHandledException('The following exception has occurred: ' + e.getMessage());
+        }
+        return productItem;
+    }
 }

@@ -5,8 +5,10 @@ public with sharing class ProductRequiredController {
     @AuraEnabled(cacheable=true)
     public static List<Product2> getProduct2s() {
         return [
-            SELECT Id,Name FROM Product2 where Description = 'Field Service'
-       ];
+                SELECT Id,Name
+                FROM Product2
+                where Description = 'Field Service'
+        ];
     }
 
     @AuraEnabled(cacheable=true)
@@ -20,5 +22,21 @@ public with sharing class ProductRequiredController {
             values.add(valueMap);
         }
         return values;
+    }
+
+
+    @AuraEnabled
+    public static ProductRequired createProductRequiredApexMethod(Id parentRecordId, Id product2Id, Decimal quantityRequired, String quantityUnitOfMeasure) {
+
+        ProductRequired productRequired = new ProductRequired();
+        try {
+            productRequired = new ProductRequired(ParentRecordId = parentRecordId, Product2Id = product2Id, QuantityRequired = quantityRequired, QuantityUnitOfMeasure = quantityUnitOfMeasure);
+            insert productRequired;
+
+        } catch (Exception e) {
+            System.debug('The following exception has occurred: ' + e.getMessage());
+            throw new AuraHandledException('The following exception has occurred: ' + e.getMessage());
+        }
+        return productRequired;
     }
 }

@@ -1,58 +1,67 @@
 <template>
     <lightning-card>
-       <template lwc:if={showParentComponent}>
-        <div class="slds-text-heading_large">
-        <div class="slds-text-align_center">New Skill Requirement</div>
+        <div if:true={isLoaded}>
+            <template lwc:if={showParentComponent}>
+                <div class="slds-text-heading_large">
+                    <div class="slds-text-align_center">New Skill Requirement</div>
+                </div>
+
+                <div class="slds-m-around_medium">
+                    <div class="slds-border_bottom"></div>
+                </div>
+
+                <div class="slds-m-horizontal_small">
+                    <lightning-input name="workType" label="Required For" value={workTypeName} required
+                                     read-only></lightning-input>
+                </div>
+
+                <!-- <div class="slds-m-horizontal_small">
+                  <lightning-input name="workTypeObject" label="worktypeObjectName" value={workTypeObject.fields.Name.value} required read-only></lightning-input>
+               </div>
+              -->
+                <div class="slds-m-horizontal_small">
+                    <div class="slds-form-element">
+                        <label class="slds-form-element__label"><abbr class="slds-required" title="required">*</abbr>Skill
+                            Required</label>
+                        <div class="slds-form-element__control">
+                            <div class="slds-select_container">
+                                <select class="slds-select" name="skillRequired" onchange={handleChange}>
+                                    <template for:each={skills} for:item="skill">
+
+                                        <option key={skill.Id} value={skill.Id}>{skill.MasterLabel}</option>
+
+                                    </template>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="slds-m-horizontal_small">
+                    <lightning-input name="skillLevel" label="Skill Level" onchange={handleChange} max="99"
+                                     type="number"></lightning-input>
+                </div>
+
+                <div class="slds-p-right_medium">
+                    <div class="slds-m-top_small">
+                        <div class="slds-clearfix">
+                            <lightning-button label="Next" variant="brand" onclick={createSkillRequirement}
+                                              class="slds-float_right">
+                            </lightning-button>
+                        </div>
+                    </div>
+                </div>
+            </template>
+
+
+            <template lwc:elseif={showChildComponent}>
+                <c-new-product-required work-type-name={workTypeName}
+                                        work-type-record-id={workTypeRecordId}></c-new-product-required>
+            </template>
+        </div>
+        <div if:false={isLoaded} style="height: 400px; position:relative">
+            <lightning-spinner variant="base" size="medium"></lightning-spinner>
         </div>
 
-        <div class="slds-m-around_medium">
-           <div class="slds-border_bottom"></div>
-        </div>
-        
-        <div class="slds-m-horizontal_small">
-           <lightning-input name="workType" label="Required For" value={workTypeName} required read-only></lightning-input>
-        </div>
-       
-        <!-- <div class="slds-m-horizontal_small">
-          <lightning-input name="workTypeObject" label="worktypeObjectName" value={workTypeObject.fields.Name.value} required read-only></lightning-input>
-       </div>
-      -->
-        <div class="slds-m-horizontal_small">
-        <div class="slds-form-element">
-            <label class="slds-form-element__label"><abbr class="slds-required" title="required">*</abbr>Skill Required</label>
-            <div class="slds-form-element__control">
-              <div class="slds-select_container">
-                <select class="slds-select" name="skillRequired" onchange={handleChange} >
-                    <template for:each={skills} for:item="skill" >
-                
-                        <option key={skill.Id} value={skill.Id}>{skill.MasterLabel}</option>
-        
-                    </template>
-                </select>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="slds-m-horizontal_small">
-            <lightning-input name="skillLevel" label="Skill Level" onchange={handleChange} max="99"  type="number"></lightning-input>
-        </div>
-    
-        <div class="slds-p-right_medium">
-         <div class="slds-m-top_small">
-          <div class="slds-clearfix">
-            <lightning-button label="Next" variant="brand" onclick={createSkillRequirement} class="slds-float_right">
-            </lightning-button>
-          </div>
-         </div>
-        </div>
-       </template>
-        
-         
-      <template lwc:elseif={showChildComponent}>
-      <c-new-product-required work-type-name={workTypeName} work-type-record-id={workTypeRecordId} ></c-new-product-required>
-      </template>
-
-   
     </lightning-card>
 </template>

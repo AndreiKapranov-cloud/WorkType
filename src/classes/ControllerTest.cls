@@ -13,8 +13,8 @@ public class ControllerTest {
     }
     @isTest
     public static void getSkillsTest(){
-     SkillController sC = new SkillController();   
-     List<Skill>skills = SkillController.getSkills();   
+     SkillRequirementController sC = new SkillRequirementController();
+     List<Skill>skills = SkillRequirementController.getSkills();
     }
     @isTest
     public static void getPriorityPicklistValuesTest(){

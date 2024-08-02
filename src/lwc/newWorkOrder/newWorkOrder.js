@@ -11,7 +11,8 @@ import STATUS from '@salesforce/schema/WorkOrder.Status';
 import PRIORITY from '@salesforce/schema/WorkOrder.Priority';
 import SUBJECT from '@salesforce/schema/WorkOrder.Subject';
 import DESCRIPTION from '@salesforce/schema/WorkOrder.Description';
-const RECORD_TYPE_ID = '012000000000000AAA';
+import { genericShowToast } from "c/utils";
+
 
 export default class NewWorkOrder extends LightningElement {
     workOrderNumber;
@@ -24,8 +25,8 @@ export default class NewWorkOrder extends LightningElement {
     workOrderRecordId;
     showParentComponent = true;
     showChildComponent = false;
+    isLoaded = false;
 
-  //  @wire(getWorkTypes)workTypes;
 
     connectedCallback() {
 
@@ -88,6 +89,7 @@ export default class NewWorkOrder extends LightningElement {
                     })
                 );
             });
+        this.isLoaded = true;
     }
    
     handleChange(e) {

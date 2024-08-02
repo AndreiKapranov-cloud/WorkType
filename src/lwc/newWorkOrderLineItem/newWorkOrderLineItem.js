@@ -11,6 +11,7 @@ import WORK_ORDER from '@salesforce/schema/WorkOrderLineItem.WorkOrderId';
 import WORK_TYPE from '@salesforce/schema/WorkOrderLineItem.WorkTypeId';
 import WORK_TYPE_NAME from "@salesforce/schema/WorkType.Name";
 import DESCRIPTION from '@salesforce/schema/WorkOrderLineItem.Description';
+import { genericShowToast } from "c/utils";
 const WORK_ORDER_FIELDS = [WORK_ORDER_NUMBER];
 const WORK_TYPE_FIELDS = [WORK_TYPE_NAME];
 const RECORD_TYPE_ID = '012000000000000AAA';
@@ -24,6 +25,7 @@ export default class NewWorkOrderLineItem extends LightningElement {
     @api workTypeId;
     workTypeName;
     description;
+    isLoaded = false;
 
     // @wire(getRecord, { recordId: "$workOrderRecordId", WORK_ORDER_FIELDS })
     // workOrder;
@@ -71,6 +73,7 @@ export default class NewWorkOrderLineItem extends LightningElement {
                     })
                 );
             });
+        this.isLoaded = true;
        }
 
 

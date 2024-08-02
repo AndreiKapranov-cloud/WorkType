@@ -1,8 +1,8 @@
-import { LightningElement,wire } from 'lwc';
+import {LightningElement, wire} from 'lwc';
 import getDurationTypePicklistValues from '@salesforce/apex/WorkTypeController.getDurationTypePicklistValues';
 import createWorkTypeApexMethod from '@salesforce/apex/WorkTypeController.createWorkTypeApexMethod';
-import { ShowToastEvent } from 'lightning/platformShowToastEvent';
-import { genericShowToast } from "c/utils";
+import {ShowToastEvent} from 'lightning/platformShowToastEvent';
+import {genericShowToast} from "c/utils";
 
 export default class NewWorkType extends LightningElement {
     genericShowToast = genericShowToast.bind(this);
@@ -56,6 +56,7 @@ export default class NewWorkType extends LightningElement {
                     })
                 );
             });
+        this.isLoaded = true;
     }
 
 
@@ -64,50 +65,36 @@ export default class NewWorkType extends LightningElement {
         console.log('createWorkType');
         console.log('estimated duration =' + this.estimatedDuration);
         createWorkTypeApexMethod(
-        {
-            workTypeName: this.name,
-            description: this.description,
-            estimatedDuration: this.estimatedDuration,
-            durationType: this.durationType
-        })
-        .then(result => {
-            console.log(result);
-            console.log('ID: ', result.Id);
-            this.workTypeObject = result;
-            this.workTypeRecordId = result.Id;
-            this.workTypeName = result.Name;
+            {
+                workTypeName: this.name,
+                description: this.description,
+                estimatedDuration: this.estimatedDuration,
+                durationType: this.durationType
+            })
+            .then(result => {
+                console.log(result);
+                console.log('ID: ', result.Id);
+                this.workTypeObject = result;
+                this.workTypeRecordId = result.Id;
+                this.workTypeName = result.Name;
 
-            console.log('workTypeObject = ' + this.workTypeObject);
+                console.log('workTypeObject = ' + this.workTypeObject);
 
-            console.log('record.Name = ' + result.Name);
+                console.log('record.Name = ' + result.Name);
 
-            this.genericShowToast('Success!','Work Type Record is created Successfully from outside!','success');
-            this.showToastNative('Success!','Work Type Record is created Successfully from here!','success');
-            this.isLoaded = true;
-            this.showNewWorkTypeComponent = false;
-            this.showNewSkillRequirementComponent = true;
-        })
-        .catch(error => {
-        //    console.error(error);
-         //   this.error = error.message;
-            console.log('error createWorkType');
-            console.log(error);
+                this.genericShowToast('Success!', 'Work Type Record is created Successfully!', 'success');
+                this.showNewWorkTypeComponent = false;
+                this.showNewSkillRequirementComponent = true;
+            })
+            .catch(error => {
+                console.log('error createWorkType');
+                console.log(error);
 
-            this.genericShowToast('error',error.body.message,'error');
-            this.showToastNative('error',error.body.message,'error');
+                this.genericShowToast('Error creating Work Type.', error.body.message, 'error');
 
-         });
+            });
     }
 
-    showToastNative(title,message,variant) {
-            const toastEvent = new ShowToastEvent({
-                title: title,
-                message: message,
-                variant: variant
-            });
-              console.log('Message');
-            this.dispatchEvent(toastEvent);
-        }
 }
 
 

@@ -4,11 +4,17 @@ public with sharing class SkillRequirementController {
 
     @AuraEnabled(cacheable=true)
     public static List<Skill> getSkills() {
-        return [
-                SELECT Id,MasterLabel
-                FROM Skill
-                Limit 20
-        ];
+        List<Skill> skillsList = new List<Skill>();
+        try {
+            skillsList = [
+                    SELECT Id,MasterLabel
+                    FROM Skill
+            ];
+        } catch (Exception e) {
+            System.debug('The following exception has occurred: ' + e.getMessage());
+            throw new AuraHandledException('The following exception has occurred: ' + e.getMessage());
+        }
+        return skillsList;
     }
     @AuraEnabled
     public static SkillRequirement createSkillRequirementApexMethod(Id relatedRecordId, Id skillId, Decimal skillLevel) {

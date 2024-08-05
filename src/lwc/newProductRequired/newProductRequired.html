@@ -1,7 +1,7 @@
 <template>
     <lightning-card>
         <div if:true={isLoaded}>
-            <template lwc:if={showParentComponent}>
+            <template lwc:if={showNewProductRequiredComponent}>
 
                 <div class="slds-text-heading_large">
                     <div class="slds-text-align_center">New Product Required</div>
@@ -57,7 +57,7 @@
                 </div>
             </template>
 
-            <template lwc:elseif={showChildComponent}>
+            <template lwc:elseif={showNewProductItemComponent}>
                 <c-new-product-item></c-new-product-item>
             </template>
         </div>

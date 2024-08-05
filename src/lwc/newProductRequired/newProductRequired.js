@@ -1,17 +1,16 @@
-import {LightningElement, wire, api} from 'lwc';
+import {LightningElement,api} from 'lwc';
 import getProduct2s from '@salesforce/apex/ProductRequiredController.getProduct2s';
 import getQuantityUnitOfMeasurePicklistValues
     from '@salesforce/apex/ProductRequiredController.getQuantityUnitOfMeasurePicklistValues';
 import createProductRequiredApexMethod
     from '@salesforce/apex/ProductRequiredController.createProductRequiredApexMethod';
-import {ShowToastEvent} from 'lightning/platformShowToastEvent';
 import {genericShowToast} from "c/utils";
 
 export default class NewProductRequired extends LightningElement {
     genericShowToast = genericShowToast.bind(this);
     picklistValues = [];
-    showParentComponent = true;
-    showChildComponent = false;
+    showNewProductRequiredComponent = true;
+    showNewProductItemComponent = false;
     product2s = [];
     productRequired;
     quantityRequired;
@@ -23,7 +22,7 @@ export default class NewProductRequired extends LightningElement {
     handleChange(e) {
 
         if (e.target.name === "productRequired") {
-            this.productRequired = this.template.querySelector('select.slds-select').value;
+            this.productRequired = e.target.value;
         } else if (e.target.name === "quantityRequired") {
             this.quantityRequired = e.target.value;
         } else if (e.target.name === "quantityUnitOfMeasure") {
@@ -44,16 +43,8 @@ export default class NewProductRequired extends LightningElement {
             })
             .catch(error => {
                 console.log(error);
-                this.error = error.message;
                 console.log('Error getting product2s.');
-                console.log(error);
-                this.dispatchEvent(
-                    new ShowToastEvent({
-                        title: 'Error getting product2s.',
-                        message: error,
-                        variant: 'error'
-                    })
-                );
+                this.genericShowToast('Error getting product2s.',error.body.message, 'error');
             });
 
 
@@ -64,22 +55,15 @@ export default class NewProductRequired extends LightningElement {
             })
             .catch(error => {
                 console.log(error);
-                this.error = error.message;
                 console.log('Error getting quantityUnitOfMeasure PickList values');
-                console.log(error);
-                this.dispatchEvent(
-                    new ShowToastEvent({
-                        title: 'Error getting quantityUnitOfMeasure PickList values',
-                        message: error,
-                        variant: 'error'
-                    })
-                );
+                this.genericShowToast('Error getting quantityUnitOfMeasure PickList values', error.body.message, 'error');
             });
         this.isLoaded = true;
     }
 
 
     createProductRequired() {
+        this.isLoaded = false;
         console.log('quantityUnitOfMeasure = ' + this.quantityUnitOfMeasure);
         console.log('workTypeName = ' + this.workTypeName);
         console.log('final workTypeRecordId for skill req = ' + this.workTypeRecordId);
@@ -93,14 +77,15 @@ export default class NewProductRequired extends LightningElement {
         })
             .then(result => {
                 console.log(result);
+                this.isLoaded = true;
                 this.genericShowToast('Success!', 'Product Required Record is created Successfully!', 'success');
-                this.showParentComponent = false;
-                this.showChildComponent = true;
+                this.showNewProductRequiredComponent = false;
+                this.showNewProductItemComponent = true;
             })
             .catch(error => {
                 console.log('Error creating Product Required Record');
                 console.log(error);
-
+                this.isLoaded = true;
                 this.genericShowToast('Error creating Product Required Record', error.body.message, 'error');
 
             });

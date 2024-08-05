@@ -1,7 +1,6 @@
 import {LightningElement, wire} from 'lwc';
 import getDurationTypePicklistValues from '@salesforce/apex/WorkTypeController.getDurationTypePicklistValues';
 import createWorkTypeApexMethod from '@salesforce/apex/WorkTypeController.createWorkTypeApexMethod';
-import {ShowToastEvent} from 'lightning/platformShowToastEvent';
 import {genericShowToast} from "c/utils";
 
 export default class NewWorkType extends LightningElement {
@@ -10,10 +9,10 @@ export default class NewWorkType extends LightningElement {
     workType;
     workTypeName;
     picklistValues = [];
-    name = '';
-    description = '';
-    estimatedDuration = '';
-    durationType = '';
+    // name = '';
+    // description = '';
+    // estimatedDuration = '';
+    // durationType = '';
     shouldAutoCreateSvcAppt = false;
     showNewWorkTypeComponent = true;
     showNewSkillRequirementComponent = false;
@@ -45,23 +44,16 @@ export default class NewWorkType extends LightningElement {
             })
             .catch(error => {
                 console.log(error);
-                this.error = error.message;
                 console.log('error getting Duration Type Picklist values');
-                console.log(error);
-                this.dispatchEvent(
-                    new ShowToastEvent({
-                        title: 'Error getting PickList values',
-                        message: error,
-                        variant: 'error'
-                    })
-                );
+                this.genericShowToast('Error getting PickList values', error.body.message, 'error');
+
             });
         this.isLoaded = true;
     }
 
 
     createWorkType() {
-
+        this.isLoaded = false;
         console.log('createWorkType');
         console.log('estimated duration =' + this.estimatedDuration);
         createWorkTypeApexMethod(
@@ -81,7 +73,7 @@ export default class NewWorkType extends LightningElement {
                 console.log('workTypeObject = ' + this.workTypeObject);
 
                 console.log('record.Name = ' + result.Name);
-
+                this.isLoaded = true;
                 this.genericShowToast('Success!', 'Work Type Record is created Successfully!', 'success');
                 this.showNewWorkTypeComponent = false;
                 this.showNewSkillRequirementComponent = true;
@@ -89,9 +81,8 @@ export default class NewWorkType extends LightningElement {
             .catch(error => {
                 console.log('error createWorkType');
                 console.log(error);
-
+                this.isLoaded = true;
                 this.genericShowToast('Error creating Work Type.', error.body.message, 'error');
-
             });
     }
 

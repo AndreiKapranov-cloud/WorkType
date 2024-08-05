@@ -1,10 +1,9 @@
-import {LightningElement, wire, api} from 'lwc';
+import {LightningElement,} from 'lwc';
 import getLocations from '@salesforce/apex/ProductItemController.getLocations';
 import getQuantityUnitOfMeasurePicklistValues
     from '@salesforce/apex/ProductItemController.getQuantityUnitOfMeasurePicklistValues';
 import createProductItemApexMethod
     from '@salesforce/apex/ProductItemController.createProductItemApexMethod';
-import {ShowToastEvent} from 'lightning/platformShowToastEvent';
 import getProduct2s from '@salesforce/apex/ProductRequiredController.getProduct2s';
 import {genericShowToast} from "c/utils";
 
@@ -24,10 +23,9 @@ export default class NewProductItem extends LightningElement {
     handleChange(e) {
 
         if (e.target.name === "product2") {
-            this.product2Id = this.template.querySelector('[data-id="product2"]').value;
+            this.product2Id = e.target.value;
         } else if (e.target.name === "location") {
-            this.location = this.template.querySelector('[data-id="location"]').value;
-            ;
+            this.location = e.target.value;
         } else if (e.target.name === "quantityOnHand") {
             this.quantityOnHand = e.target.value;
         } else if (e.target.name === "quantityUnitOfMeasure") {
@@ -51,16 +49,8 @@ export default class NewProductItem extends LightningElement {
             })
             .catch(error => {
                 console.log(error);
-                this.error = error.message;
                 console.log('Error getting locations.');
-                console.log(error);
-                this.dispatchEvent(
-                    new ShowToastEvent({
-                        title: 'Error getting locations.',
-                        message: error,
-                        variant: 'error'
-                    })
-                );
+                this.genericShowToast('Error getting locations.', error.body.message, 'error');
             });
 
 
@@ -75,16 +65,9 @@ export default class NewProductItem extends LightningElement {
             })
             .catch(error => {
                 console.log(error);
-                this.error = error.message;
                 console.log('Error getting product2s.');
                 console.log(error);
-                this.dispatchEvent(
-                    new ShowToastEvent({
-                        title: 'Error getting product2s.',
-                        message: error,
-                        variant: 'error'
-                    })
-                );
+                this.genericShowToast('Error getting product2s.', error.body.message, 'error');
             });
 
 
@@ -95,23 +78,15 @@ export default class NewProductItem extends LightningElement {
             })
             .catch(error => {
                 console.log(error);
-                this.error = error.message;
                 console.log('Error getting quantityUnitOfMeasure PickList values');
-                console.log(error);
-                this.dispatchEvent(
-                    new ShowToastEvent({
-                        title: 'Error getting quantityUnitOfMeasure PickList values',
-                        message: error,
-                        variant: 'error'
-                    })
-                );
+                this.genericShowToast('Error getting quantityUnitOfMeasure PickList values', error.body.message, 'error');
             });
         this.isLoaded = true;
     }
 
 
     createProductItem() {
-
+        this.isLoaded = false;
 
         console.log('this.product2Id ', this.product2Id);
         console.log('this.location ', this.location);
@@ -128,12 +103,13 @@ export default class NewProductItem extends LightningElement {
         })
             .then(result => {
                 console.log(result);
+                this.isLoaded = true;
                 this.genericShowToast('Success!', 'Product Item Record is created Successfully!', 'success');
             })
             .catch(error => {
                 console.log('Error creating Product Item Record');
                 console.log(error);
-
+                this.isLoaded = true;
                 this.genericShowToast('Error creating Product Item Record', error.body.message, 'error');
 
             });

@@ -1,7 +1,7 @@
 <template>
     <lightning-card>
         <div if:true={isLoaded}>
-            <template lwc:if={showParentComponent}>
+            <template lwc:if={showNewSkillRequirementComponent}>
                 <div class="slds-text-heading_large">
                     <div class="slds-text-align_center">New Skill Requirement</div>
                 </div>
@@ -15,10 +15,7 @@
                                      read-only></lightning-input>
                 </div>
 
-                <!-- <div class="slds-m-horizontal_small">
-                  <lightning-input name="workTypeObject" label="worktypeObjectName" value={workTypeObject.fields.Name.value} required read-only></lightning-input>
-               </div>
-              -->
+
                 <div class="slds-m-horizontal_small">
                     <div class="slds-form-element">
                         <label class="slds-form-element__label"><abbr class="slds-required" title="required">*</abbr>Skill
@@ -54,7 +51,7 @@
             </template>
 
 
-            <template lwc:elseif={showChildComponent}>
+            <template lwc:elseif={showNewProductRequiredComponent}>
                 <c-new-product-required work-type-name={workTypeName}
                                         work-type-record-id={workTypeRecordId}></c-new-product-required>
             </template>

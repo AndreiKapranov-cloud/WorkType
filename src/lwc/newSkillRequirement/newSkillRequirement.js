@@ -1,5 +1,4 @@
-import {LightningElement, wire, api, track} from 'lwc';
-import {ShowToastEvent} from 'lightning/platformShowToastEvent';
+import {LightningElement, api} from 'lwc';
 import createSkillRequirementApexMethod
     from '@salesforce/apex/SkillRequirementController.createSkillRequirementApexMethod';
 import getSkills from '@salesforce/apex/SkillRequirementController.getSkills';
@@ -14,8 +13,8 @@ export default class NewSkillRequirement extends LightningElement {
     @api workTypeObject;
     @api workTypeName;
     error;
-    showParentComponent = true;
-    showChildComponent = false;
+    showNewSkillRequirementComponent = true;
+    showNewProductRequiredComponent = false;
     isLoaded = false;
     connectedCallback() {
 
@@ -28,16 +27,8 @@ export default class NewSkillRequirement extends LightningElement {
             })
             .catch(error => {
                 console.log(error);
-                this.error = error.message;
                 console.log('error createWorkType');
-                console.log(error);
-                this.dispatchEvent(
-                    new ShowToastEvent({
-                        title: 'Error getting PickList values',
-                        message: error,
-                        variant: 'error'
-                    })
-                );
+                this.genericShowToast('Error getting PickList values', error.body.message, 'error');
             });
         this.isLoaded = true;
     }
@@ -52,6 +43,7 @@ export default class NewSkillRequirement extends LightningElement {
     }
 
     createSkillRequirement() {
+        this.isLoaded = false;
 
         console.log('workType Id = ' + this.workTypeRecordId);
         console.log('workType Name = ' + this.workTypeName);
@@ -67,14 +59,15 @@ export default class NewSkillRequirement extends LightningElement {
         })
             .then(result => {
                 console.log(result);
+                this.isLoaded = true;
                 this.genericShowToast('Success!', 'Skill Requirement Record is created Successfully!', 'success');
-                this.showParentComponent = false;
-                this.showChildComponent = true;
+                this.showNewSkillRequirementComponent = false;
+                this.showNewProductRequiredComponent = true;
             })
             .catch(error => {
                 console.log('Error creating Skill Requirement Record');
                 console.log(error);
-
+                this.isLoaded = true;
                 this.genericShowToast('Error creating Skill Requirement Record', error.body.message, 'error');
 
             });

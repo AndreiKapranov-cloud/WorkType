@@ -5,6 +5,8 @@ import getSkills from '@salesforce/apex/SkillRequirementController.getSkills';
 import {genericShowToast} from "c/utils";
 
 export default class NewSkillRequirement extends LightningElement {
+
+
     genericShowToast = genericShowToast.bind(this);
     skills = [];
     skillRequired;
@@ -15,7 +17,16 @@ export default class NewSkillRequirement extends LightningElement {
     error;
     showNewSkillRequirementComponent = true;
     showNewProductRequiredComponent = false;
-    isLoaded = false;
+    isLoading = true;
+
+    validateSkillLevel() {
+
+        let skilllevelInput = this.refs?.skillLevel;
+
+        return skilllevelInput.checkValidity();
+    }
+
+
     connectedCallback() {
 
         getSkills()
@@ -30,46 +41,51 @@ export default class NewSkillRequirement extends LightningElement {
                 console.log('error createWorkType');
                 this.genericShowToast('Error getting PickList values', error.body.message, 'error');
             });
-        this.isLoaded = true;
+        this.isLoading = false;
     }
 
-    handleChange(e) {
+    handleChangeSkillRequired(e) {
+        this.skillRequired = e.target.value;
 
-        if (e.target.name === "skillRequired") {
-            this.skillRequired = e.target.value;
-        } else if (e.target.name === "skillLevel") {
-            this.skillLevel = e.target.value;
-        }
+    }
+
+    handleChangeSkillLevel(e) {
+        this.skillLevel = e.target.value;
+
     }
 
     createSkillRequirement() {
-        this.isLoaded = false;
+        console.log('validate :' + this.validateSkillLevel());
+        if (this.validateSkillLevel()) {
+            this.isLoading = true;
 
-        console.log('workType Id = ' + this.workTypeRecordId);
-        console.log('workType Name = ' + this.workTypeName);
-        console.log('List of skills for skill req = ' + this.skills);
-        console.log('final skillRequired for skill req = ' + this.skillRequired);
-        console.log('final skillLevel for skill req = ' + this.skillLevel);
+            console.log('workType Id = ' + this.workTypeRecordId);
+            console.log('workType Name = ' + this.workTypeName);
+            console.log('List of skills for skill req = ' + this.skills);
+            console.log('final skillRequired for skill req = ' + this.skillRequired);
+            console.log('final skillLevel for skill req = ' + this.skillLevel);
 
 
-        createSkillRequirementApexMethod({
-            relatedRecordId: this.workTypeRecordId,
-            skillId: this.skillRequired,
-            skillLevel: this.skillLevel
-        })
-            .then(result => {
-                console.log(result);
-                this.isLoaded = true;
-                this.genericShowToast('Success!', 'Skill Requirement Record is created Successfully!', 'success');
-                this.showNewSkillRequirementComponent = false;
-                this.showNewProductRequiredComponent = true;
+            createSkillRequirementApexMethod({
+                relatedRecordId: this.workTypeRecordId,
+                skillId: this.skillRequired,
+                skillLevel: this.skillLevel
             })
-            .catch(error => {
-                console.log('Error creating Skill Requirement Record');
-                console.log(error);
-                this.isLoaded = true;
-                this.genericShowToast('Error creating Skill Requirement Record', error.body.message, 'error');
+                .then(result => {
+                    console.log(result);
+                    this.isLoaded = true;
+                    this.genericShowToast('Success!', 'Skill Requirement Record is created Successfully!', 'success');
+                    this.showNewSkillRequirementComponent = false;
+                    this.showNewProductRequiredComponent = true;
+                })
+                .catch(error => {
+                    console.log('Error creating Skill Requirement Record');
+                    console.log(error);
+                    this.isLoaded = true;
+                    this.genericShowToast('Error creating Skill Requirement Record', error.body.message, 'error');
 
-            });
+                })
+                .finally(() => this.isLoading = false);
+        }
     }
 }

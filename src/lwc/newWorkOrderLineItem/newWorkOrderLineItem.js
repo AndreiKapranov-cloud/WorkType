@@ -1,4 +1,4 @@
-import {LightningElement,api} from 'lwc';
+import {LightningElement, api} from 'lwc';
 import getWorkOrderNumberById from '@salesforce/apex/WorkOrderLineItemController.getWorkOrderNumberById';
 import createWorkOrderLineItemApexMethod
     from '@salesforce/apex/WorkOrderLineItemController.createWorkOrderLineItemApexMethod';
@@ -17,16 +17,14 @@ export default class NewWorkOrderLineItem extends LightningElement {
     @api workTypeId;
     workTypeName;
     description;
-    isLoaded = false;
+    isLoading = true;
 
 
-    handleChange(e) {
-
-        if (e.target.name === "status") {
-            this.status = e.target.value;
-        } else if (e.target.name === "description") {
-            this.description = e.target.value;
-        }
+    handleStatusChange(e) {
+        this.status = e.target.value;
+    }
+    handleDescriptionChange(e) {
+        this.description = e.target.value;
     }
 
     connectedCallback() {
@@ -72,11 +70,11 @@ export default class NewWorkOrderLineItem extends LightningElement {
                 this.genericShowToast('Error getting statusPicklistValues', error.body.message, 'error');
             });
 
-        this.isLoaded = true;
+        this.isLoading = false;
     }
 
     createWorkOrderLineItem() {
-        this.isLoaded = false;
+        this.isLoading = true;
         createWorkOrderLineItemApexMethod(
             {
                 status: this.status,
@@ -88,17 +86,17 @@ export default class NewWorkOrderLineItem extends LightningElement {
                 console.log(result);
                 console.log('ID: ', result.Id);
                 this.workOrderLineItemObject = result;
-                this.isLoaded = true;
                 console.log('workOrderLineItemObject = ' + this.workOrderLineItemObject);
-
                 this.genericShowToast('Success!', 'Work Order Line Item Record is created Successfully!', 'success');
             })
             .catch(error => {
                 console.log('error createWorkOrder');
                 console.log(error);
-                this.isLoaded = true;
                 this.genericShowToast('Error creating Work Order Line Item.', error.body.message, 'error');
-                this.isLoaded = true;
-            });
+            }).finally(
+            () => {
+                this.isLoading = false;
+            }
+        )
     }
 }

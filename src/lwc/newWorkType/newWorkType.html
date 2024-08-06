@@ -1,7 +1,7 @@
 <template>
 
     <lightning-card>
-        <div if:true={isLoaded}>
+        <div if:false={isLoading}>
             <template lwc:if={showNewWorkTypeComponent}>
 
                 <div class="slds-text-heading_large">
@@ -14,36 +14,40 @@
 
                 <div class="slds-m-horizontal_small">
 
-                    <lightning-input name="name" label="Work Type Name" onchange={handleChange}></lightning-input>
+                    <lightning-input type=”text” name="name" label="Work Type Name" onchange={handleWorkTypeNameChange}
+                                     lwc:ref="workTypeName" required></lightning-input>
 
                 </div>
                 <div class="slds-m-horizontal_small">
 
-                    <lightning-input name="description" label="Description" onchange={handleChange}></lightning-input>
+                    <lightning-input name="description" label="Description"
+                                     onchange={handleDescriptionChange}></lightning-input>
                 </div>
                 <div class="slds-m-horizontal_small">
 
-                    <lightning-input name="estimatedDuration" label="Estimated Duration" onchange={handleChange}
-                                     required></lightning-input>
+                    <lightning-input name="estimatedDuration" label="Estimated Duration"
+                                     onchange={handleEstimatedDurationChange}
+                                     lwc:ref="estimatedDuration" type="number" required></lightning-input>
                 </div>
 
                 <div class="slds-m-horizontal_small">
                     <lightning-combobox
-                            options={picklistValues} label="Duration Type" onchange={handleChange} name="durationType"
-                            required
+                            options={picklistValues} label="Duration Type" onchange={handleDurationTypeChange}
+                            name="durationType"
+                            lwc:ref="durationType" required
                     ></lightning-combobox>
                 </div>
 
                 <div class="slds-m-around_medium">
                     <lightning-input name="shouldAutoCreateSvcAppt" label="Auto-Create Service Appointment"
-                                     onchange={handleChange} class="slds-p-left" type="checkbox">
+                                     onchange={handleshouldAutoCreateSvcApptChange} class="slds-p-left" type="checkbox">
                     </lightning-input>
                 </div>
 
                 <div class="slds-p-right_medium">
                     <div class="slds-clearfix">
                         <lightning-button label="Next" variant="brand" onclick={createWorkType}
-                                          class="slds-float_right">
+                                          disabled={disableBtn} class="slds-float_right">
                         </lightning-button>
                     </div>
                 </div>
@@ -57,7 +61,7 @@
 
             </template>
         </div>
-        <div if:false={isLoaded} style="height: 400px; position:relative">
+        <div if:true={isLoading} style="height: 400px; position:relative">
             <lightning-spinner variant="base" size="medium"></lightning-spinner>
         </div>
     </lightning-card>

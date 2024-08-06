@@ -1,6 +1,6 @@
 <template>
     <lightning-card>
-        <div if:true={isLoaded}>
+        <div if:false={isLoading}>
             <template lwc:if={showNewWorkOrderComponent}>
                 <div class="slds-text-heading_large">
                     <div class="slds-text-align_center">New Work Order</div>
@@ -15,7 +15,7 @@
 
                         <div class="slds-m-horizontal_small">
                             <lightning-combobox
-                                    options={statusPicklistValues} label="Status" onchange={handleChange}
+                                    options={statusPicklistValues} label="Status" onchange={handleStatusChange}
                                     name="status"
                             ></lightning-combobox>
                         </div>
@@ -25,7 +25,7 @@
 
                         <div class="slds-m-horizontal_small">
                             <lightning-combobox
-                                    options={priorityPicklistValues} label="Priority" onchange={handleChange}
+                                    options={priorityPicklistValues} label="Priority" onchange={handlePriorityChange}
                                     name="priority"
                             ></lightning-combobox>
                         </div>
@@ -41,7 +41,7 @@
                             <label class="slds-form-element__label">Work Type</label>
                             <div class="slds-form-element__control">
                                 <div class="slds-select_container">
-                                    <select class="slds-select" name="workType" onchange={handleChange}>
+                                    <select class="slds-select" name="workType" onchange={handleWorkTypeChange}>
                                         <template for:each={workTypes} for:item="workType">
 
                                             <option key={workType.Id} value={workType.Id}>{workType.Name}</option>
@@ -54,12 +54,12 @@
                     </div>
                 </div>
                 <div class="slds-m-horizontal_small">
-                    <lightning-input name="subject" label="Subject" onchange={handleChange}></lightning-input>
+                    <lightning-input name="subject" label="Subject" onchange={handleSubjectChange}></lightning-input>
                 </div>
 
                 <div class="slds-m-horizontal_small">
                     <lightning-textarea name="description" label="Description"
-                                        onchange={handleChange}></lightning-textarea>
+                                        onchange={handleDescriptionChange}></lightning-textarea>
                 </div>
 
                 <div class="slds-p-right_medium">
@@ -81,7 +81,7 @@
                 ></c-new-work-order-line-item>
             </template>
         </div>
-        <div if:false={isLoaded} style="height: 400px; position:relative">
+        <div if:true={isLoading} style="height: 400px; position:relative">
             <lightning-spinner variant="base" size="medium"></lightning-spinner>
         </div>
     </lightning-card>

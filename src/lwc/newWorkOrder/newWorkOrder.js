@@ -18,7 +18,7 @@ export default class NewWorkOrder extends LightningElement {
     workOrderRecordId;
     showNewWorkOrderComponent = true;
     showNewWorkOrderLineItemComponent = false;
-    isLoaded = false;
+    isLoading = true;
     workOrderObject = {};
     priorityPicklistValues = [];
     statusPicklistValues = [];
@@ -62,27 +62,28 @@ export default class NewWorkOrder extends LightningElement {
                 this.genericShowToast('Error getting statusPicklistValues', error.body.message, 'error');
             });
 
-        this.isLoaded = true;
+        this.isLoading = false;
     }
 
-    handleChange(e) {
-
-        if (e.target.name === "status") {
-            this.status = e.target.value;
-        } else if (e.target.name === "priority") {
-            this.priority = e.target.value;
-        } else if (e.target.name === "workType") {
-            this.workTypeId = e.target.value;
-        } else if (e.target.name === "subject") {
-            this.subject = e.target.value;
-        } else if (e.target.name === "description") {
-            this.description = e.target.value;
-        }
+    handleStatusChange(e) {
+        this.status = e.target.value;
+    }
+    handlePriorityChange(e) {
+        this.priority = e.target.value;
+    }
+    handleWorkTypeChange(e) {
+        this.workTypeId = e.target.value;
+    }
+    handleSubjectChange(e) {
+        this.subject = e.target.value;
+    }
+    handleDescriptionChange(e) {
+        this.description = e.target.value;
     }
 
 
     createWorkOrder() {
-        this.isLoaded = false;
+        this.isLoading = true;
         createWorkOrderApexMethod(
             {
                 workTypeId: this.workTypeId,
@@ -101,7 +102,6 @@ export default class NewWorkOrder extends LightningElement {
                 this.workOrderNumber = result.workOrderNumber;
 
                 console.log('workOrderObject = ' + this.workOrderObject);
-                this.isLoaded = true;
                 this.genericShowToast('Success!', 'Work Order Record is created Successfully!', 'success');
                 this.showNewWorkOrderComponent = false;
                 this.showNewWorkOrderLineItemComponent = true;
@@ -110,9 +110,9 @@ export default class NewWorkOrder extends LightningElement {
                 console.log('error creating WorkOrder record');
                 console.log(error);
                 console.log(error.message);
-                this.isLoaded = true;
                 this.genericShowToast('Error creating Work Order.', error.message, 'error');
 
-            });
+            })
+            .finally(() => this.isLoading = false);
     }
 }

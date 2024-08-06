@@ -1,4 +1,4 @@
-import {LightningElement,api} from 'lwc';
+import {LightningElement, api} from 'lwc';
 import getProduct2s from '@salesforce/apex/ProductRequiredController.getProduct2s';
 import getQuantityUnitOfMeasurePicklistValues
     from '@salesforce/apex/ProductRequiredController.getQuantityUnitOfMeasurePicklistValues';
@@ -17,19 +17,17 @@ export default class NewProductRequired extends LightningElement {
     quantityUnitOfMeasure;
     @api workTypeRecordId;
     @api workTypeName;
-    isLoaded = false;
+    isLoading = true;
 
-    handleChange(e) {
-
-        if (e.target.name === "productRequired") {
-            this.productRequired = e.target.value;
-        } else if (e.target.name === "quantityRequired") {
-            this.quantityRequired = e.target.value;
-        } else if (e.target.name === "quantityUnitOfMeasure") {
-            this.quantityUnitOfMeasure = e.target.value;
-        }
+    handleProductRequiredChange(e) {
+        this.productRequired = e.target.value;
     }
-
+    handleQuantityRequiredChange(e) {
+        this.quantityRequired = e.target.value;
+    }
+    handleQuantityUnitOfMeasureChange(e) {
+        this.quantityUnitOfMeasure = e.target.value;
+    }
     connectedCallback() {
 
         getProduct2s()
@@ -44,7 +42,7 @@ export default class NewProductRequired extends LightningElement {
             .catch(error => {
                 console.log(error);
                 console.log('Error getting product2s.');
-                this.genericShowToast('Error getting product2s.',error.body.message, 'error');
+                this.genericShowToast('Error getting product2s.', error.body.message, 'error');
             });
 
 
@@ -58,36 +56,50 @@ export default class NewProductRequired extends LightningElement {
                 console.log('Error getting quantityUnitOfMeasure PickList values');
                 this.genericShowToast('Error getting quantityUnitOfMeasure PickList values', error.body.message, 'error');
             });
-        this.isLoaded = true;
+        this.isLoading = false;
     }
 
+    validateQuantityRequired() {
+
+        let quantityRequiredInput = this.refs?.quantityRequired;
+
+        return quantityRequiredInput.checkValidity();
+    }
 
     createProductRequired() {
-        this.isLoaded = false;
-        console.log('quantityUnitOfMeasure = ' + this.quantityUnitOfMeasure);
-        console.log('workTypeName = ' + this.workTypeName);
-        console.log('final workTypeRecordId for skill req = ' + this.workTypeRecordId);
+        console.log('validateQuantityRequired :' + this.validateQuantityRequired());
+        if (this.validateQuantityRequired()) {
+            this.isLoading = true;
+            console.log('quantityUnitOfMeasure = ' + this.quantityUnitOfMeasure);
+            console.log('workTypeName = ' + this.workTypeName);
+            console.log('final workTypeRecordId for skill req = ' + this.workTypeRecordId);
 
-        createProductRequiredApexMethod({
-            parentRecordId: this.workTypeRecordId,
-            product2Id: this.productRequired,
-            quantityRequired: this.quantityRequired,
-            quantityUnitOfMeasure: this.quantityUnitOfMeasure
+            createProductRequiredApexMethod({
+                parentRecordId: this.workTypeRecordId,
+                product2Id: this.productRequired,
+                quantityRequired: this.quantityRequired,
+                quantityUnitOfMeasure: this.quantityUnitOfMeasure
 
-        })
-            .then(result => {
-                console.log(result);
-                this.isLoaded = true;
-                this.genericShowToast('Success!', 'Product Required Record is created Successfully!', 'success');
-                this.showNewProductRequiredComponent = false;
-                this.showNewProductItemComponent = true;
             })
-            .catch(error => {
-                console.log('Error creating Product Required Record');
-                console.log(error);
-                this.isLoaded = true;
-                this.genericShowToast('Error creating Product Required Record', error.body.message, 'error');
+                .then(result => {
+                    console.log(result);
+                    this.isLoaded = true;
+                    this.genericShowToast('Success!', 'Product Required Record is created Successfully!', 'success');
+                    this.showNewProductRequiredComponent = false;
+                    this.showNewProductItemComponent = true;
+                })
+                .catch(error => {
+                    console.log('Error creating Product Required Record');
+                    console.log(error);
+                    this.isLoading = true;
+                    this.genericShowToast('Error creating Product Required Record', error.body.message, 'error');
 
-            });
+                })
+                .finally(() => this.isLoading = false);
+
+        } else {
+            this.genericShowToast('Error creating Product Required Record.', 'Please, complete Quantity Required field properly', 'error');
+
+        }
     }
 }

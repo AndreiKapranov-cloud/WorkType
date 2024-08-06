@@ -35,13 +35,14 @@ public with sharing class WorkTypeController {
     }
 
     @AuraEnabled
-    public static WorkType createWorkTypeApexMethod(String workTypeName, String description, Decimal estimatedDuration, String durationType) {
+    public static WorkType createWorkTypeApexMethod(String workTypeName, String description, Decimal estimatedDuration, String durationType,
+            Boolean shouldAutoCreateSvcAppt) {
 
         WorkType workTypeRecord = new WorkType();
 
         try {
             workTypeRecord = new WorkType(Name = workTypeName, Description = description, EstimatedDuration = estimatedDuration,
-                    DurationType = durationType);
+                    DurationType = durationType,ShouldAutoCreateSvcAppt = shouldAutoCreateSvcAppt);
             insert workTypeRecord;
         } catch (Exception e) {
             System.debug('The following exception has occurred: ' + e.getMessage());

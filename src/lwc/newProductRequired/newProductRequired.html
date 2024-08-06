@@ -1,6 +1,6 @@
 <template>
     <lightning-card>
-        <div if:true={isLoaded}>
+        <div if:false={isLoading}>
             <template lwc:if={showNewProductRequiredComponent}>
 
                 <div class="slds-text-heading_large">
@@ -22,7 +22,7 @@
                             Required</label>
                         <div class="slds-form-element__control">
                             <div class="slds-select_container">
-                                <select class="slds-select" name="productRequired" onchange={handleChange} required="">
+                                <select class="slds-select" name="productRequired" onchange={handleProductRequiredChange} required="">
                                     <template for:each={product2s} for:item="product">
 
                                         <option key={product.Id} value={product.Id}>{product.Name}</option>
@@ -36,12 +36,12 @@
 
                 <div class="slds-m-horizontal_small">
                     <lightning-input name="quantityRequired" label="Quantity Required"
-                                     onchange={handleChange}></lightning-input>
+                                     onchange={handleQuantityRequiredChange} lwc:ref="quantityRequired" type="number"></lightning-input>
                 </div>
 
                 <div class="slds-m-horizontal_small">
                     <lightning-combobox
-                            options={picklistValues} label="Quantity Unit Of Measure" onchange={handleChange}
+                            options={picklistValues} label="Quantity Unit Of Measure" onchange={handleQuantityUnitOfMeasureChange}
                             name="quantityUnitOfMeasure"
                     ></lightning-combobox>
                 </div>
@@ -61,7 +61,7 @@
                 <c-new-product-item></c-new-product-item>
             </template>
         </div>
-        <div if:false={isLoaded} style="height: 400px; position:relative">
+        <div if:true={isLoading} style="height: 400px; position:relative">
             <lightning-spinner variant="base" size="medium"></lightning-spinner>
         </div>
     </lightning-card>

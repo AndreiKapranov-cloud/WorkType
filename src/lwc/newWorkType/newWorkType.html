@@ -1,20 +1,21 @@
 <template>
+    <template lwc:if={showNewWorkTypeComponent}>
 
-    <lightning-card>
-        <div if:false={isLoading}>
-            <template lwc:if={showNewWorkTypeComponent}>
+        <lightning-card>
+            <div if:false={isLoading}>
 
                 <div class="slds-text-heading_large">
                     <div class="slds-text-align_center">New Work Type</div>
                 </div>
 
                 <div class="slds-m-around_medium">
-                    <div class="slds-border_bottom"></div>
+                    <div class="slds-border_bottom slds-m-top_large"></div>
                 </div>
 
                 <div class="slds-m-horizontal_small">
 
-                    <lightning-input type=”text” name="name" label="Work Type Name" onchange={handleWorkTypeNameChange}
+                    <lightning-input type=”text” name="name" label="Work Type Name"
+                                     onchange={handleWorkTypeNameChange}
                                      lwc:ref="workTypeName" required></lightning-input>
 
                 </div>
@@ -40,7 +41,8 @@
 
                 <div class="slds-m-around_medium">
                     <lightning-input name="shouldAutoCreateSvcAppt" label="Auto-Create Service Appointment"
-                                     onchange={handleshouldAutoCreateSvcApptChange} class="slds-p-left" type="checkbox">
+                                     onchange={handleshouldAutoCreateSvcApptChange} class="slds-p-left"
+                                     type="checkbox">
                     </lightning-input>
                 </div>
 
@@ -51,19 +53,21 @@
                         </lightning-button>
                     </div>
                 </div>
-            </template>
 
-            <template lwc:elseif={showNewSkillRequirementComponent}>
 
-                <c-new-skill-requirement work-type-record-id={workTypeRecordId}
-                                         work-type-name={workTypeName}
-                                         work-type-object={workTypeObject}></c-new-skill-requirement>
+            </div>
+            <div if:true={isLoading} style="height: 400px; position:relative">
+                <lightning-spinner variant="base" size="medium"></lightning-spinner>
+            </div>
 
-            </template>
-        </div>
-        <div if:true={isLoading} style="height: 400px; position:relative">
-            <lightning-spinner variant="base" size="medium"></lightning-spinner>
-        </div>
-    </lightning-card>
+        </lightning-card>
+    </template>
+    <template lwc:elseif={showNewSkillRequirementComponent}>
+
+        <c-new-skill-requirement work-type-record-id={workTypeRecordId}
+                                 work-type-name={workTypeName}
+                                 work-type-object={workTypeObject}></c-new-skill-requirement>
+
+    </template>
 
 </template>

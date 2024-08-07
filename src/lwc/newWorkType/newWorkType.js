@@ -16,6 +16,7 @@ export default class NewWorkType extends LightningElement {
     disableBtn = false;
     workTypeNameValid = false;
 
+
     handleshouldAutoCreateSvcApptChange(e) {
         this.shouldAutoCreateSvcAppt = e.target.checked;
     }
@@ -35,6 +36,7 @@ export default class NewWorkType extends LightningElement {
 
     handleWorkTypeNameChange(e) {
 
+        let target = e.target;
         this.name = e.target.value;
         console.log('name = ' + this.name);
         console.log(this.name.includes(` `));
@@ -42,9 +44,10 @@ export default class NewWorkType extends LightningElement {
 
         //   this.name.includes(` `) ||
         if (isWhitespaceString(this.name) || this.name === '') {
+            target.setCustomValidity('Complete this field.');
             this.workTypeNameValid = false;
-            this.genericShowToast('Work Type name Input Error', 'Please, complete Work Type Name field properly.', 'error');
         } else {
+            target.setCustomValidity('');
             this.workTypeNameValid = true;
 
         }
@@ -85,13 +88,21 @@ export default class NewWorkType extends LightningElement {
         this.isLoading = false;
     }
 
+    checkWorkTypeInputFields() {
+        let isWorkTypeNameValid = this.validateWorkTypeName();
+        let isEstimatedDurationValid = this.validateEstimatedDuration();
+        let isDurationTypeValid = this.validateDurationType();
+
+        return isWorkTypeNameValid && isEstimatedDurationValid && isDurationTypeValid && this.workTypeNameValid;
+    }
 
     createWorkType() {
-        console.log('validateEstimatedDuration :' + this.validateEstimatedDuration());
-        console.log('validateDurationType :' + this.validateDurationType());
-        console.log('validateWorkTypeName :' + this.validateWorkTypeName());
-        console.log('workTypeNameValid :' + this.workTypeNameValid);
-        if (this.workTypeNameValid && this.validateEstimatedDuration() && this.validateDurationType() && this.validateWorkTypeName()) {
+        // console.log('validateEstimatedDuration :' + this.validateEstimatedDuration());
+        // console.log('validateDurationType :' + this.validateDurationType());
+        // console.log('validateWorkTypeName :' + this.validateWorkTypeName());
+        // console.log('workTypeNameValid :' + this.workTypeNameValid);
+        console.log(this.checkWorkTypeInputFields())
+        if (this.checkWorkTypeInputFields()) {
             this.isLoading = true;
             console.log('createWorkType');
             console.log('estimated duration =' + this.estimatedDuration);

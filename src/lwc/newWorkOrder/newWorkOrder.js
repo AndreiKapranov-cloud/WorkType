@@ -22,7 +22,7 @@ export default class NewWorkOrder extends LightningElement {
     workOrderObject = {};
     priorityPicklistValues = [];
     statusPicklistValues = [];
-
+    subjectValid = true;
 
     connectedCallback() {
 
@@ -68,51 +68,78 @@ export default class NewWorkOrder extends LightningElement {
     handleStatusChange(e) {
         this.status = e.target.value;
     }
+
     handlePriorityChange(e) {
         this.priority = e.target.value;
     }
+
     handleWorkTypeChange(e) {
         this.workTypeId = e.target.value;
     }
-    handleSubjectChange(e) {
-        this.subject = e.target.value;
-    }
+
     handleDescriptionChange(e) {
         this.description = e.target.value;
     }
 
+    handleSubjectChange(e) {
+        this.subject = e.target.value;
+    }
+    /*handleSubjectChange(e) {
+
+        let target = e.target;
+        this.subject = e.target.value;
+        console.log('name = ' + this.subject);
+        console.log(this.subject.includes(` `));
+        const isWhitespaceString = str => !str.replace(/\s/g, '').length;
+
+        //   this.name.includes(` `) ||
+        if (isWhitespaceString(this.subject)) {
+            target.setCustomValidity('This field should not contain only spaces.');
+            this.subjectValid = false;
+        } else {
+            target.setCustomValidity('');
+            this.subjectValid = true;
+
+        }
+    }*/
 
     createWorkOrder() {
-        this.isLoading = true;
-        createWorkOrderApexMethod(
-            {
-                workTypeId: this.workTypeId,
-                status: this.status,
-                priority: this.priority,
-                subject: this.subject,
-                description: this.description
-            })
-            .then(result => {
-                console.log(result);
-                console.log('ID: ', result.Id);
-                this.workOrderObject = result;
 
 
-                this.workOrderRecordId = result.Id;
-                this.workOrderNumber = result.workOrderNumber;
+        // console.log('subjectValid :' + this.subjectValid);
+        // if (this.subjectValid ) {
+            this.isLoading = true;
+            createWorkOrderApexMethod(
+                {
+                    workTypeId: this.workTypeId,
+                    status: this.status,
+                    priority: this.priority,
+                    subject: this.subject,
+                    description: this.description
+                })
+                .then(result => {
+                    console.log(result);
+                    console.log('ID: ', result.Id);
+                    this.workOrderObject = result;
 
-                console.log('workOrderObject = ' + this.workOrderObject);
-                this.genericShowToast('Success!', 'Work Order Record is created Successfully!', 'success');
-                this.showNewWorkOrderComponent = false;
-                this.showNewWorkOrderLineItemComponent = true;
-            })
-            .catch(error => {
-                console.log('error creating WorkOrder record');
-                console.log(error);
-                console.log(error.message);
-                this.genericShowToast('Error creating Work Order.', error.message, 'error');
 
-            })
-            .finally(() => this.isLoading = false);
+                    this.workOrderRecordId = result.Id;
+                    this.workOrderNumber = result.workOrderNumber;
+
+                    console.log('workOrderObject = ' + this.workOrderObject);
+                    this.genericShowToast('Success!', 'Work Order Record is created Successfully!', 'success');
+                    this.showNewWorkOrderComponent = false;
+                    this.showNewWorkOrderLineItemComponent = true;
+                })
+                .catch(error => {
+                    console.log('error creating WorkOrder record');
+                    console.log(error);
+                    this.genericShowToast('Error creating Work Order.', error.body.message, 'error');
+
+                })
+                .finally(() => this.isLoading = false)
+     /*   } else {
+            this.genericShowToast('Error creating New work Oreder.', 'Please, make shure Subject and Description fields dont consist of spaces', 'error');
+        }*/
     }
 }

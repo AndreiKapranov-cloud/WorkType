@@ -18,11 +18,13 @@ export default class NewWorkOrderLineItem extends LightningElement {
     workTypeName;
     description;
     isLoading = true;
-
+    showNewWorkOrderLineItemComponent = true;
+    showNewWorkOrderComponent = false;
 
     handleStatusChange(e) {
         this.status = e.target.value;
     }
+
     handleDescriptionChange(e) {
         this.description = e.target.value;
     }
@@ -98,5 +100,11 @@ export default class NewWorkOrderLineItem extends LightningElement {
                 this.isLoading = false;
             }
         )
+    }
+
+    returnToNewWorkOrderComponent() {
+        this.showNewWorkOrderLineItemComponent = false;
+        this.showNewWorkOrderComponent = true;
+
     }
 }

@@ -1,76 +1,77 @@
 <template>
-
-    <lightning-card>
+    <template lwc:if={showNewProductRequiredComponent}>
+        <lightning-card>
 
             <div if:false={isLoading}>
-                <template lwc:if={showNewProductRequiredComponent}>
 
-                    <div class="slds-text-heading_large">
-                        <div class="slds-text-align_center">New Product Required</div>
-                    </div>
+                <div class="slds-text-heading_large">
+                    <div class="slds-text-align_center">New Product Required</div>
+                </div>
 
-                    <div class="slds-m-around_medium">
-                        <div class="slds-border_bottom"></div>
-                    </div>
+                <div class="slds-m-around_medium">
+                    <div class="slds-border_bottom"></div>
+                </div>
 
-                    <div class="slds-m-horizontal_small">
-                        <lightning-input name="workType" label="Parent Record" value={workTypeName} required
-                                         read-only></lightning-input>
-                    </div>
+                <div class="slds-m-horizontal_small">
+                    <lightning-input name="workType" label="Parent Record" value={workTypeName} required
+                                     read-only></lightning-input>
+                </div>
 
-                    <div class="slds-m-horizontal_small">
-                        <div class="slds-form-element">
-                            <label class="slds-form-element__label"><abbr class="slds-required"
-                                                                          title="required">*</abbr>Product
-                                Required</label>
-                            <div class="slds-form-element__control">
-                                <div class="slds-select_container">
-                                    <select class="slds-select" name="productRequired"
-                                            onchange={handleProductRequiredChange} required="">
-                                        <template for:each={product2s} for:item="product">
+                <div class="slds-m-horizontal_small">
+                    <div class="slds-form-element">
+                        <label class="slds-form-element__label"><abbr class="slds-required"
+                                                                      title="required">*</abbr>Product
+                            Required</label>
+                        <div class="slds-form-element__control">
+                            <div class="slds-select_container">
+                                <select class="slds-select" name="productRequired"
+                                        onchange={handleProductRequiredChange} required="">
+                                    <template for:each={product2s} for:item="product">
 
-                                            <option key={product.Id} value={product.Id}>{product.Name}</option>
+                                        <option key={product.Id} value={product.Id}>{product.Name}</option>
 
-                                        </template>
-                                    </select>
-                                </div>
+                                    </template>
+                                </select>
                             </div>
                         </div>
                     </div>
+                </div>
 
-                    <div class="slds-m-horizontal_small">
-                        <lightning-input name="quantityRequired" label="Quantity Required"
-                                         onchange={handleQuantityRequiredChange} lwc:ref="quantityRequired"
-                                         type="number"></lightning-input>
-                    </div>
+                <div class="slds-m-horizontal_small">
+                    <lightning-input name="quantityRequired" label="Quantity Required"
+                                     onchange={handleQuantityRequiredChange} lwc:ref="quantityRequired"
+                                     type="number"></lightning-input>
+                </div>
 
-                    <div class="slds-m-horizontal_small">
-                        <lightning-combobox
-                                options={picklistValues} label="Quantity Unit Of Measure"
-                                onchange={handleQuantityUnitOfMeasureChange}
-                                name="quantityUnitOfMeasure"
-                        ></lightning-combobox>
-                    </div>
+                <div class="slds-m-horizontal_small">
+                    <lightning-combobox
+                            options={picklistValues} label="Quantity Unit Of Measure"
+                            onchange={handleQuantityUnitOfMeasureChange}
+                            name="quantityUnitOfMeasure"
+                    ></lightning-combobox>
+                </div>
 
-                    <div class="slds-p-right_medium">
-                        <div class="slds-m-top_small">
-                            <div class="slds-clearfix">
-                                <lightning-button label="Next" variant="brand" onclick={createProductRequired}
-                                                  class="slds-float_right">
-                                </lightning-button>
-                            </div>
+                <div class="slds-p-right_medium">
+                    <div class="slds-m-top_small">
+                        <div class="slds-clearfix">
+                            <lightning-button label="Next" variant="brand" onclick={createProductRequired}
+                                              class="slds-float_right">
+                            </lightning-button>
                         </div>
                     </div>
-                </template>
-
-                <template lwc:elseif={showNewProductItemComponent}>
-                    <c-new-product-item></c-new-product-item>
-                </template>
+                </div>
             </div>
             <div if:true={isLoading} style="height: 400px; position:relative">
                 <lightning-spinner variant="base" size="medium"></lightning-spinner>
             </div>
 
-    </lightning-card>
+        </lightning-card>
+    </template>
+
+    <template lwc:elseif={showNewProductItemComponent}>
+        <c-new-product-item></c-new-product-item>
+    </template>
+
+
 
 </template>

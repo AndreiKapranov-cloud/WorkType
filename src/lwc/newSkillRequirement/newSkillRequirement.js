@@ -19,6 +19,18 @@ export default class NewSkillRequirement extends LightningElement {
     showNewProductRequiredComponent = false;
     isLoading = true;
 
+    displayNewProductRequiredInBase() {
+        this.dispatchEvent(new CustomEvent('displaynewproductrequiredinbase', {
+            detail: {
+                'workTypeName': this.workTypeName,
+                'workTypeRecordId': this.workTypeRecordId
+            }
+        }));
+    }
+
+
+
+
     validateSkillLevel() {
 
         let skilllevelInput = this.refs?.skillLevel;
@@ -55,7 +67,7 @@ export default class NewSkillRequirement extends LightningElement {
     }
 
     createSkillRequirement() {
-        console.log('validate :' + this.validateSkillLevel());
+        //  console.log('validate :' + this.validateSkillLevel());
         if (this.validateSkillLevel()) {
             this.isLoading = true;
 
@@ -75,8 +87,9 @@ export default class NewSkillRequirement extends LightningElement {
                     console.log(result);
                     this.isLoaded = true;
                     this.genericShowToast('Success!', 'Skill Requirement Record is created Successfully!', 'success');
-                    this.showNewSkillRequirementComponent = false;
-                    this.showNewProductRequiredComponent = true;
+                    // this.showNewSkillRequirementComponent = false;
+                    // this.showNewProductRequiredComponent = true;
+                    this.displayNewProductRequiredInBase();
                 })
                 .catch(error => {
                     console.log('Error creating Skill Requirement Record');

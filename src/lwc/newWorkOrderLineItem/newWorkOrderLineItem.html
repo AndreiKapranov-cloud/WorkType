@@ -1,5 +1,6 @@
 <template>
-    <lightning-card>
+    <template lwc:if={showNewWorkOrderLineItemComponent}>
+        <lightning-card>
             <div if:false={isLoading}>
                 <div class="slds-text-heading_large">
                     <div class="slds-text-align_center">New Work Order Line Item</div>
@@ -9,48 +10,88 @@
                     <div class="slds-border_bottom"></div>
                 </div>
 
-                <lightning-layout>
-                    <lightning-layout-item size="5" padding="around-small">
-                        <div class="slds-m-horizontal_small">
+
+                <div class="slds-grid slds-wrap">
+                    <div class="slds-col slds-size_1-of-2">
+                        <div class="slds-m-horizontal_large">
                             <lightning-combobox
                                     options={statusPicklistValues} label="Status" onchange={handleStatusChange}
                                     name="status"
                             ></lightning-combobox>
                         </div>
-                    </lightning-layout-item>
-                    <lightning-layout-item size="5" padding="around-small">
-
-                        <div class="slds-m-horizontal_small">
+                    </div>
+                    <div class="slds-col slds-size_1-of-2">
+                        <div class="slds-m-horizontal_large">
                             <lightning-input name="workOrder" label="Work Order" value={workOrderNumber} required
                                              read-only></lightning-input>
-                        </div>
-                    </lightning-layout-item>
-                </lightning-layout>
-
-
-                <div class="slds-m-left_xx-large">
-                    <div class="slds-m-horizontal_small">
-                        <div class="slds-form-element">
-                            <div class="slds-m-horizontal_small">
-                                <lightning-input name="workType" label="Required For" value={workTypeName} required
-                                                 read-only></lightning-input>
-                            </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="slds-m-horizontal_small">
-                    <lightning-textarea name="description" label="Description"
-                                        onchange={handleDescriptionChange}></lightning-textarea>
+
+                <div class="slds-grid slds-wrap">
+                    <div class="slds-col slds-size_1-of-2">
+                        <div class="slds-m-horizontal_large">
+
+                        </div>
+                    </div>
+                    <div class="slds-col slds-size_1-of-2">
+                        <div class="slds-m-horizontal_large">
+                            <lightning-input name="workType" label="Required For" value={workTypeName} required
+                                             read-only></lightning-input>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="slds-p-right_medium">
-                    <div class="slds-m-top_small">
-                        <div class="slds-clearfix">
-                            <lightning-button label="Next" variant="brand" onclick={createWorkOrderLineItem}
-                                              class="slds-float_right">
-                            </lightning-button>
+                <!--
+                                <lightning-layout>
+                                    <lightning-layout-item size="5" padding="around-small">
+                                        <div class="slds-m-horizontal_small">
+                                            <lightning-combobox
+                                                    options={statusPicklistValues} label="Status" onchange={handleStatusChange}
+                                                    name="status"
+                                            ></lightning-combobox>
+                                        </div>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item size="5" padding="around-small">
+
+                                        <div class="slds-m-horizontal_small">
+                                            <lightning-input name="workOrder" label="Work Order" value={workOrderNumber} required
+                                                             read-only></lightning-input>
+                                        </div>
+                                    </lightning-layout-item>
+                                </lightning-layout>
+
+
+                                <div class="slds-m-left_xx-large">
+                                    <div class="slds-m-horizontal_small">
+                                        <div class="slds-form-element">
+                                            <div class="slds-m-horizontal_small">
+                                                <lightning-input name="workType" label="Required For" value={workTypeName} required
+                                                                 read-only></lightning-input>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>-->
+
+                <lightning-layout>
+                    <lightning-layout-item size="12" padding="around-small">
+                        <div class="slds-m-horizontal_small">
+
+
+                            <lightning-textarea name="description" label="Description"
+                                                onchange={handleDescriptionChange}></lightning-textarea>
                         </div>
+                    </lightning-layout-item>
+                </lightning-layout>
+
+                <div class=slds-m-top_x-large>
+                    <div class="slds-col slds-text-align_right">
+
+                        <lightning-button variant="neutral" label="Back to New Work Order" class="slds-m-right_medium"
+                                          onclick={returnToNewWorkOrderComponent}></lightning-button>
+                        <lightning-button variant="brand" label="Save" class="slds-m-right_large"
+                                          onclick={createWorkOrderLineItem}></lightning-button>
                     </div>
                 </div>
             </div>
@@ -58,5 +99,11 @@
                 <lightning-spinner variant="base" size="medium"></lightning-spinner>
             </div>
 
-    </lightning-card>
+        </lightning-card>
+    </template>
+    <template lwc:elseif={showNewWorkOrderComponent}>
+
+        <c-new-work-order></c-new-work-order>
+
+    </template>
 </template>

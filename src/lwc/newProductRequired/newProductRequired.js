@@ -12,28 +12,41 @@ export default class NewProductRequired extends LightningElement {
     showNewProductRequiredComponent = true;
     showNewProductItemComponent = false;
     product2s = [];
-    productRequired;
+    product2Id;
     quantityRequired;
     quantityUnitOfMeasure;
     @api workTypeRecordId;
     @api workTypeName;
     isLoading = true;
 
-    handleProductRequiredChange(e) {
-        this.productRequired = e.target.value;
+
+    displayNewProductItemInBase() {
+        this.dispatchEvent(new CustomEvent('displaynewproductiteminbase', {
+            detail: {
+                'product2Id': this.product2Id
+            }
+        }));
     }
+
+
+    handleProductRequiredChange(e) {
+        this.product2Id = e.target.value;
+    }
+
     handleQuantityRequiredChange(e) {
         this.quantityRequired = e.target.value;
     }
+
     handleQuantityUnitOfMeasureChange(e) {
         this.quantityUnitOfMeasure = e.target.value;
     }
+
     connectedCallback() {
 
         getProduct2s()
             .then(result => {
                 this.product2s = result;
-                this.productRequired = this.product2s[0].Id;
+                this.product2Id = this.product2s[0].Id;
 
                 console.log('this.product2s: ', this.product2s);
                 console.log('this.productRequired: ', this.productRequired);
@@ -67,7 +80,7 @@ export default class NewProductRequired extends LightningElement {
     }
 
     createProductRequired() {
-        console.log('validateQuantityRequired :' + this.validateQuantityRequired());
+        //    console.log('validateQuantityRequired :' + this.validateQuantityRequired());
         if (this.validateQuantityRequired()) {
             this.isLoading = true;
             console.log('quantityUnitOfMeasure = ' + this.quantityUnitOfMeasure);
@@ -76,17 +89,17 @@ export default class NewProductRequired extends LightningElement {
 
             createProductRequiredApexMethod({
                 parentRecordId: this.workTypeRecordId,
-                product2Id: this.productRequired,
+                product2Id: this.product2Id,
                 quantityRequired: this.quantityRequired,
                 quantityUnitOfMeasure: this.quantityUnitOfMeasure
 
             })
                 .then(result => {
                     console.log(result);
-                    this.isLoaded = true;
                     this.genericShowToast('Success!', 'Product Required Record is created Successfully!', 'success');
-                    this.showNewProductRequiredComponent = false;
-                    this.showNewProductItemComponent = true;
+                    // this.showNewProductRequiredComponent = false;
+                    // this.showNewProductItemComponent = true;
+                    this.displayNewProductItemInBase()
                 })
                 .catch(error => {
                     console.log('Error creating Product Required Record');

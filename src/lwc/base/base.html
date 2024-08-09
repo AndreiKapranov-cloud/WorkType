@@ -1,0 +1,28 @@
+<!--
+ - Created by andrey on 8/9/24.
+ -->
+
+<!-- Base -->
+<template>
+    <template lwc:if={displayNewWorkTypeComponent}>
+        <c-new-work-type
+                ondisplaynewskillrequirementinbase={handleDisplayNewSkillRequirementComponent}></c-new-work-type>
+    </template>
+    <template lwc:if={displayNewSkillRequirementComponent}>
+        <c-new-skill-requirement ondisplaynewproductrequiredinbase={handleDisplayNewProductRequiredComponent}
+                                 work-type-record-id={workTypeRecordId}
+                                 work-type-name={workTypeName}
+                                 work-type-object={workTypeObject}></c-new-skill-requirement>
+    </template>
+    <template lwc:if={displayNewProductRequiredComponent}>
+        <c-new-product-required ondisplaynewproductiteminbase={handleDisplayNewProductItemComponent}
+                                work-type-name={workTypeName}
+                                work-type-record-id={workTypeRecordId}></c-new-product-required>
+    </template>
+
+    <template lwc:if={displayNewProductItemComponent}>
+        <c-new-product-item ondisplaynewworktypeinbase={handleDisplayNewWorkTypeComponent}
+        ></c-new-product-item>
+    </template>
+
+</template>

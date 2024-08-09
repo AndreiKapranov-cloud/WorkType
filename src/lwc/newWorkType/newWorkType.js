@@ -17,6 +17,21 @@ export default class NewWorkType extends LightningElement {
     workTypeNameValid = false;
 
 
+
+
+
+    displayNewSkillRequirementInBase() {
+       this.dispatchEvent(new CustomEvent('displaynewskillrequirementinbase', {
+         detail: {
+             'workTypeRecordId':this.workTypeRecordId,
+             'workTypeName':this.workTypeName ,
+             'workTypeObject':this.workTypeObject
+         }
+       }));
+
+    }
+
+
     handleshouldAutoCreateSvcApptChange(e) {
         this.shouldAutoCreateSvcAppt = e.target.checked;
     }
@@ -126,8 +141,9 @@ export default class NewWorkType extends LightningElement {
                     console.log('record.Name = ' + result.Name);
                     // this.isLoaded = true;
                     this.genericShowToast('Success!', 'Work Type Record is created Successfully!', 'success');
-                    this.showNewWorkTypeComponent = false;
-                    this.showNewSkillRequirementComponent = true;
+                    // this.showNewWorkTypeComponent = false;
+                    // this.showNewSkillRequirementComponent = true;
+                    this.displayNewSkillRequirementInBase();
                 })
                 .catch(error => {
                     console.log('error createWorkType');

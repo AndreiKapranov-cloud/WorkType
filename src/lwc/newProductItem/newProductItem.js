@@ -1,4 +1,4 @@
-import {LightningElement,} from 'lwc';
+import {LightningElement, api} from 'lwc';
 import getLocations from '@salesforce/apex/ProductItemController.getLocations';
 import getQuantityUnitOfMeasurePicklistValues
     from '@salesforce/apex/ProductItemController.getQuantityUnitOfMeasurePicklistValues';
@@ -20,6 +20,14 @@ export default class NewProductItem extends LightningElement {
     quantityUnitOfMeasure;
     isLoading = true;
     serialNumberValid = false;
+    showNewProductItemComponent = true;
+    showNewWorkTypeComponent = false;
+    isLoading = true;
+
+    displayNewWorkTypeInBase() {
+        this.dispatchEvent(new CustomEvent('displaynewworktypeinbase', {}));
+
+    }
 
     handleProduct2IdChange(e) {
         this.product2Id = e.target.value;
@@ -46,7 +54,6 @@ export default class NewProductItem extends LightningElement {
         console.log(this.serialNumber.includes(` `));
         const isWhitespaceString = str => !str.replace(/\s/g, '').length;
 
-        //   this.name.includes(` `) ||
         if (isWhitespaceString(this.serialNumber) || this.serialNumber === '') {
             this.serialNumberValid = false;
             this.genericShowToast('Product Item Serial Number Input Error', 'Please, complete Serial Number field properly.', 'error');
@@ -102,6 +109,7 @@ export default class NewProductItem extends LightningElement {
                 this.genericShowToast('Error getting quantityUnitOfMeasure PickList values', error.body.message, 'error');
             });
         this.isLoading = false;
+
     }
 
 
@@ -119,9 +127,6 @@ export default class NewProductItem extends LightningElement {
 
 
     createProductItem() {
-        console.log('validateQuantityOnHand :' + this.validateQuantityOnHand());
-        console.log('validateSerialNumber :' + this.validateSerialNumber())
-        console.log('serialNumberValid :' + this.serialNumberValid);
 
         if (this.serialNumberValid && this.validateQuantityOnHand() && this.validateSerialNumber()) {
             this.isLoading = true;
@@ -142,6 +147,7 @@ export default class NewProductItem extends LightningElement {
                 .then(result => {
                     console.log(result);
                     this.genericShowToast('Success!', 'Product Item Record is created Successfully!', 'success');
+
                 })
                 .catch(error => {
                     console.log('Error creating Product Item Record');
@@ -156,4 +162,10 @@ export default class NewProductItem extends LightningElement {
         }
 
     }
+
+    /*  returnToNewWorkTypeComponent() {
+          this.showNewWorkTypeComponent = true;
+          this.showNewProductItemComponent = false;
+      }
+  */
 }

@@ -1,92 +1,100 @@
 <template>
     <lightning-card>
 
-            <div if:false={isLoading}>
-                <template lwc:if={showNewWorkOrderComponent}>
-                    <div class="slds-text-heading_large">
-                        <div class="slds-text-align_center">New Work Order</div>
+        <div if:false={isLoading}>
+            <template lwc:if={showNewWorkOrderComponent}>
+                <div class="slds-text-heading_large">
+                    <div class="slds-text-align_center">New Work Order</div>
+                </div>
+
+                <div class="slds-m-around_medium">
+                    <div class="slds-border_bottom"></div>
+                </div>
+
+                <div class="slds-grid slds-wrap">
+                    <div class="slds-col slds-size_1-of-2">
+                        <div class="slds-m-horizontal_large">
+                            <lightning-combobox
+                                    options={statusPicklistValues} label="Status" onchange={handleStatusChange}
+                                    name="status"
+                            ></lightning-combobox>
+                        </div>
                     </div>
-
-                    <div class="slds-m-around_medium">
-                        <div class="slds-border_bottom"></div>
+                    <div class="slds-col slds-size_1-of-2">
+                        <div class="slds-m-horizontal_large">
+                            <lightning-combobox
+                                    options={priorityPicklistValues} label="Priority"
+                                    onchange={handlePriorityChange}
+                                    name="priority"
+                            ></lightning-combobox>
+                        </div>
                     </div>
+                </div>
+                <div class="slds-grid slds-wrap">
+                    <div class="slds-col slds-size_1-of-2">
+                        <div class="slds-m-horizontal_large">
+                        </div>
+                    </div>
+                    <div class="slds-col slds-size_1-of-2">
+                        <div class="slds-m-horizontal_large">
+                            <label class="slds-form-element__label">Work Type</label>
+                            <div class="slds-form-element__control">
+                                <div class="slds-select_container">
+                                    <select class="slds-select" name="workType" onchange={handleWorkTypeChange}>
+                                        <template for:each={workTypes} for:item="workType">
 
-                    <lightning-layout>
-                        <lightning-layout-item size="5" padding="around-small">
+                                            <option key={workType.Id} value={workType.Id}>{workType.Name}</option>
 
-                            <div class="slds-m-horizontal_small">
-                                <lightning-combobox
-                                        options={statusPicklistValues} label="Status" onchange={handleStatusChange}
-                                        name="status"
-                                ></lightning-combobox>
-                            </div>
-
-                        </lightning-layout-item>
-                        <lightning-layout-item size="5" padding="around-small">
-
-                            <div class="slds-m-horizontal_small">
-                                <lightning-combobox
-                                        options={priorityPicklistValues} label="Priority"
-                                        onchange={handlePriorityChange}
-                                        name="priority"
-                                ></lightning-combobox>
-                            </div>
-
-
-                        </lightning-layout-item>
-                    </lightning-layout>
-
-
-                    <div class="slds-m-left_xx-large">
-                        <div class="slds-m-horizontal_small">
-                            <div class="slds-form-element">
-                                <label class="slds-form-element__label">Work Type</label>
-                                <div class="slds-form-element__control">
-                                    <div class="slds-select_container">
-                                        <select class="slds-select" name="workType" onchange={handleWorkTypeChange}>
-                                            <template for:each={workTypes} for:item="workType">
-
-                                                <option key={workType.Id} value={workType.Id}>{workType.Name}</option>
-
-                                            </template>
-                                        </select>
-                                    </div>
+                                        </template>
+                                    </select>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="slds-m-horizontal_small">
-                        <lightning-input name="subject" label="Subject"
-                                         onchange={handleSubjectChange}></lightning-input>
-                    </div>
+                </div>
 
-                    <div class="slds-m-horizontal_small">
-                        <lightning-textarea name="description" label="Description"
-                                            onchange={handleDescriptionChange}></lightning-textarea>
-                    </div>
 
-                    <div class="slds-p-right_medium">
-                        <div class="slds-m-top_small">
-                            <div class="slds-clearfix">
-                                <lightning-button label="Next" variant="brand" onclick={createWorkOrder}
-                                                  class="slds-float_right">
-                                </lightning-button>
-                            </div>
+                <lightning-layout>
+                    <lightning-layout-item size="12" padding="around-small">
+                        <div class="slds-m-horizontal_small" padding="around-small">
+                            <lightning-input name="subject" label="Subject"
+                                             onchange={handleSubjectChange}></lightning-input>
                         </div>
-                    </div>
+                    </lightning-layout-item>
+                </lightning-layout>
+                <lightning-layout>
+                    <lightning-layout-item size="12" padding="around-small">
+                        <div class="slds-m-horizontal_small">
+                            <lightning-textarea name="description" label="Description"
+                                                onchange={handleDescriptionChange}></lightning-textarea>
+                        </div>
+                    </lightning-layout-item>
+                </lightning-layout>
 
-                    <div class="slds-m-around_medium">
-                    </div>
-                </template>
 
-                <template lwc:elseif={showNewWorkOrderLineItemComponent}>
-                    <c-new-work-order-line-item work-type-id={workTypeId} work-order-record-id={workOrderRecordId}
-                    ></c-new-work-order-line-item>
-                </template>
-            </div>
-            <div if:true={isLoading} style="height: 400px; position:relative">
-                <lightning-spinner variant="base" size="medium"></lightning-spinner>
-            </div>
+                <div class=slds-m-top_large>
+                    <div class="slds-col slds-text-align_right">
+
+                        <lightning-button label="Next" variant="brand" onclick={createWorkOrder}
+                                          class="slds-m-right_large">
+                        </lightning-button>
+
+                    </div>
+                </div>
+
+
+                <div class="slds-m-around_medium">
+                </div>
+            </template>
+
+            <template lwc:elseif={showNewWorkOrderLineItemComponent}>
+                <c-new-work-order-line-item work-type-id={workTypeId} work-order-record-id={workOrderRecordId}
+                ></c-new-work-order-line-item>
+            </template>
+        </div>
+        <div if:true={isLoading} style="height: 400px; position:relative">
+            <lightning-spinner variant="base" size="medium"></lightning-spinner>
+        </div>
 
     </lightning-card>
 </template>

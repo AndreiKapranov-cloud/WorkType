@@ -18,31 +18,19 @@ public with sharing class ProductRequiredController {
         return productList;
     }
 
-    @AuraEnabled(cacheable=true)
-    public static List<Map<String, String>> getQuantityUnitOfMeasurePicklistValues() {
-        List<Map<String, String>> values = new List<Map<String, String>>();
-        try {
-            List<Schema.PicklistEntry> entries = ProductRequired.QuantityUnitOfMeasure.getDescribe().getPicklistValues();
-
-            for (Schema.PicklistEntry entry : entries) {
-                Map<String, String> valueMap = new Map<String, String>();
-                valueMap.put('label', entry.getLabel());
-                valueMap.put('value', entry.getValue());
-                values.add(valueMap);
-            }
-        } catch (Exception e) {
-            System.debug('The following exception has occurred: ' + e.getMessage());
-            throw new AuraHandledException('The following exception has occurred: ' + e.getMessage());
-        }
-        return values;
-    }
-
-
     @AuraEnabled
-    public static ProductRequired createProductRequiredApexMethod(Id parentRecordId, Id product2Id, Decimal quantityRequired, String quantityUnitOfMeasure) {
+    public static ProductRequired createProductRequiredApexMethod(String paramsJSONString) {
 
         ProductRequired productRequired = new ProductRequired();
         try {
+            CreateProductRequiredParamsWrapper wrapper = (CreateProductRequiredParamsWrapper) JSON.deserialize(paramsJSONString,
+                    CreateProductRequiredParamsWrapper.class);
+
+            Id parentRecordId = wrapper.parentRecordId;
+            Id product2Id = wrapper.product2Id;
+            Decimal quantityRequired = wrapper.quantityRequired;
+            String quantityUnitOfMeasure = wrapper.quantityUnitOfMeasure;
+
             productRequired = new ProductRequired(ParentRecordId = parentRecordId, Product2Id = product2Id, QuantityRequired = quantityRequired, QuantityUnitOfMeasure = quantityUnitOfMeasure);
             insert productRequired;
 
@@ -52,4 +40,5 @@ public with sharing class ProductRequiredController {
         }
         return productRequired;
     }
+
 }

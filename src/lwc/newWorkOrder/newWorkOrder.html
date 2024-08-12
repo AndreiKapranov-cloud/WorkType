@@ -1,7 +1,10 @@
 <template>
     <lightning-card>
+        <div lwc:if={isLoading} style="height: 400px; position:relative">
+            <lightning-spinner variant="base" size="medium"></lightning-spinner>
+        </div>
 
-        <div if:false={isLoading}>
+        <div lwc:else>
             <template lwc:if={showNewWorkOrderComponent}>
                 <div class="slds-text-heading_large">
                     <div class="slds-text-align_center">New Work Order</div>
@@ -88,12 +91,9 @@
             </template>
 
             <template lwc:elseif={showNewWorkOrderLineItemComponent}>
-                <c-new-work-order-line-item work-type-id={workTypeId} work-order-record-id={workOrderRecordId}
+                <c-new-work-order-line-item work-type-id={workTypeId} work-order-id={workOrderId}
                 ></c-new-work-order-line-item>
             </template>
-        </div>
-        <div if:true={isLoading} style="height: 400px; position:relative">
-            <lightning-spinner variant="base" size="medium"></lightning-spinner>
         </div>
 
     </lightning-card>

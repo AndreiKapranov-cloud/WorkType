@@ -1,7 +1,10 @@
 <template>
     <template lwc:if={showNewWorkOrderLineItemComponent}>
         <lightning-card>
-            <div if:false={isLoading}>
+            <div lwc:if={isLoading} style="height: 400px; position:relative">
+                <lightning-spinner variant="base" size="medium"></lightning-spinner>
+            </div>
+            <div lwc:else>
                 <div class="slds-text-heading_large">
                     <div class="slds-text-align_center">New Work Order Line Item</div>
                 </div>
@@ -43,37 +46,6 @@
                     </div>
                 </div>
 
-                <!--
-                                <lightning-layout>
-                                    <lightning-layout-item size="5" padding="around-small">
-                                        <div class="slds-m-horizontal_small">
-                                            <lightning-combobox
-                                                    options={statusPicklistValues} label="Status" onchange={handleStatusChange}
-                                                    name="status"
-                                            ></lightning-combobox>
-                                        </div>
-                                    </lightning-layout-item>
-                                    <lightning-layout-item size="5" padding="around-small">
-
-                                        <div class="slds-m-horizontal_small">
-                                            <lightning-input name="workOrder" label="Work Order" value={workOrderNumber} required
-                                                             read-only></lightning-input>
-                                        </div>
-                                    </lightning-layout-item>
-                                </lightning-layout>
-
-
-                                <div class="slds-m-left_xx-large">
-                                    <div class="slds-m-horizontal_small">
-                                        <div class="slds-form-element">
-                                            <div class="slds-m-horizontal_small">
-                                                <lightning-input name="workType" label="Required For" value={workTypeName} required
-                                                                 read-only></lightning-input>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>-->
-
                 <lightning-layout>
                     <lightning-layout-item size="12" padding="around-small">
                         <div class="slds-m-horizontal_small">
@@ -95,9 +67,7 @@
                     </div>
                 </div>
             </div>
-            <div if:true={isLoading} style="height: 400px; position:relative">
-                <lightning-spinner variant="base" size="medium"></lightning-spinner>
-            </div>
+
 
         </lightning-card>
     </template>

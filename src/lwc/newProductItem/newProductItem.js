@@ -1,32 +1,38 @@
-import {LightningElement, api} from 'lwc';
+import {LightningElement} from 'lwc';
 import getLocations from '@salesforce/apex/ProductItemController.getLocations';
-import getQuantityUnitOfMeasurePicklistValues
-    from '@salesforce/apex/ProductItemController.getQuantityUnitOfMeasurePicklistValues';
 import createProductItemApexMethod
     from '@salesforce/apex/ProductItemController.createProductItemApexMethod';
 import getProduct2s from '@salesforce/apex/ProductRequiredController.getProduct2s';
+import getPicklistValuesUsingApex from '@salesforce/apex/BaseComponentController.getPicklistValuesUsingApex';
 import {genericShowToast} from "c/utils";
 
 export default class NewProductItem extends LightningElement {
     genericShowToast = genericShowToast.bind(this);
-    location;
-    serialNumber;
+    locationId;
+
     product2Id;
-    serialNumber;
+
     locations = [];
     product2s = [];
     picklistValues = [];
     quantityOnHand;
     quantityUnitOfMeasure;
-    isLoading = true;
+    serialNumber;
     serialNumberValid = false;
     showNewProductItemComponent = true;
     showNewWorkTypeComponent = false;
     isLoading = true;
+    paramsJSONString = [];
+    productItemJsonObject = new Object();
+
 
     displayNewWorkTypeInBase() {
-        this.dispatchEvent(new CustomEvent('displaynewworktypeinbase', {}));
 
+        this.dispatchEvent(new CustomEvent('whichcomponenttodisplay', {
+            detail: {
+                'componentToDisplay': 'NewWorkType',
+            }
+        }));
     }
 
     handleProduct2IdChange(e) {
@@ -34,7 +40,7 @@ export default class NewProductItem extends LightningElement {
     }
 
     handleLocationChange(e) {
-        this.location = e.target.value;
+        this.locationId = e.target.value;
     }
 
     handleQuantityOnHandChange(e) {
@@ -68,10 +74,10 @@ export default class NewProductItem extends LightningElement {
         getLocations()
             .then(result => {
                 this.locations = result;
-                this.location = this.locations[0].Id;
+                this.locationId = this.locations[0].Id;
 
                 console.log('this.locations: ', this.locations);
-                console.log('this.location: ', this.location);
+                console.log('this.location: ', this.locationId);
 
             })
             .catch(error => {
@@ -97,19 +103,21 @@ export default class NewProductItem extends LightningElement {
                 this.genericShowToast('Error getting product2s.', error.body.message, 'error');
             });
 
-
-        getQuantityUnitOfMeasurePicklistValues()
+        getPicklistValuesUsingApex(({
+            sObjectType: 'ProductItem',
+            field: 'QuantityUnitOfMeasure'
+        }))
             .then(result => {
                 this.picklistValues = result;
                 console.log('this.picklistValues: ', this.picklistValues);
             })
             .catch(error => {
                 console.log(error);
-                console.log('Error getting quantityUnitOfMeasure PickList values');
-                this.genericShowToast('Error getting quantityUnitOfMeasure PickList values', error.body.message, 'error');
+                console.log('error getting QuantityUnitOfMeasure Picklist values');
+                this.genericShowToast('Error getting PickList values', error.body.message, 'error');
+
             });
         this.isLoading = false;
-
     }
 
 
@@ -125,10 +133,18 @@ export default class NewProductItem extends LightningElement {
         return serialNumberInput.checkValidity();
     }
 
+    checkWorkTypeInputFields() {
+        let serialNumberValidValue = this.serialNumberValid;
+        let validateQuantityOnHandValue = this.validateQuantityOnHand();
+        let validateSerialNumberValue = this.validateSerialNumber();
+
+        return serialNumberValidValue && validateQuantityOnHandValue && validateSerialNumberValue;
+    }
+
 
     createProductItem() {
 
-        if (this.serialNumberValid && this.validateQuantityOnHand() && this.validateSerialNumber()) {
+            if (this.checkWorkTypeInputFields()) {
             this.isLoading = true;
 
             console.log('this.product2Id ', this.product2Id);
@@ -137,12 +153,16 @@ export default class NewProductItem extends LightningElement {
             console.log('this.quantityUnitOfMeasure ', this.quantityUnitOfMeasure);
             console.log('this.serialNumber ', this.serialNumber);
 
+            this.productItemJsonObject.product2Id = this.product2Id;
+            this.productItemJsonObject.locationId = this.locationId;
+            this.productItemJsonObject.quantityOnHand = this.quantityOnHand;
+            this.productItemJsonObject.quantityUnitOfMeasure = this.quantityUnitOfMeasure;
+            this.productItemJsonObject.serialNumber = this.serialNumber;
+
+            this.paramsJSONString = JSON.stringify(this.productItemJsonObject);
+
             createProductItemApexMethod({
-                product2Id: this.product2Id,
-                locationId: this.location,
-                quantityOnHand: this.quantityOnHand,
-                quantityUnitOfMeasure: this.quantityUnitOfMeasure,
-                SerialNumber: this.serialNumber
+                paramsJSONString: this.paramsJSONString
             })
                 .then(result => {
                     console.log(result);
@@ -162,10 +182,4 @@ export default class NewProductItem extends LightningElement {
         }
 
     }
-
-    /*  returnToNewWorkTypeComponent() {
-          this.showNewWorkTypeComponent = true;
-          this.showNewProductItemComponent = false;
-      }
-  */
 }

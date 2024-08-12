@@ -108,12 +108,6 @@ public with sharing class ServletJSONWrapperPlay {
 
         System.debug(JSON.serializePretty(servletJSONWrapper,true));
 
-//        useJSP
-
-      //  Boolean useJSP = servletJSONWrapper.web_app.servlet[0].init_param.useJSP;
-    //    System.debug('useJSP =' + useJSP);
-
-
         System.debug(servletJSONWrapper.web_app.servlet.size());
         System.debug('adminGroupId: ' + servletJSONWrapper.web_app.servlet[servletJSONWrapper.web_app.servlet.size()-1].init_param.adminGroupID);
     }

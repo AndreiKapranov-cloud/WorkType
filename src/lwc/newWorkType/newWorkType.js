@@ -1,5 +1,5 @@
 import {LightningElement} from 'lwc';
-import getDurationTypePicklistValues from '@salesforce/apex/WorkTypeController.getDurationTypePicklistValues';
+import getPicklistValuesUsingApex from '@salesforce/apex/BaseComponentController.getPicklistValuesUsingApex';
 import createWorkTypeApexMethod from '@salesforce/apex/WorkTypeController.createWorkTypeApexMethod';
 import {genericShowToast} from "c/utils";
 
@@ -9,26 +9,21 @@ export default class NewWorkType extends LightningElement {
     workTypeName;
     picklistValues = [];
     shouldAutoCreateSvcAppt = false;
-    showNewWorkTypeComponent = true;
-    showNewSkillRequirementComponent = false;
     workTypeRecordId;
     durationType = '';
-    disableBtn = false;
     workTypeNameValid = false;
-
-
-
-
+    paramsJSONString = [];
+    workTypeJsonObject = {};
 
     displayNewSkillRequirementInBase() {
-       this.dispatchEvent(new CustomEvent('displaynewskillrequirementinbase', {
-         detail: {
-             'workTypeRecordId':this.workTypeRecordId,
-             'workTypeName':this.workTypeName ,
-             'workTypeObject':this.workTypeObject
-         }
-       }));
-
+        this.dispatchEvent(new CustomEvent('whichcomponenttodisplay', {
+            detail: {
+                'componentToDisplay': 'NewSkillRequirement',
+                'workTypeRecordId': this.workTypeRecordId,
+                'workTypeName': this.workTypeName,
+                'workTypeObject': this.workTypeObject
+            }
+        }));
     }
 
 
@@ -57,7 +52,6 @@ export default class NewWorkType extends LightningElement {
         console.log(this.name.includes(` `));
         const isWhitespaceString = str => !str.replace(/\s/g, '').length;
 
-        //   this.name.includes(` `) ||
         if (isWhitespaceString(this.name) || this.name === '') {
             target.setCustomValidity('Complete this field.');
             this.workTypeNameValid = false;
@@ -89,7 +83,10 @@ export default class NewWorkType extends LightningElement {
 
     connectedCallback() {
 
-        getDurationTypePicklistValues()
+        getPicklistValuesUsingApex(({
+            sObjectType: 'WorkType',
+            field: 'DurationType'
+        }))
             .then(result => {
                 this.picklistValues = result;
                 console.log('this.picklistValues: ', this.picklistValues);
@@ -100,6 +97,7 @@ export default class NewWorkType extends LightningElement {
                 this.genericShowToast('Error getting PickList values', error.body.message, 'error');
 
             });
+
         this.isLoading = false;
     }
 
@@ -112,22 +110,23 @@ export default class NewWorkType extends LightningElement {
     }
 
     createWorkType() {
-        // console.log('validateEstimatedDuration :' + this.validateEstimatedDuration());
-        // console.log('validateDurationType :' + this.validateDurationType());
-        // console.log('validateWorkTypeName :' + this.validateWorkTypeName());
-        // console.log('workTypeNameValid :' + this.workTypeNameValid);
-        console.log(this.checkWorkTypeInputFields())
+
         if (this.checkWorkTypeInputFields()) {
             this.isLoading = true;
+            this.workTypeJsonObject.workTypeName = this.name;
+            this.workTypeJsonObject.description = this.description;
+            this.workTypeJsonObject.estimatedDuration = this.estimatedDuration;
+            this.workTypeJsonObject.durationType = this.durationType;
+            this.workTypeJsonObject.shouldAutoCreateSvcAppt = this.shouldAutoCreateSvcAppt;
+            this.paramsJSONString = JSON.stringify(this.workTypeJsonObject);
+
             console.log('createWorkType');
             console.log('estimated duration =' + this.estimatedDuration);
+
+
             createWorkTypeApexMethod(
                 {
-                    workTypeName: this.name,
-                    description: this.description,
-                    estimatedDuration: this.estimatedDuration,
-                    durationType: this.durationType,
-                    shouldAutoCreateSvcAppt: this.shouldAutoCreateSvcAppt
+                    paramsJSONString: this.paramsJSONString
                 })
                 .then(result => {
                     console.log(result);
@@ -139,16 +138,12 @@ export default class NewWorkType extends LightningElement {
                     console.log('workTypeObject = ' + this.workTypeObject);
 
                     console.log('record.Name = ' + result.Name);
-                    // this.isLoaded = true;
                     this.genericShowToast('Success!', 'Work Type Record is created Successfully!', 'success');
-                    // this.showNewWorkTypeComponent = false;
-                    // this.showNewSkillRequirementComponent = true;
                     this.displayNewSkillRequirementInBase();
                 })
                 .catch(error => {
                     console.log('error createWorkType');
                     console.log(error);
-                    // this.isLoaded = true;
                     this.genericShowToast('Error creating Work Type.', error.body.message, 'error');
                 }).finally(
                 () => {

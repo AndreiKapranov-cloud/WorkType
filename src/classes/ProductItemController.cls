@@ -3,25 +3,7 @@
  */
 
 public with sharing class ProductItemController {
-    @AuraEnabled(cacheable=true)
-    public static List<Map<String, String>> getQuantityUnitOfMeasurePicklistValues() {
 
-        List<Map<String, String>> values = new List<Map<String, String>>();
-        try {
-            List<Schema.PicklistEntry> entries = ProductItem.QuantityUnitOfMeasure.getDescribe().getPicklistValues();
-
-            for (Schema.PicklistEntry entry : entries) {
-                Map<String, String> valueMap = new Map<String, String>();
-                valueMap.put('label', entry.getLabel());
-                valueMap.put('value', entry.getValue());
-                values.add(valueMap);
-            }
-        } catch (Exception e) {
-            System.debug('The following exception has occurred: ' + e.getMessage());
-            throw new AuraHandledException('The following exception has occurred: ' + e.getMessage());
-        }
-        return values;
-    }
     @AuraEnabled(cacheable=true)
     public static List<Schema.Location> getLocations() {
         List<Schema.Location> locationsList = new List<Schema.Location>();
@@ -30,7 +12,7 @@ public with sharing class ProductItemController {
             locationsList = [
                     SELECT Id, Name
                     FROM Location
-                    where IsInventoryLocation = true
+                    WHERE IsInventoryLocation = TRUE
             ];
         } catch (Exception e) {
             System.debug('The following exception has occurred: ' + e.getMessage());
@@ -41,11 +23,20 @@ public with sharing class ProductItemController {
 
 
     @AuraEnabled
-    public static ProductItem createProductItemApexMethod(Id product2Id, Id locationId, Decimal quantityOnHand, String quantityUnitOfMeasure, String SerialNumber) {
+    public static ProductItem createProductItemApexMethod(String paramsJSONString) {
 
         ProductItem productItem = new ProductItem();
 
         try {
+            CreateProductItemParamsWrapper wrapper = (CreateProductItemParamsWrapper) JSON.deserialize(paramsJSONString,
+                    CreateProductItemParamsWrapper.class);
+
+            Id product2Id = wrapper.product2Id;
+            Id locationId = wrapper.locationId;
+            Decimal quantityOnHand = wrapper.quantityOnHand;
+            String quantityUnitOfMeasure = wrapper.quantityUnitOfMeasure;
+            String serialNumber = wrapper.serialNumber;
+
             productItem = new ProductItem(Product2Id = product2Id, LocationId = locationId, QuantityOnHand = quantityOnHand, QuantityUnitOfMeasure = quantityUnitOfMeasure,
                     SerialNumber = serialNumber);
             insert productItem;

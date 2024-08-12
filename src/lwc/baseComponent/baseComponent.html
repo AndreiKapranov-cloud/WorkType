@@ -1,0 +1,32 @@
+<!--
+ - Created by andrey on 8/9/24.
+ -->
+
+
+<template>
+    <lightning-card>
+        <div class="slds-text-heading_large">
+            <div class="slds-text-align_center">{componentName}</div>
+        </div>
+        <div class="slds-m-around_medium">
+            <div class="slds-border_bottom slds-m-top_large"></div>
+        </div>
+        <template lwc:if={displayNewWorkTypeComponent}>
+            <c-new-work-type onwhichcomponenttodisplay={handleWhichComponentToDisplay}></c-new-work-type>
+        </template>
+        <template lwc:if={displayNewSkillRequirementComponent}>
+            <c-new-skill-requirement onwhichcomponenttodisplay={handleWhichComponentToDisplay}
+                                     work-type-record-id={workTypeRecordId}
+                                     work-type-name={workTypeName}
+                                     work-type-object={workTypeObject}></c-new-skill-requirement>
+        </template>
+        <template lwc:if={displayNewProductRequiredComponent}>
+            <c-new-product-required onwhichcomponenttodisplay={handleWhichComponentToDisplay}
+                                    work-type-name={workTypeName}
+                                    work-type-record-id={workTypeRecordId}></c-new-product-required>
+        </template>
+        <template lwc:if={displayNewProductItemComponent}>
+            <c-new-product-item onwhichcomponenttodisplay={handleWhichComponentToDisplay}></c-new-product-item>
+        </template>
+    </lightning-card>
+</template>

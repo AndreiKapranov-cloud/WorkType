@@ -16,13 +16,21 @@ public with sharing class SkillRequirementController {
         }
         return skillsList;
     }
-    @AuraEnabled
-    public static SkillRequirement createSkillRequirementApexMethod(Id relatedRecordId, Id skillId, Decimal skillLevel) {
 
+
+    @AuraEnabled
+    public static SkillRequirement createSkillRequirementApexMethod(String paramsJSONString) {
 
         SkillRequirement skillRequirement = new SkillRequirement();
 
         try {
+            CreateSkillRequirementParamsWrapper wrapper = (CreateSkillRequirementParamsWrapper) JSON.deserialize(paramsJSONString,
+                    CreateSkillRequirementParamsWrapper.class);
+
+            Id relatedRecordId = wrapper.relatedRecordId;
+            Id skillId = wrapper.skillId;
+            Decimal skillLevel = wrapper.skillLevel;
+
             skillRequirement = new SkillRequirement(RelatedRecordId = relatedRecordId, SkillId = skillId, SkillLevel = skillLevel);
             insert skillRequirement;
 
@@ -32,4 +40,5 @@ public with sharing class SkillRequirementController {
         }
         return skillRequirement;
     }
+
 }

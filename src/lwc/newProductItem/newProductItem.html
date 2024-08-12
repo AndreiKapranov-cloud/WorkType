@@ -1,109 +1,86 @@
 <template>
-    <template lwc:if={showNewProductItemComponent}>
-        <lightning-card>
-            <div if:false={isLoading}>
+    <div lwc:if={isLoading} class="style-of-spinner">
+        <lightning-spinner variant="base" size="medium"></lightning-spinner>
+    </div>
+    <div lwc:else>
+        <div class="slds-grid slds-wrap">
+            <div class="slds-col slds-size_1-of-2">
+                <div class="slds-m-horizontal_large">
+                    <label class="slds-form-element__label"><abbr class="slds-required"
+                                                                  title="required">*</abbr>Product
+                        Name</label>
+                    <div class="slds-form-element__control">
+                        <div class="slds-select_container">
+                            <select class="slds-select" data-id="product2" name="product2"
+                                    onchange={handleProduct2IdChange} required="">
+                                <template for:each={product2s} for:item="product2">
 
-                <div class="slds-text-heading_large">
-                    <div class="slds-text-align_center">New Product Item</div>
-                </div>
+                                    <option key={product2.Id} value={product2.Id}>{product2.Name}
+                                    </option>
 
-                <div class="slds-m-around_medium">
-                    <div class="slds-border_bottom"></div>
-                </div>
-
-                <div class="slds-grid slds-wrap">
-                    <div class="slds-col slds-size_1-of-2">
-                        <div class="slds-m-horizontal_large">
-                            <label class="slds-form-element__label"><abbr class="slds-required"
-                                                                          title="required">*</abbr>Product
-                                Name</label>
-                            <div class="slds-form-element__control">
-                                <div class="slds-select_container">
-                                    <select class="slds-select" data-id="product2" name="product2"
-                                            onchange={handleProduct2IdChange} required="">
-                                        <template for:each={product2s} for:item="product2">
-
-                                            <option key={product2.Id} value={product2.Id}>{product2.Name}
-                                            </option>
-
-                                        </template>
-                                    </select>
-                                </div>
-                            </div>
+                                </template>
+                            </select>
                         </div>
                     </div>
-                    <div class="slds-col slds-size_1-of-2">
-                        <div class="slds-m-horizontal_large">
-                            <label class="slds-form-element__label"><abbr class="slds-required"
-                                                                          title="required">*</abbr>Location</label>
-                            <div class="slds-form-element__control">
-                                <div class="slds-select_container">
-                                    <select class="slds-select" data-id="location" name="location"
-                                            onchange={handleLocationChange} required="">
-                                        <template for:each={locations} for:item="location">
-
-                                            <option key={location.Id} value={location.Id}>{location.Name}
-                                            </option>
-
-                                        </template>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-
-                <div class="slds-grid slds-wrap">
-                    <div class="slds-col slds-size_1-of-2">
-                        <div class="slds-m-horizontal_large">
-                            <lightning-input name="quantityOnHand" label="Quantity On Hand"
-                                             onchange={handleQuantityOnHandChange}
-                                             required lwc:ref="quantityOnHand" type="number"></lightning-input>
-                        </div>
-                    </div>
-                    <div class="slds-col slds-size_1-of-2">
-                        <div class="slds-m-horizontal_large">
-                            <lightning-combobox
-                                    options={picklistValues} label="Quantity Unit Of Measure"
-                                    onchange={handleQuantityUnitOfMeasureChange}
-                                    name="quantityUnitOfMeasure"
-                            ></lightning-combobox>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="slds-grid slds-wrap">
-                    <div class="slds-col slds-size_1-of-2">
-                        <div class="slds-m-horizontal_large">
-                            <lightning-input name="serialNumber" label="Serial Number"
-                                             lwc:ref="serialNumber"
-                                             onchange={handleSerialNumberChange}></lightning-input>
-                        </div>
-                    </div>
-                </div>
-                <div class=slds-m-top_large>
-                    <div class="slds-col slds-text-align_right">
-
-                        <lightning-button variant="neutral" label="Back to New Work Type" class="slds-m-right_large"
-                                          onclick={displayNewWorkTypeInBase}></lightning-button>
-                        <lightning-button variant="brand" label="Save" class="slds-m-right_large"
-                                          onclick={createProductItem}></lightning-button>
-                    </div>
-                </div>
-                <div if:true={isLoading} style="height: 400px; position:relative">
-                    <lightning-spinner variant="base" size="medium"></lightning-spinner>
                 </div>
             </div>
-            <div if:true={isLoading} style="height: 400px; position:relative">
-                <lightning-spinner variant="base" size="medium"></lightning-spinner>
+            <div class="slds-col slds-size_1-of-2">
+                <div class="slds-m-horizontal_large">
+                    <label class="slds-form-element__label"><abbr class="slds-required"
+                                                                  title="required">*</abbr>Location</label>
+                    <div class="slds-form-element__control">
+                        <div class="slds-select_container">
+                            <select class="slds-select" data-id="location" name="location"
+                                    onchange={handleLocationChange} required="">
+                                <template for:each={locations} for:item="location">
+
+                                    <option key={location.Id} value={location.Id}>{location.Name}
+                                    </option>
+
+                                </template>
+                            </select>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </lightning-card>
-    </template>
+        </div>
 
-    <template lwc:elseif={showNewWorkTypeComponent}>
+        <div class="slds-grid slds-wrap">
+            <div class="slds-col slds-size_1-of-2">
+                <div class="slds-m-horizontal_large">
+                    <lightning-input name="quantityOnHand" label="Quantity On Hand"
+                                     onchange={handleQuantityOnHandChange}
+                                     required lwc:ref="quantityOnHand" type="number"></lightning-input>
+                </div>
+            </div>
+            <div class="slds-col slds-size_1-of-2">
+                <div class="slds-m-horizontal_large">
+                    <lightning-combobox
+                            options={picklistValues} label="Quantity Unit Of Measure"
+                            onchange={handleQuantityUnitOfMeasureChange}
+                            name="quantityUnitOfMeasure"
+                    ></lightning-combobox>
+                </div>
+            </div>
+        </div>
 
-        <c-new-work-type></c-new-work-type>
+        <div class="slds-grid slds-wrap">
+            <div class="slds-col slds-size_1-of-2">
+                <div class="slds-m-horizontal_large">
+                    <lightning-input name="serialNumber" label="Serial Number"
+                                     onchange={handleSerialNumberChange}
+                                     lwc:ref="serialNumber"></lightning-input>
+                </div>
+            </div>
+        </div>
+        <div class=slds-m-top_large>
+            <div class="slds-col slds-text-align_right">
 
-    </template>
+                <lightning-button variant="neutral" label="Back to New Work Type" class="slds-m-right_large"
+                                  onclick={displayNewWorkTypeInBase}></lightning-button>
+                <lightning-button variant="brand" label="Save" class="slds-m-right_large"
+                                  onclick={createProductItem}></lightning-button>
+            </div>
+        </div>
+    </div>
 </template>

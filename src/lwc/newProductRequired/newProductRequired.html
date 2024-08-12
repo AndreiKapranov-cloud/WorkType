@@ -1,17 +1,8 @@
 <template>
-    <template lwc:if={showNewProductRequiredComponent}>
-        <lightning-card>
-
-            <div if:false={isLoading}>
-
-                <div class="slds-text-heading_large">
-                    <div class="slds-text-align_center">New Product Required</div>
-                </div>
-
-                <div class="slds-m-around_medium">
-                    <div class="slds-border_bottom"></div>
-                </div>
-
+    <div lwc:if={isLoading} class="style-of-spinner">
+        <lightning-spinner variant="base" size="medium"></lightning-spinner>
+    </div>
+            <div lwc:else>
                 <div class="slds-m-horizontal_small">
                     <lightning-input name="workType" label="Parent Record" value={workTypeName} required
                                      read-only></lightning-input>
@@ -61,17 +52,5 @@
                     </div>
                 </div>
             </div>
-            <div if:true={isLoading} style="height: 400px; position:relative">
-                <lightning-spinner variant="base" size="medium"></lightning-spinner>
-            </div>
-
-        </lightning-card>
-    </template>
-
-    <template lwc:elseif={showNewProductItemComponent}>
-        <c-new-product-item></c-new-product-item>
-    </template>
-
-
 
 </template>

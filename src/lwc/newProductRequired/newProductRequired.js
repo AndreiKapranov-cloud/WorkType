@@ -1,9 +1,8 @@
 import {LightningElement, api} from 'lwc';
 import getProduct2s from '@salesforce/apex/ProductRequiredController.getProduct2s';
-import getQuantityUnitOfMeasurePicklistValues
-    from '@salesforce/apex/ProductRequiredController.getQuantityUnitOfMeasurePicklistValues';
 import createProductRequiredApexMethod
     from '@salesforce/apex/ProductRequiredController.createProductRequiredApexMethod';
+import getPicklistValuesUsingApex from '@salesforce/apex/BaseComponentController.getPicklistValuesUsingApex';
 import {genericShowToast} from "c/utils";
 
 export default class NewProductRequired extends LightningElement {
@@ -18,11 +17,19 @@ export default class NewProductRequired extends LightningElement {
     @api workTypeRecordId;
     @api workTypeName;
     isLoading = true;
+    paramsJSONString = [];
+    productRequiredJsonObject = new Object();
 
 
     displayNewProductItemInBase() {
-        this.dispatchEvent(new CustomEvent('displaynewproductiteminbase', {
+        /*   this.dispatchEvent(new CustomEvent('displaynewproductiteminbase', {
+               detail: {
+                   'product2Id': this.product2Id
+               }
+           }));*/
+        this.dispatchEvent(new CustomEvent('whichcomponenttodisplay', {
             detail: {
+                'componentToDisplay': 'NewProductItem',
                 'product2Id': this.product2Id
             }
         }));
@@ -58,17 +65,32 @@ export default class NewProductRequired extends LightningElement {
                 this.genericShowToast('Error getting product2s.', error.body.message, 'error');
             });
 
-
-        getQuantityUnitOfMeasurePicklistValues()
+        getPicklistValuesUsingApex(({
+            sObjectType: 'ProductRequired',
+            field: 'QuantityUnitOfMeasure'
+        }))
             .then(result => {
                 this.picklistValues = result;
                 console.log('this.picklistValues: ', this.picklistValues);
             })
             .catch(error => {
                 console.log(error);
-                console.log('Error getting quantityUnitOfMeasure PickList values');
-                this.genericShowToast('Error getting quantityUnitOfMeasure PickList values', error.body.message, 'error');
+                console.log('error getting QuantityUnitOfMeasure Picklist values');
+                this.genericShowToast('Error getting PickList values', error.body.message, 'error');
+
             });
+
+
+        /*  getQuantityUnitOfMeasurePicklistValues()
+              .then(result => {
+                  this.picklistValues = result;
+                  console.log('this.picklistValues: ', this.picklistValues);
+              })
+              .catch(error => {
+                  console.log(error);
+                  console.log('Error getting quantityUnitOfMeasure PickList values');
+                  this.genericShowToast('Error getting quantityUnitOfMeasure PickList values', error.body.message, 'error');
+              });*/
         this.isLoading = false;
     }
 
@@ -80,25 +102,27 @@ export default class NewProductRequired extends LightningElement {
     }
 
     createProductRequired() {
-        //    console.log('validateQuantityRequired :' + this.validateQuantityRequired());
+
         if (this.validateQuantityRequired()) {
             this.isLoading = true;
+
+            this.productRequiredJsonObject.parentRecordId = this.workTypeRecordId;
+            this.productRequiredJsonObject.product2Id = this.product2Id;
+            this.productRequiredJsonObject.quantityRequired = this.quantityRequired;
+            this.productRequiredJsonObject.quantityUnitOfMeasure = this.quantityUnitOfMeasure;
+
+            this.paramsJSONString = JSON.stringify(this.productRequiredJsonObject);
+
             console.log('quantityUnitOfMeasure = ' + this.quantityUnitOfMeasure);
             console.log('workTypeName = ' + this.workTypeName);
             console.log('final workTypeRecordId for skill req = ' + this.workTypeRecordId);
 
             createProductRequiredApexMethod({
-                parentRecordId: this.workTypeRecordId,
-                product2Id: this.product2Id,
-                quantityRequired: this.quantityRequired,
-                quantityUnitOfMeasure: this.quantityUnitOfMeasure
-
+                paramsJSONString:this.paramsJSONString
             })
                 .then(result => {
                     console.log(result);
                     this.genericShowToast('Success!', 'Product Required Record is created Successfully!', 'success');
-                    // this.showNewProductRequiredComponent = false;
-                    // this.showNewProductItemComponent = true;
                     this.displayNewProductItemInBase()
                 })
                 .catch(error => {

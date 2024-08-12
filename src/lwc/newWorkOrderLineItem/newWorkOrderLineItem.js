@@ -2,8 +2,8 @@ import {LightningElement, api} from 'lwc';
 import getWorkOrderNumberById from '@salesforce/apex/WorkOrderLineItemController.getWorkOrderNumberById';
 import createWorkOrderLineItemApexMethod
     from '@salesforce/apex/WorkOrderLineItemController.createWorkOrderLineItemApexMethod';
-import getStatusPicklistValues from '@salesforce/apex/WorkOrderLineItemController.getStatusPicklistValues';
 import getWorkTypeNameById from '@salesforce/apex/WorkTypeController.getWorkTypeNameById';
+import getPicklistValuesUsingApex from '@salesforce/apex/BaseComponentController.getPicklistValuesUsingApex';
 import {genericShowToast} from "c/utils";
 
 
@@ -13,13 +13,16 @@ export default class NewWorkOrderLineItem extends LightningElement {
     statusPicklistValues = [];
     status;
     workOrderNumber;
-    @api workOrderRecordId;
+    @api workOrderId;
     @api workTypeId;
     workTypeName;
     description;
     isLoading = true;
     showNewWorkOrderLineItemComponent = true;
     showNewWorkOrderComponent = false;
+    workOrderLineItemJsonObject = new Object();
+    paramsJSONString = [];
+
 
     handleStatusChange(e) {
         this.status = e.target.value;
@@ -48,7 +51,7 @@ export default class NewWorkOrderLineItem extends LightningElement {
             });
 
         getWorkOrderNumberById({
-            workOrderId: this.workOrderRecordId
+            workOrderId: this.workOrderId
         })
             .then(result => {
                 this.workOrderNumber = result.WorkOrderNumber;
@@ -61,15 +64,20 @@ export default class NewWorkOrderLineItem extends LightningElement {
                 this.genericShowToast('Error getting workOrderNumber', error.body.message, 'error');
             });
 
-        getStatusPicklistValues()
+
+        getPicklistValuesUsingApex(({
+            sObjectType: 'WorkOrderLineItem',
+            field: 'Status'
+        }))
             .then(result => {
                 this.statusPicklistValues = result;
                 console.log('this.statusPicklistValues: ', this.statusPicklistValues);
             })
             .catch(error => {
-                console.log('error getting statusPicklistValues');
                 console.log(error);
-                this.genericShowToast('Error getting statusPicklistValues', error.body.message, 'error');
+                console.log('error getting Status Picklist values');
+                this.genericShowToast('Error Status PickList values', error.body.message, 'error');
+
             });
 
         this.isLoading = false;
@@ -77,12 +85,17 @@ export default class NewWorkOrderLineItem extends LightningElement {
 
     createWorkOrderLineItem() {
         this.isLoading = true;
+
+        this.workOrderLineItemJsonObject.status = this.status;
+        this.workOrderLineItemJsonObject.WorkOrderId = this.workOrderId;
+        this.workOrderLineItemJsonObject.workTypeId = this.workTypeId;
+        this.workOrderLineItemJsonObject.description = this.description;
+
+        this.paramsJSONString = JSON.stringify(this.workOrderLineItemJsonObject);
+
         createWorkOrderLineItemApexMethod(
             {
-                status: this.status,
-                workOrderId: this.workOrderRecordId,
-                workTypeId: this.workTypeId,
-                description: this.description
+                paramsJSONString: this.paramsJSONString
             })
             .then(result => {
                 console.log(result);

@@ -18,10 +18,20 @@ export default class NewSkillRequirement extends LightningElement {
     showNewSkillRequirementComponent = true;
     showNewProductRequiredComponent = false;
     isLoading = true;
+    skillRequirementJsonObject = new Object();
+    paramsJSONString = [];
+
 
     displayNewProductRequiredInBase() {
-        this.dispatchEvent(new CustomEvent('displaynewproductrequiredinbase', {
+        /*   this.dispatchEvent(new CustomEvent('displaynewproductrequiredinbase', {
+               detail: {
+                   'workTypeName': this.workTypeName,
+                   'workTypeRecordId': this.workTypeRecordId
+               }
+           }));*/
+        this.dispatchEvent(new CustomEvent('whichcomponenttodisplay', {
             detail: {
+                'componentToDisplay': 'NewProductRequired',
                 'workTypeName': this.workTypeName,
                 'workTypeRecordId': this.workTypeRecordId
             }
@@ -29,13 +39,11 @@ export default class NewSkillRequirement extends LightningElement {
     }
 
 
-
-
     validateSkillLevel() {
 
-        let skilllevelInput = this.refs?.skillLevel;
+        let skillLevelInput = this.refs?.skillLevel;
 
-        return skilllevelInput.checkValidity();
+        return skillLevelInput.checkValidity();
     }
 
 
@@ -66,10 +74,17 @@ export default class NewSkillRequirement extends LightningElement {
 
     }
 
+
     createSkillRequirement() {
-        //  console.log('validate :' + this.validateSkillLevel());
+
         if (this.validateSkillLevel()) {
             this.isLoading = true;
+
+            this.skillRequirementJsonObject.relatedRecordId = this.workTypeRecordId;
+            this.skillRequirementJsonObject.skillId = this.skillRequired;
+            this.skillRequirementJsonObject.skillLevel = this.skillLevel;
+
+            this.paramsJSONString = JSON.stringify(this.skillRequirementJsonObject);
 
             console.log('workType Id = ' + this.workTypeRecordId);
             console.log('workType Name = ' + this.workTypeName);
@@ -79,13 +94,10 @@ export default class NewSkillRequirement extends LightningElement {
 
 
             createSkillRequirementApexMethod({
-                relatedRecordId: this.workTypeRecordId,
-                skillId: this.skillRequired,
-                skillLevel: this.skillLevel
+                paramsJSONString: this.paramsJSONString
             })
                 .then(result => {
                     console.log(result);
-                    this.isLoaded = true;
                     this.genericShowToast('Success!', 'Skill Requirement Record is created Successfully!', 'success');
                     // this.showNewSkillRequirementComponent = false;
                     // this.showNewProductRequiredComponent = true;
@@ -94,7 +106,6 @@ export default class NewSkillRequirement extends LightningElement {
                 .catch(error => {
                     console.log('Error creating Skill Requirement Record');
                     console.log(error);
-                    this.isLoaded = true;
                     this.genericShowToast('Error creating Skill Requirement Record', error.body.message, 'error');
 
                 })

@@ -1,74 +1,50 @@
 <template>
-    <template lwc:if={showNewWorkTypeComponent}>
 
+    <div lwc:if={isLoading} class="style-of-spinner">
+        <lightning-spinner variant="base" size="medium"></lightning-spinner>
+    </div>
 
-        <lightning-card >
-            <div if:false={isLoading}>
+    <div lwc:else>
+        <div class="slds-m-horizontal_small">
 
-                <div class="slds-text-heading_large">
-                    <div class="slds-text-align_center">New Work Type</div>
-                </div>
+            <lightning-input type=”text” name="name" label="Work Type Name"
+                             onchange={handleWorkTypeNameChange}
+                             lwc:ref="workTypeName" required></lightning-input>
 
-                <div class="slds-m-around_medium">
-                    <div class="slds-border_bottom slds-m-top_large"></div>
-                </div>
+        </div>
+        <div class="slds-m-horizontal_small">
 
-                <div class="slds-m-horizontal_small">
+            <lightning-input name="description" label="Description"
+                             onchange={handleDescriptionChange}></lightning-input>
+        </div>
+        <div class="slds-m-horizontal_small">
 
-                    <lightning-input type=”text” name="name" label="Work Type Name"
-                                     onchange={handleWorkTypeNameChange}
-                                     lwc:ref="workTypeName" required></lightning-input>
+            <lightning-input name="estimatedDuration" label="Estimated Duration"
+                             onchange={handleEstimatedDurationChange}
+                             lwc:ref="estimatedDuration" type="number" required></lightning-input>
+        </div>
 
-                </div>
-                <div class="slds-m-horizontal_small">
+        <div class="slds-m-horizontal_small">
+            <lightning-combobox
+                    options={picklistValues} label="Duration Type" onchange={handleDurationTypeChange}
+                    name="durationType"
+                    lwc:ref="durationType" required
+            ></lightning-combobox>
+        </div>
 
-                    <lightning-input name="description" label="Description"
-                                     onchange={handleDescriptionChange}></lightning-input>
-                </div>
-                <div class="slds-m-horizontal_small">
+        <div class="slds-m-around_medium">
+            <lightning-input name="shouldAutoCreateSvcAppt" label="Auto-Create Service Appointment"
+                             onchange={handleshouldAutoCreateSvcApptChange} class="slds-p-left"
+                             type="checkbox">
+            </lightning-input>
+        </div>
 
-                    <lightning-input name="estimatedDuration" label="Estimated Duration"
-                                     onchange={handleEstimatedDurationChange}
-                                     lwc:ref="estimatedDuration" type="number" required></lightning-input>
-                </div>
-
-                <div class="slds-m-horizontal_small">
-                    <lightning-combobox
-                            options={picklistValues} label="Duration Type" onchange={handleDurationTypeChange}
-                            name="durationType"
-                            lwc:ref="durationType" required
-                    ></lightning-combobox>
-                </div>
-
-                <div class="slds-m-around_medium">
-                    <lightning-input name="shouldAutoCreateSvcAppt" label="Auto-Create Service Appointment"
-                                     onchange={handleshouldAutoCreateSvcApptChange} class="slds-p-left"
-                                     type="checkbox">
-                    </lightning-input>
-                </div>
-
-                <div class="slds-p-right_medium">
-                    <div class="slds-clearfix">
-                        <lightning-button label="Next" variant="brand" onclick={createWorkType}
-                                          disabled={disableBtn} class="slds-float_right">
-                        </lightning-button>
-                    </div>
-                </div>
-
-
+        <div class="slds-p-right_medium">
+            <div class="slds-clearfix">
+                <lightning-button label="Next" variant="brand" onclick={createWorkType}
+                                 class="slds-float_right">
+                </lightning-button>
             </div>
-            <div if:true={isLoading} style="height: 400px; position:relative">
-                <lightning-spinner variant="base" size="medium"></lightning-spinner>
-            </div>
-
-        </lightning-card>
-    </template>
-    <template lwc:elseif={showNewSkillRequirementComponent}>
-
-        <c-new-skill-requirement work-type-record-id={workTypeRecordId}
-                                 work-type-name={workTypeName}
-                                 work-type-object={workTypeObject}></c-new-skill-requirement>
-
-    </template>
-
+        </div>
+    </div>
 </template>

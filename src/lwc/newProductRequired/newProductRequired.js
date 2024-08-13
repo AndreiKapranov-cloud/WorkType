@@ -1,35 +1,32 @@
 import {LightningElement, api} from 'lwc';
-import getProduct2s from '@salesforce/apex/ProductRequiredController.getProduct2s';
 import createProductRequiredApexMethod
     from '@salesforce/apex/ProductRequiredController.createProductRequiredApexMethod';
 import getPicklistValuesUsingApex from '@salesforce/apex/BaseComponentController.getPicklistValuesUsingApex';
+import getRecordsGenericApex
+    from '@salesforce/apex/BaseComponentController.getRecordsGenericApex';
 import {genericShowToast} from "c/utils";
 
 export default class NewProductRequired extends LightningElement {
     genericShowToast = genericShowToast.bind(this);
     picklistValues = [];
-    showNewProductRequiredComponent = true;
-    showNewProductItemComponent = false;
-    product2s = [];
     product2Id;
     quantityRequired;
     quantityUnitOfMeasure;
+    product2s = [];
     @api workTypeRecordId;
     @api workTypeName;
     isLoading = true;
     paramsJSONString = [];
-    productRequiredJsonObject = new Object();
+    productRequiredJsonObject = {};
+    static renderMode = "light";
+    getProduct2RecordsParamsJsonObject = {};
 
 
     displayNewProductItemInBase() {
-        /*   this.dispatchEvent(new CustomEvent('displaynewproductiteminbase', {
-               detail: {
-                   'product2Id': this.product2Id
-               }
-           }));*/
         this.dispatchEvent(new CustomEvent('whichcomponenttodisplay', {
             detail: {
                 'componentToDisplay': 'NewProductItem',
+                'product2s': this.product2s,
                 'product2Id': this.product2Id
             }
         }));
@@ -48,9 +45,21 @@ export default class NewProductRequired extends LightningElement {
         this.quantityUnitOfMeasure = e.target.value;
     }
 
+
     connectedCallback() {
 
-        getProduct2s()
+        this.getProduct2RecordsParamsJsonObject.fieldToQuery = 'Name';
+        this.getProduct2RecordsParamsJsonObject.sObjectName = 'Product2';
+        this.getProduct2RecordsParamsJsonObject.nameOfFieldAfterWhereClause = 'Description';
+        this.getProduct2RecordsParamsJsonObject.valueOfFieldAfterWhereClause = 'Field Service';
+
+        this.getProduct2RecordsParamsJSONString = JSON.stringify(this.getProduct2RecordsParamsJsonObject);
+
+        console.log(this.getProduct2RecordsParamsJSONString);
+        getRecordsGenericApex(
+            {
+                getRecordsParamsJSONString: this.getProduct2RecordsParamsJSONString
+            })
             .then(result => {
                 this.product2s = result;
                 this.product2Id = this.product2s[0].Id;
@@ -64,6 +73,7 @@ export default class NewProductRequired extends LightningElement {
                 console.log('Error getting product2s.');
                 this.genericShowToast('Error getting product2s.', error.body.message, 'error');
             });
+
 
         getPicklistValuesUsingApex(({
             sObjectType: 'ProductRequired',
@@ -80,17 +90,6 @@ export default class NewProductRequired extends LightningElement {
 
             });
 
-
-        /*  getQuantityUnitOfMeasurePicklistValues()
-              .then(result => {
-                  this.picklistValues = result;
-                  console.log('this.picklistValues: ', this.picklistValues);
-              })
-              .catch(error => {
-                  console.log(error);
-                  console.log('Error getting quantityUnitOfMeasure PickList values');
-                  this.genericShowToast('Error getting quantityUnitOfMeasure PickList values', error.body.message, 'error');
-              });*/
         this.isLoading = false;
     }
 
@@ -118,7 +117,7 @@ export default class NewProductRequired extends LightningElement {
             console.log('final workTypeRecordId for skill req = ' + this.workTypeRecordId);
 
             createProductRequiredApexMethod({
-                paramsJSONString:this.paramsJSONString
+                paramsJSONString: this.paramsJSONString
             })
                 .then(result => {
                     console.log(result);

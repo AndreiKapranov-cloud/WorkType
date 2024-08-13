@@ -1,9 +1,9 @@
 import {LightningElement, api} from 'lwc';
-import getWorkOrderNumberById from '@salesforce/apex/WorkOrderLineItemController.getWorkOrderNumberById';
 import createWorkOrderLineItemApexMethod
     from '@salesforce/apex/WorkOrderLineItemController.createWorkOrderLineItemApexMethod';
-import getWorkTypeNameById from '@salesforce/apex/WorkTypeController.getWorkTypeNameById';
 import getPicklistValuesUsingApex from '@salesforce/apex/BaseComponentController.getPicklistValuesUsingApex';
+import getRecordsGenericApex
+    from '@salesforce/apex/BaseComponentController.getRecordsGenericApex';
 import {genericShowToast} from "c/utils";
 
 
@@ -20,8 +20,11 @@ export default class NewWorkOrderLineItem extends LightningElement {
     isLoading = true;
     showNewWorkOrderLineItemComponent = true;
     showNewWorkOrderComponent = false;
-    workOrderLineItemJsonObject = new Object();
+    workOrderLineItemJsonObject = {};
     paramsJSONString = [];
+    static renderMode = "light";
+    getRecordsParamsWorkTypeJsonObject = {};
+    getRecordsParamsWorkOrderJsonObject = {};
 
 
     handleStatusChange(e) {
@@ -34,11 +37,20 @@ export default class NewWorkOrderLineItem extends LightningElement {
 
     connectedCallback() {
 
-        getWorkTypeNameById({
-            id: this.workTypeId
-        })
-            .then(result => {
+        this.getRecordsParamsWorkTypeJsonObject.fieldToQuery = 'Name';
+        this.getRecordsParamsWorkTypeJsonObject.sObjectName = 'WorkType';
+        this.getRecordsParamsWorkTypeJsonObject.nameOfFieldAfterWhereClause = 'Id';
+        this.getRecordsParamsWorkTypeJsonObject.valueOfFieldAfterWhereClause = this.workTypeId.toString();
 
+        this.getRecordsParamsWorkTypeJSONString = JSON.stringify(this.getRecordsParamsWorkTypeJsonObject);
+
+        console.log(this.getRecordsParamsWorkTypeJSONString);
+        getRecordsGenericApex(
+            {
+                getRecordsParamsJSONString: this.getRecordsParamsWorkTypeJSONString
+            })
+            .then(result => {
+                console.log('this.workTypeName ressssult ', result);
                 this.workTypeName = result[0].Name;
 
                 console.log('this.workTypeName: ', this.workTypeName);
@@ -50,12 +62,29 @@ export default class NewWorkOrderLineItem extends LightningElement {
                 this.genericShowToast('Error getting workTypeName', error.body.message, 'error');
             });
 
-        getWorkOrderNumberById({
-            workOrderId: this.workOrderId
-        })
+
+        this.getRecordsParamsWorkOrderJsonObject.fieldToQuery = 'WorkOrderNumber';
+        this.getRecordsParamsWorkOrderJsonObject.sObjectName = 'WorkOrder';
+        this.getRecordsParamsWorkOrderJsonObject.nameOfFieldAfterWhereClause = 'Id';
+        this.getRecordsParamsWorkOrderJsonObject.valueOfFieldAfterWhereClause = this.workOrderId.toString();
+
+        this.getRecordsParamsWorkOrderJSONString = JSON.stringify(this.getRecordsParamsWorkOrderJsonObject);
+
+        console.log('work order json string: ' + this.getRecordsParamsWorkOrderJSONString);
+        getRecordsGenericApex(
+            {
+                getRecordsParamsJSONString: this.getRecordsParamsWorkOrderJSONString
+            })
             .then(result => {
-                this.workOrderNumber = result.WorkOrderNumber;
-                console.log('this.workOrderNumber: ', this.workOrderNumber);
+
+                console.log('this.order rrresult: ', result);
+
+                function getValueByKey(object, row) {
+                    return object[row];
+                }
+
+                console.log(getValueByKey(result[0], "WorkOrderNumber"));
+                this.workOrderNumber = getValueByKey(result[0], "WorkOrderNumber");
 
             })
             .catch(error => {
@@ -99,7 +128,6 @@ export default class NewWorkOrderLineItem extends LightningElement {
             })
             .then(result => {
                 console.log(result);
-                console.log('ID: ', result.Id);
                 this.workOrderLineItemObject = result;
                 console.log('workOrderLineItemObject = ' + this.workOrderLineItemObject);
                 this.genericShowToast('Success!', 'Work Order Line Item Record is created Successfully!', 'success');

@@ -1,30 +1,32 @@
-import {LightningElement} from 'lwc';
-import getLocations from '@salesforce/apex/ProductItemController.getLocations';
+import {LightningElement, api} from 'lwc';
+
+import getLocations
+    from '@salesforce/apex/ProductItemController.getLocations';
 import createProductItemApexMethod
     from '@salesforce/apex/ProductItemController.createProductItemApexMethod';
-import getProduct2s from '@salesforce/apex/ProductRequiredController.getProduct2s';
 import getPicklistValuesUsingApex from '@salesforce/apex/BaseComponentController.getPicklistValuesUsingApex';
+import getRecordsGenericApex
+    from '@salesforce/apex/BaseComponentController.getRecordsGenericApex';
 import {genericShowToast} from "c/utils";
 
 export default class NewProductItem extends LightningElement {
     genericShowToast = genericShowToast.bind(this);
     locationId;
-
-    product2Id;
-
+    getRecordsParamsJsonObject = {};
+    static renderMode = "light";
     locations = [];
-    product2s = [];
     picklistValues = [];
     quantityOnHand;
     quantityUnitOfMeasure;
     serialNumber;
     serialNumberValid = false;
-    showNewProductItemComponent = true;
-    showNewWorkTypeComponent = false;
     isLoading = true;
     paramsJSONString = [];
-    productItemJsonObject = new Object();
-
+    productItemJsonObject = {};
+    nameOfFieldAfterWhereClause = '';
+    valueOfFieldAfterWhereClause = '';
+    getProductItemRecordsParamsJsonObject = {};
+    duplicatedProductItem;
 
     displayNewWorkTypeInBase() {
 
@@ -70,9 +72,40 @@ export default class NewProductItem extends LightningElement {
     }
 
     connectedCallback() {
+        console.log('product2ssss :' + this.product2s);
+         getLocations()
+             .then(result => {
+                 this.locations = result;
+                 this.locationId = this.locations[0].Id;
 
-        getLocations()
+                 console.log('this.locations: ', this.locations);
+                 console.log('this.location: ', this.locationId);
+
+             })
+             .catch(error => {
+                 console.log(error);
+                 console.log('Error getting locations.');
+                 this.genericShowToast('Error getting locations.', error.body.message, 'error');
+             });
+
+
+/*
+
+        this.getRecordsParamsJsonObject.fieldToQuery = 'Name';
+        this.getRecordsParamsJsonObject.sObjectName = 'Location';
+        this.getRecordsParamsJsonObject.nameOfFieldAfterWhereClause = 'IsInventoryLocation';
+        this.getRecordsParamsJsonObject.valueOfFieldAfterWhereClause = true;
+
+        this.getRecordsParamsJSONString = JSON.stringify(this.getRecordsParamsJsonObject);
+
+        console.log(this.getRecordsParamsJSONString);
+        getRecordsGenericApex(
+            {
+                getRecordsParamsJSONString: this.getRecordsParamsJSONString
+            })
             .then(result => {
+                console.log('this.locationssssssssssss: ', result);
+
                 this.locations = result;
                 this.locationId = this.locations[0].Id;
 
@@ -85,23 +118,8 @@ export default class NewProductItem extends LightningElement {
                 console.log('Error getting locations.');
                 this.genericShowToast('Error getting locations.', error.body.message, 'error');
             });
+*/
 
-
-        getProduct2s()
-            .then(result => {
-                this.product2s = result;
-                this.product2Id = this.product2s[0].Id;
-
-                console.log('this.product2s: ', this.product2s);
-                console.log('this.product2Id: ', this.product2Id);
-
-            })
-            .catch(error => {
-                console.log(error);
-                console.log('Error getting product2s.');
-                console.log(error);
-                this.genericShowToast('Error getting product2s.', error.body.message, 'error');
-            });
 
         getPicklistValuesUsingApex(({
             sObjectType: 'ProductItem',
@@ -117,6 +135,33 @@ export default class NewProductItem extends LightningElement {
                 this.genericShowToast('Error getting PickList values', error.body.message, 'error');
 
             });
+
+        this.getRecordsParamsJsonObject.fieldToQuery = 'Name';
+        this.getRecordsParamsJsonObject.sObjectName = 'Product2';
+        this.getRecordsParamsJsonObject.nameOfFieldAfterWhereClause = 'Description';
+        this.getRecordsParamsJsonObject.valueOfFieldAfterWhereClause = 'Field Service';
+
+        this.getRecordsParamsJSONString = JSON.stringify(this.getRecordsParamsJsonObject);
+
+        console.log(this.getRecordsParamsJSONString);
+        getRecordsGenericApex(
+            {
+                getRecordsParamsJSONString: this.getRecordsParamsJSONString
+            })
+            .then(result => {
+                this.product2s = result;
+                this.product2Id = this.product2s[0].Id;
+
+                console.log('this.product2s: ', this.product2s);
+                console.log('this.productRequired: ', this.productRequired);
+
+            })
+            .catch(error => {
+                console.log(error);
+                console.log('Error getting product2s.');
+                this.genericShowToast('Error getting product2s.', error.body.message, 'error');
+            });
+
         this.isLoading = false;
     }
 
@@ -141,10 +186,51 @@ export default class NewProductItem extends LightningElement {
         return serialNumberValidValue && validateQuantityOnHandValue && validateSerialNumberValue;
     }
 
+    /*checkIfSerialNumberDuplicated() {
+
+        this.getProductItemRecordsParamsJsonObject.fieldToQuery = 'Id';
+        this.getProductItemRecordsParamsJsonObject.sObjectName = 'ProductItem';
+        this.getProductItemRecordsParamsJsonObject.nameOfFieldAfterWhereClause = 'SerialNumber';
+        this.getProductItemRecordsParamsJsonObject.valueOfFieldAfterWhereClause = this.serialNumber.toString();
+
+        this.getProductItemRecordsParamsJSONString = JSON.stringify(this.getProductItemRecordsParamsJsonObject);
+
+        console.log(this.getProductItemRecordsParamsJSONString);
+        getRecordsGenericApex(
+            {
+                getRecordsParamsJSONString: this.getProductItemRecordsParamsJSONString
+            })
+            .then(result => {
+                this.duplicatedProductItem = result[0];
+
+                console.log('this.duplicatedProductItemmmmmmmm: ', this.duplicatedProductItem);
+
+            })
+            .catch(error => {
+                console.log(error);
+                console.log('Error getting ProductItem.');
+                this.genericShowToast('Error getting ProductItem.', error.body.message, 'error');
+            });
+        if (this.duplicatedProductItem) {
+            this.genericShowToast('Serial Number Duplicated.', 'Please, insert another number', 'error');
+            return false;
+        } else {
+            return true;
+        }
+
+    }*/
+
+    /* checkProductItemInput() {
+         let isWorkTypeInputValid = this.checkWorkTypeInputFields();
+         let isSerialNumberNotDuplicated = this.checkIfSerialNumberDuplicated();
+
+        return isWorkTypeInputValid && isSerialNumberNotDuplicated;
+
+     }*/
 
     createProductItem() {
 
-            if (this.checkWorkTypeInputFields()) {
+        if (this.checkWorkTypeInputFields()) {
             this.isLoading = true;
 
             console.log('this.product2Id ', this.product2Id);
@@ -176,10 +262,8 @@ export default class NewProductItem extends LightningElement {
 
                 })
                 .finally(() => this.isLoading = false);
-
         } else {
             this.genericShowToast('Error creating Product Item Record.', 'Please, complete fields properly', 'error');
         }
-
     }
 }

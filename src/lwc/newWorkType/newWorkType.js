@@ -14,6 +14,7 @@ export default class NewWorkType extends LightningElement {
     workTypeNameValid = false;
     paramsJSONString = [];
     workTypeJsonObject = {};
+    static renderMode = "light";
 
     displayNewSkillRequirementInBase() {
         this.dispatchEvent(new CustomEvent('whichcomponenttodisplay', {
@@ -118,10 +119,10 @@ export default class NewWorkType extends LightningElement {
             this.workTypeJsonObject.estimatedDuration = this.estimatedDuration;
             this.workTypeJsonObject.durationType = this.durationType;
             this.workTypeJsonObject.shouldAutoCreateSvcAppt = this.shouldAutoCreateSvcAppt;
+
             this.paramsJSONString = JSON.stringify(this.workTypeJsonObject);
 
-            console.log('createWorkType');
-            console.log('estimated duration =' + this.estimatedDuration);
+            console.log('createWorkType:'+ this.paramsJSONString);
 
 
             createWorkTypeApexMethod(

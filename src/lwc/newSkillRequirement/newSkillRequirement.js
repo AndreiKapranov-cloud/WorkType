@@ -1,12 +1,14 @@
 import {LightningElement, api} from 'lwc';
 import createSkillRequirementApexMethod
     from '@salesforce/apex/SkillRequirementController.createSkillRequirementApexMethod';
-import getSkills from '@salesforce/apex/SkillRequirementController.getSkills';
+import getRecordsGenericApex
+    from '@salesforce/apex/BaseComponentController.getRecordsGenericApex';
+
 import {genericShowToast} from "c/utils";
 
 export default class NewSkillRequirement extends LightningElement {
 
-
+    static renderMode = "light";
     genericShowToast = genericShowToast.bind(this);
     skills = [];
     skillRequired;
@@ -15,20 +17,16 @@ export default class NewSkillRequirement extends LightningElement {
     @api workTypeObject;
     @api workTypeName;
     error;
-    showNewSkillRequirementComponent = true;
-    showNewProductRequiredComponent = false;
     isLoading = true;
-    skillRequirementJsonObject = new Object();
+    skillRequirementJsonObject = {};
     paramsJSONString = [];
+    getRecordsParamsJsonObject = {};
+    nameOfFieldAfterWhereClause = '';
+    valueOfFieldAfterWhereClause = '';
 
 
     displayNewProductRequiredInBase() {
-        /*   this.dispatchEvent(new CustomEvent('displaynewproductrequiredinbase', {
-               detail: {
-                   'workTypeName': this.workTypeName,
-                   'workTypeRecordId': this.workTypeRecordId
-               }
-           }));*/
+
         this.dispatchEvent(new CustomEvent('whichcomponenttodisplay', {
             detail: {
                 'componentToDisplay': 'NewProductRequired',
@@ -49,8 +47,21 @@ export default class NewSkillRequirement extends LightningElement {
 
     connectedCallback() {
 
-        getSkills()
+        this.getRecordsParamsJsonObject.fieldToQuery = 'MasterLabel';
+        this.getRecordsParamsJsonObject.sObjectName = 'Skill';
+        this.getRecordsParamsJsonObject.nameOfFieldAfterWhereClause = this.nameOfFieldAfterWhereClause;
+        this.getRecordsParamsJsonObject.valueOfFieldAfterWhereClause = this.valueOfFieldAfterWhereClause;
+
+        this.getRecordsParamsJSONString = JSON.stringify(this.getRecordsParamsJsonObject);
+
+
+        console.log(this.getRecordsParamsJSONString);
+        getRecordsGenericApex(
+            {
+                getRecordsParamsJSONString: this.getRecordsParamsJSONString
+            })
             .then(result => {
+                console.log('getRecordsGenericApex result from js : ', result);
                 this.skills = result;
                 this.skillRequired = this.skills[0].Id;
                 console.log('this.skillRequired: ', this.skillRequired);
@@ -58,11 +69,14 @@ export default class NewSkillRequirement extends LightningElement {
             })
             .catch(error => {
                 console.log(error);
-                console.log('error createWorkType');
+                console.log('Error getting PickList values');
                 this.genericShowToast('Error getting PickList values', error.body.message, 'error');
             });
+
+
         this.isLoading = false;
     }
+
 
     handleChangeSkillRequired(e) {
         this.skillRequired = e.target.value;

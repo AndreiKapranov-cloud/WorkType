@@ -27,22 +27,4 @@ public with sharing class WorkOrderLineItemController {
         }
         return workOrderLineItem;
     }
-
-
-    @AuraEnabled
-    public static WorkOrder getWorkOrderNumberById(Id workOrderId) {
-        WorkOrder workOrder = new WorkOrder();
-        try {
-            workOrder = [
-                    SELECT WorkOrderNumber
-                    FROM WorkOrder
-                    WHERE Id = :workOrderId
-            ];
-        } catch (Exception e) {
-            System.debug('The following exception has occurred: ' + e.getMessage());
-            throw new AuraHandledException('The following exception has occurred: ' + e.getMessage());
-        }
-        return workOrder;
-    }
-
 }

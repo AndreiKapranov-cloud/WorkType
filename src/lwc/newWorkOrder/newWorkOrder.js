@@ -1,7 +1,8 @@
 import {LightningElement} from 'lwc';
 import getPicklistValuesUsingApex from '@salesforce/apex/BaseComponentController.getPicklistValuesUsingApex';
 import createWorkOrderApexMethod from '@salesforce/apex/WorkOrderController.createWorkOrderApexMethod';
-import getWorkTypes from '@salesforce/apex/WorkTypeController.getWorkTypes';
+import getRecordsGenericApex
+    from '@salesforce/apex/BaseComponentController.getRecordsGenericApex';
 import {genericShowToast} from "c/utils";
 
 
@@ -14,19 +15,34 @@ export default class NewWorkOrder extends LightningElement {
     workTypeId;
     subject;
     description;
-    workOrderRecordId;
     showNewWorkOrderComponent = true;
     showNewWorkOrderLineItemComponent = false;
     isLoading = true;
     workOrderObject = {};
     priorityPicklistValues = [];
     statusPicklistValues = [];
-    workOrderJsonObject = new Object();
+    workOrderJsonObject = {};
     paramsJSONString = [];
+    static renderMode = "light";
+    getRecordsParamsJsonObject = {};
+    nameOfFieldAfterWhereClause = '';
+    valueOfFieldAfterWhereClause = '';
 
     connectedCallback() {
 
-        getWorkTypes()
+        this.getRecordsParamsJsonObject.fieldToQuery = 'Name';
+        this.getRecordsParamsJsonObject.sObjectName = 'WorkType';
+        this.getRecordsParamsJsonObject.nameOfFieldAfterWhereClause = this.nameOfFieldAfterWhereClause;
+        this.getRecordsParamsJsonObject.valueOfFieldAfterWhereClause = this.valueOfFieldAfterWhereClause;
+
+        this.getRecordsParamsJSONString = JSON.stringify(this.getRecordsParamsJsonObject);
+
+
+        console.log(this.getRecordsParamsJSONString);
+        getRecordsGenericApex(
+            {
+                getRecordsParamsJSONString: this.getRecordsParamsJSONString
+            })
             .then(result => {
                 this.workTypes = result;
                 this.workTypeId = this.workTypes[0].Id;
@@ -38,7 +54,6 @@ export default class NewWorkOrder extends LightningElement {
                 console.log('error getting WorkTypes');
                 this.genericShowToast('error getting WorkTypes', error.body.message, 'error');
             });
-
 
         getPicklistValuesUsingApex(({
             sObjectType: 'WorkOrder',

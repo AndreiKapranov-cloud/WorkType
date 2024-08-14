@@ -2,8 +2,8 @@ import {LightningElement, api} from 'lwc';
 import createWorkOrderLineItemApexMethod
     from '@salesforce/apex/WorkOrderLineItemController.createWorkOrderLineItemApexMethod';
 import getPicklistValuesUsingApex from '@salesforce/apex/BaseComponentController.getPicklistValuesUsingApex';
-import getRecordsGenericApex
-    from '@salesforce/apex/BaseComponentController.getRecordsGenericApex';
+import getWorkOrderNumberById from '@salesforce/apex/WorkOrderLineItemController.getWorkOrderNumberById';
+import getWorkTypeNameById from '@salesforce/apex/WorkTypeController.getWorkTypeNameById';
 import {genericShowToast} from "c/utils";
 
 
@@ -22,10 +22,11 @@ export default class NewWorkOrderLineItem extends LightningElement {
     showNewWorkOrderComponent = false;
     workOrderLineItemJsonObject = {};
     paramsJSONString = [];
-    static renderMode = "light";
-    getRecordsParamsWorkTypeJsonObject = {};
-    getRecordsParamsWorkOrderJsonObject = {};
+    getPicklistValuesParamsJsonObject = {};
 
+    getValueByKey(object, row) {
+        return object[row];
+    }
 
     handleStatusChange(e) {
         this.status = e.target.value;
@@ -37,24 +38,12 @@ export default class NewWorkOrderLineItem extends LightningElement {
 
     connectedCallback() {
 
-        this.getRecordsParamsWorkTypeJsonObject.fieldToQuery = 'Name';
-        this.getRecordsParamsWorkTypeJsonObject.sObjectName = 'WorkType';
-        this.getRecordsParamsWorkTypeJsonObject.nameOfFieldAfterWhereClause = 'Id';
-        this.getRecordsParamsWorkTypeJsonObject.valueOfFieldAfterWhereClause = this.workTypeId.toString();
-
-        this.getRecordsParamsWorkTypeJSONString = JSON.stringify(this.getRecordsParamsWorkTypeJsonObject);
-
-        console.log(this.getRecordsParamsWorkTypeJSONString);
-        getRecordsGenericApex(
-            {
-                getRecordsParamsJSONString: this.getRecordsParamsWorkTypeJSONString
-            })
+        getWorkTypeNameById({
+            id: this.workTypeId
+        })
             .then(result => {
-                console.log('this.workTypeName ressssult ', result);
-                this.workTypeName = result[0].Name;
-
-                console.log('this.workTypeName: ', this.workTypeName);
-
+                console.log('workTypeName eeeeeeeeee:' + this.getValueByKey(result, "Name"));
+                this.workTypeName = this.getValueByKey(result, "Name");
             })
             .catch(error => {
                 console.log(error);
@@ -62,30 +51,18 @@ export default class NewWorkOrderLineItem extends LightningElement {
                 this.genericShowToast('Error getting workTypeName', error.body.message, 'error');
             });
 
-
-        this.getRecordsParamsWorkOrderJsonObject.fieldToQuery = 'WorkOrderNumber';
-        this.getRecordsParamsWorkOrderJsonObject.sObjectName = 'WorkOrder';
-        this.getRecordsParamsWorkOrderJsonObject.nameOfFieldAfterWhereClause = 'Id';
-        this.getRecordsParamsWorkOrderJsonObject.valueOfFieldAfterWhereClause = this.workOrderId.toString();
-
-        this.getRecordsParamsWorkOrderJSONString = JSON.stringify(this.getRecordsParamsWorkOrderJsonObject);
-
-        console.log('work order json string: ' + this.getRecordsParamsWorkOrderJSONString);
-        getRecordsGenericApex(
+        getWorkOrderNumberById(
             {
-                getRecordsParamsJSONString: this.getRecordsParamsWorkOrderJSONString
+                workOrderId: this.workOrderId
             })
             .then(result => {
+                console.log('this.workOrder: ', result);
 
-                console.log('this.order rrresult: ', result);
+                console.log('this.workOrderNumber: ', this.workOrderNumber);
 
-                function getValueByKey(object, row) {
-                    return object[row];
-                }
 
-                console.log(getValueByKey(result[0], "WorkOrderNumber"));
-                this.workOrderNumber = getValueByKey(result[0], "WorkOrderNumber");
-
+                console.log('drrrrr' + this.getValueByKey(result, "WorkOrderNumber"));
+                this.workOrderNumber = this.getValueByKey(result, "WorkOrderNumber");
             })
             .catch(error => {
                 console.log(error);
@@ -93,11 +70,16 @@ export default class NewWorkOrderLineItem extends LightningElement {
                 this.genericShowToast('Error getting workOrderNumber', error.body.message, 'error');
             });
 
+        this.getPicklistValuesParamsJsonObject.sObjectType = 'WorkOrderLineItem';
+        this.getPicklistValuesParamsJsonObject.field = 'Status';
+        this.getPicklistValuesParamsJSONString = JSON.stringify(this.getPicklistValuesParamsJsonObject);
+
+        console.log(this.getPicklistValuesParamsJSONString);
 
         getPicklistValuesUsingApex(({
-            sObjectType: 'WorkOrderLineItem',
-            field: 'Status'
+            getPicklistValuesParamsJSONString: this.getPicklistValuesParamsJSONString
         }))
+
             .then(result => {
                 this.statusPicklistValues = result;
                 console.log('this.statusPicklistValues: ', this.statusPicklistValues);

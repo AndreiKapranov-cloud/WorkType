@@ -1,8 +1,7 @@
 import {LightningElement} from 'lwc';
 import getPicklistValuesUsingApex from '@salesforce/apex/BaseComponentController.getPicklistValuesUsingApex';
 import createWorkOrderApexMethod from '@salesforce/apex/WorkOrderController.createWorkOrderApexMethod';
-import getRecordsGenericApex
-    from '@salesforce/apex/BaseComponentController.getRecordsGenericApex';
+import getWorkTypes from '@salesforce/apex/WorkTypeController.getWorkTypes';
 import {genericShowToast} from "c/utils";
 
 
@@ -23,26 +22,12 @@ export default class NewWorkOrder extends LightningElement {
     statusPicklistValues = [];
     workOrderJsonObject = {};
     paramsJSONString = [];
-    static renderMode = "light";
-    getRecordsParamsJsonObject = {};
-    nameOfFieldAfterWhereClause = '';
-    valueOfFieldAfterWhereClause = '';
+    getPriorityPicklistValuesParamsJsonObject = {};
+    getStatusPicklistValuesParamsJsonObject = {};
 
     connectedCallback() {
 
-        this.getRecordsParamsJsonObject.fieldToQuery = 'Name';
-        this.getRecordsParamsJsonObject.sObjectName = 'WorkType';
-        this.getRecordsParamsJsonObject.nameOfFieldAfterWhereClause = this.nameOfFieldAfterWhereClause;
-        this.getRecordsParamsJsonObject.valueOfFieldAfterWhereClause = this.valueOfFieldAfterWhereClause;
-
-        this.getRecordsParamsJSONString = JSON.stringify(this.getRecordsParamsJsonObject);
-
-
-        console.log(this.getRecordsParamsJSONString);
-        getRecordsGenericApex(
-            {
-                getRecordsParamsJSONString: this.getRecordsParamsJSONString
-            })
+        getWorkTypes()
             .then(result => {
                 this.workTypes = result;
                 this.workTypeId = this.workTypes[0].Id;
@@ -55,9 +40,14 @@ export default class NewWorkOrder extends LightningElement {
                 this.genericShowToast('error getting WorkTypes', error.body.message, 'error');
             });
 
+        this.getPriorityPicklistValuesParamsJsonObject.sObjectType = 'WorkOrder';
+        this.getPriorityPicklistValuesParamsJsonObject.field = 'Priority';
+        this.getPriorityPicklistValuesParamsJSONString = JSON.stringify(this.getPriorityPicklistValuesParamsJsonObject);
+
+        console.log(this.getPriorityPicklistValuesParamsJSONString);
+
         getPicklistValuesUsingApex(({
-            sObjectType: 'WorkOrder',
-            field: 'Priority'
+            getPicklistValuesParamsJSONString: this.getPriorityPicklistValuesParamsJSONString
         }))
             .then(result => {
                 this.priorityPicklistValues = result;
@@ -70,10 +60,14 @@ export default class NewWorkOrder extends LightningElement {
 
             });
 
+        this.getStatusPicklistValuesParamsJsonObject.sObjectType = 'WorkOrder';
+        this.getStatusPicklistValuesParamsJsonObject.field = 'Status';
+        this.getStatusPicklistValuesParamsJSONString = JSON.stringify(this.getStatusPicklistValuesParamsJsonObject);
+
+        console.log(this.getStatusPicklistValuesParamsJSONString);
 
         getPicklistValuesUsingApex(({
-            sObjectType: 'WorkOrder',
-            field: 'Status'
+            getPicklistValuesParamsJSONString: this.getStatusPicklistValuesParamsJSONString
         }))
             .then(result => {
                 this.statusPicklistValues = result;
@@ -108,7 +102,6 @@ export default class NewWorkOrder extends LightningElement {
         this.subject = e.target.value;
     }
 
-
     createWorkOrder() {
 
         this.isLoading = true;
@@ -129,8 +122,6 @@ export default class NewWorkOrder extends LightningElement {
                 console.log(result);
                 console.log('ID: ', result.Id);
                 this.workOrderObject = result;
-
-
                 this.workOrderId = result.Id;
                 this.workOrderNumber = result.workOrderNumber;
 
@@ -143,9 +134,7 @@ export default class NewWorkOrder extends LightningElement {
                 console.log('error creating WorkOrder record');
                 console.log(error);
                 this.genericShowToast('Error creating Work Order.', error.body.message, 'error');
-
             })
             .finally(() => this.isLoading = false)
-
     }
 }

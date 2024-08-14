@@ -1,7 +1,7 @@
 <template lwc:render-mode="light">
     <template lwc:if={showNewWorkOrderLineItemComponent}>
         <lightning-card>
-            <div lwc:if={isLoading} style="height: 400px; position:relative">
+            <div lwc:if={isLoading} class="style-of-spinner">
                 <lightning-spinner variant="base" size="medium"></lightning-spinner>
             </div>
             <div lwc:else>
@@ -12,7 +12,6 @@
                 <div class="slds-m-around_medium">
                     <div class="slds-border_bottom"></div>
                 </div>
-
 
                 <div class="slds-grid slds-wrap">
                     <div class="slds-col slds-size_1-of-2">
@@ -30,7 +29,6 @@
                         </div>
                     </div>
                 </div>
-
 
                 <div class="slds-grid slds-wrap">
                     <div class="slds-col slds-size_1-of-2">
@@ -67,7 +65,6 @@
                     </div>
                 </div>
             </div>
-
 
         </lightning-card>
     </template>

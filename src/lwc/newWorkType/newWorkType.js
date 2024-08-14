@@ -1,4 +1,5 @@
 import {LightningElement} from 'lwc';
+import getRecordsGenericApex from '@salesforce/apex/BaseComponentController.getRecordsGenericApex';
 import getPicklistValuesUsingApex from '@salesforce/apex/BaseComponentController.getPicklistValuesUsingApex';
 import createWorkTypeApexMethod from '@salesforce/apex/WorkTypeController.createWorkTypeApexMethod';
 import {genericShowToast} from "c/utils";
@@ -14,7 +15,7 @@ export default class NewWorkType extends LightningElement {
     workTypeNameValid = false;
     paramsJSONString = [];
     workTypeJsonObject = {};
-    static renderMode = "light";
+    getPicklistValuesParamsJsonObject = {};
 
     displayNewSkillRequirementInBase() {
         this.dispatchEvent(new CustomEvent('whichcomponenttodisplay', {
@@ -26,7 +27,6 @@ export default class NewWorkType extends LightningElement {
             }
         }));
     }
-
 
     handleshouldAutoCreateSvcApptChange(e) {
         this.shouldAutoCreateSvcAppt = e.target.checked;
@@ -43,7 +43,6 @@ export default class NewWorkType extends LightningElement {
     handleDescriptionChange(e) {
         this.description = e.target.value;
     }
-
 
     handleWorkTypeNameChange(e) {
 
@@ -84,9 +83,14 @@ export default class NewWorkType extends LightningElement {
 
     connectedCallback() {
 
+        this.getPicklistValuesParamsJsonObject.sObjectType = 'WorkType';
+        this.getPicklistValuesParamsJsonObject.field = 'DurationType';
+        this.getPicklistValuesParamsJSONString = JSON.stringify(this.getPicklistValuesParamsJsonObject);
+
+        console.log(this.getPicklistValuesParamsJSONString);
+
         getPicklistValuesUsingApex(({
-            sObjectType: 'WorkType',
-            field: 'DurationType'
+            getPicklistValuesParamsJSONString: this.getPicklistValuesParamsJSONString
         }))
             .then(result => {
                 this.picklistValues = result;
@@ -122,8 +126,7 @@ export default class NewWorkType extends LightningElement {
 
             this.paramsJSONString = JSON.stringify(this.workTypeJsonObject);
 
-            console.log('createWorkType:'+ this.paramsJSONString);
-
+            console.log('createWorkType:' + this.paramsJSONString);
 
             createWorkTypeApexMethod(
                 {
@@ -155,7 +158,6 @@ export default class NewWorkType extends LightningElement {
         } else {
             this.genericShowToast('Error creating Work Type.', 'Please, complete required fields properly', 'error');
         }
-
     }
 }
 

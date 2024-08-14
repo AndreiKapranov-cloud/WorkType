@@ -27,4 +27,23 @@ public with sharing class WorkOrderLineItemController {
         }
         return workOrderLineItem;
     }
+
+    @AuraEnabled
+    public static SObject getWorkOrderNumberById(Id workOrderId) {
+
+        SObject workOrder = new WorkOrder();
+
+        String workOrderIdString = workOrderId.to15();
+        try {
+            String query =
+                    'SELECT WorkOrderNumber FROM WorkOrder WHERE Id = ' + '\''+  workOrderIdString + '\'';
+
+            workOrder = (BaseComponentController.getRecordsBySOQL(query))[0];
+
+        } catch (Exception e) {
+            System.debug('The following exception has occurred: ' + e.getMessage());
+            throw new AuraHandledException('The following exception has occurred: ' + e.getMessage());
+        }
+        return workOrder;
+    }
 }

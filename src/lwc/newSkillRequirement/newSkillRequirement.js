@@ -3,12 +3,13 @@ import createSkillRequirementApexMethod
     from '@salesforce/apex/SkillRequirementController.createSkillRequirementApexMethod';
 import getRecordsGenericApex
     from '@salesforce/apex/BaseComponentController.getRecordsGenericApex';
+import getSkills from '@salesforce/apex/SkillRequirementController.getSkills';
 
 import {genericShowToast} from "c/utils";
 
 export default class NewSkillRequirement extends LightningElement {
 
-    static renderMode = "light";
+
     genericShowToast = genericShowToast.bind(this);
     skills = [];
     skillRequired;
@@ -20,7 +21,6 @@ export default class NewSkillRequirement extends LightningElement {
     isLoading = true;
     skillRequirementJsonObject = {};
     paramsJSONString = [];
-    getRecordsParamsJsonObject = {};
     nameOfFieldAfterWhereClause = '';
     valueOfFieldAfterWhereClause = '';
 
@@ -36,7 +36,6 @@ export default class NewSkillRequirement extends LightningElement {
         }));
     }
 
-
     validateSkillLevel() {
 
         let skillLevelInput = this.refs?.skillLevel;
@@ -44,22 +43,9 @@ export default class NewSkillRequirement extends LightningElement {
         return skillLevelInput.checkValidity();
     }
 
-
     connectedCallback() {
 
-        this.getRecordsParamsJsonObject.fieldToQuery = 'MasterLabel';
-        this.getRecordsParamsJsonObject.sObjectName = 'Skill';
-        this.getRecordsParamsJsonObject.nameOfFieldAfterWhereClause = this.nameOfFieldAfterWhereClause;
-        this.getRecordsParamsJsonObject.valueOfFieldAfterWhereClause = this.valueOfFieldAfterWhereClause;
-
-        this.getRecordsParamsJSONString = JSON.stringify(this.getRecordsParamsJsonObject);
-
-
-        console.log(this.getRecordsParamsJSONString);
-        getRecordsGenericApex(
-            {
-                getRecordsParamsJSONString: this.getRecordsParamsJSONString
-            })
+        getSkills()
             .then(result => {
                 console.log('getRecordsGenericApex result from js : ', result);
                 this.skills = result;
@@ -73,10 +59,8 @@ export default class NewSkillRequirement extends LightningElement {
                 this.genericShowToast('Error getting PickList values', error.body.message, 'error');
             });
 
-
         this.isLoading = false;
     }
-
 
     handleChangeSkillRequired(e) {
         this.skillRequired = e.target.value;
@@ -87,7 +71,6 @@ export default class NewSkillRequirement extends LightningElement {
         this.skillLevel = e.target.value;
 
     }
-
 
     createSkillRequirement() {
 
@@ -106,22 +89,18 @@ export default class NewSkillRequirement extends LightningElement {
             console.log('final skillRequired for skill req = ' + this.skillRequired);
             console.log('final skillLevel for skill req = ' + this.skillLevel);
 
-
             createSkillRequirementApexMethod({
                 paramsJSONString: this.paramsJSONString
             })
                 .then(result => {
                     console.log(result);
                     this.genericShowToast('Success!', 'Skill Requirement Record is created Successfully!', 'success');
-                    // this.showNewSkillRequirementComponent = false;
-                    // this.showNewProductRequiredComponent = true;
                     this.displayNewProductRequiredInBase();
                 })
                 .catch(error => {
                     console.log('Error creating Skill Requirement Record');
                     console.log(error);
                     this.genericShowToast('Error creating Skill Requirement Record', error.body.message, 'error');
-
                 })
                 .finally(() => this.isLoading = false);
         }

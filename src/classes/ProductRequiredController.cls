@@ -23,4 +23,20 @@ public with sharing class ProductRequiredController {
         return productRequired;
     }
 
+    @AuraEnabled
+    public static List<Product2> getProduct2s() {
+        List<Product2> productList = new List<Product2>();
+        try {
+            productList = [
+                    SELECT Id,Name
+                    FROM Product2
+                    where Description = 'Field Service'
+            ];
+        } catch (Exception e) {
+            System.debug('The following exception has occurred: ' + e.getMessage());
+            throw new AuraHandledException('The following exception has occurred: ' + e.getMessage());
+        }
+        return productList;
+    }
+
 }

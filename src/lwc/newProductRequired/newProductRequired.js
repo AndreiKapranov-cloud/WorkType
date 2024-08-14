@@ -2,8 +2,7 @@ import {LightningElement, api} from 'lwc';
 import createProductRequiredApexMethod
     from '@salesforce/apex/ProductRequiredController.createProductRequiredApexMethod';
 import getPicklistValuesUsingApex from '@salesforce/apex/BaseComponentController.getPicklistValuesUsingApex';
-import getRecordsGenericApex
-    from '@salesforce/apex/BaseComponentController.getRecordsGenericApex';
+import getProduct2s from '@salesforce/apex/ProductRequiredController.getProduct2s';
 import {genericShowToast} from "c/utils";
 
 export default class NewProductRequired extends LightningElement {
@@ -18,9 +17,7 @@ export default class NewProductRequired extends LightningElement {
     isLoading = true;
     paramsJSONString = [];
     productRequiredJsonObject = {};
-    static renderMode = "light";
-    getProduct2RecordsParamsJsonObject = {};
-
+    getPicklistValuesParamsJsonObject = {};
 
     displayNewProductItemInBase() {
         this.dispatchEvent(new CustomEvent('whichcomponenttodisplay', {
@@ -31,7 +28,6 @@ export default class NewProductRequired extends LightningElement {
             }
         }));
     }
-
 
     handleProductRequiredChange(e) {
         this.product2Id = e.target.value;
@@ -45,21 +41,9 @@ export default class NewProductRequired extends LightningElement {
         this.quantityUnitOfMeasure = e.target.value;
     }
 
-
     connectedCallback() {
 
-        this.getProduct2RecordsParamsJsonObject.fieldToQuery = 'Name';
-        this.getProduct2RecordsParamsJsonObject.sObjectName = 'Product2';
-        this.getProduct2RecordsParamsJsonObject.nameOfFieldAfterWhereClause = 'Description';
-        this.getProduct2RecordsParamsJsonObject.valueOfFieldAfterWhereClause = 'Field Service';
-
-        this.getProduct2RecordsParamsJSONString = JSON.stringify(this.getProduct2RecordsParamsJsonObject);
-
-        console.log(this.getProduct2RecordsParamsJSONString);
-        getRecordsGenericApex(
-            {
-                getRecordsParamsJSONString: this.getProduct2RecordsParamsJSONString
-            })
+        getProduct2s()
             .then(result => {
                 this.product2s = result;
                 this.product2Id = this.product2s[0].Id;
@@ -74,10 +58,14 @@ export default class NewProductRequired extends LightningElement {
                 this.genericShowToast('Error getting product2s.', error.body.message, 'error');
             });
 
+        this.getPicklistValuesParamsJsonObject.sObjectType = 'ProductRequired';
+        this.getPicklistValuesParamsJsonObject.field = 'QuantityUnitOfMeasure';
+        this.getPicklistValuesParamsJSONString = JSON.stringify(this.getPicklistValuesParamsJsonObject);
+
+        console.log(this.getPicklistValuesParamsJSONString);
 
         getPicklistValuesUsingApex(({
-            sObjectType: 'ProductRequired',
-            field: 'QuantityUnitOfMeasure'
+            getPicklistValuesParamsJSONString: this.getPicklistValuesParamsJSONString
         }))
             .then(result => {
                 this.picklistValues = result;
@@ -87,16 +75,13 @@ export default class NewProductRequired extends LightningElement {
                 console.log(error);
                 console.log('error getting QuantityUnitOfMeasure Picklist values');
                 this.genericShowToast('Error getting PickList values', error.body.message, 'error');
-
             });
-
         this.isLoading = false;
     }
 
     validateQuantityRequired() {
 
         let quantityRequiredInput = this.refs?.quantityRequired;
-
         return quantityRequiredInput.checkValidity();
     }
 
@@ -129,13 +114,11 @@ export default class NewProductRequired extends LightningElement {
                     console.log(error);
                     this.isLoading = true;
                     this.genericShowToast('Error creating Product Required Record', error.body.message, 'error');
-
                 })
                 .finally(() => this.isLoading = false);
 
         } else {
             this.genericShowToast('Error creating Product Required Record.', 'Please, complete Quantity Required field properly', 'error');
-
         }
     }
 }

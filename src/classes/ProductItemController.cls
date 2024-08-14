@@ -4,7 +4,7 @@
 
 public with sharing class ProductItemController {
 
-    @AuraEnabled(cacheable=true)
+    @AuraEnabled
     public static List<Schema.Location> getLocations() {
         List<Schema.Location> locationsList = new List<Schema.Location>();
 
@@ -20,7 +20,6 @@ public with sharing class ProductItemController {
         }
         return locationsList;
     }
-
 
     @AuraEnabled
     public static ProductItem createProductItemApexMethod(String paramsJSONString) {

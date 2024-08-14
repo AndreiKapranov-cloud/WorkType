@@ -23,4 +23,18 @@ public with sharing class SkillRequirementController {
         return skillRequirement;
     }
 
+    @AuraEnabled
+    public static List<Skill> getSkills() {
+        List<Skill> skillsList = new List<Skill>();
+        try {
+            skillsList = [
+                    SELECT Id,MasterLabel
+                    FROM Skill
+            ];
+        } catch (Exception e) {
+            System.debug('The following exception has occurred: ' + e.getMessage());
+            throw new AuraHandledException('The following exception has occurred: ' + e.getMessage());
+        }
+        return skillsList;
+    }
 }

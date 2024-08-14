@@ -1,6 +1,6 @@
 <template lwc:render-mode="light">
     <lightning-card>
-        <div lwc:if={isLoading} style="height: 400px; position:relative">
+        <div lwc:if={isLoading} class="style-of-spinner">
             <lightning-spinner variant="base" size="medium"></lightning-spinner>
         </div>
 
@@ -56,7 +56,6 @@
                     </div>
                 </div>
 
-
                 <lightning-layout>
                     <lightning-layout-item size="12" padding="around-small">
                         <div class="slds-m-horizontal_small" padding="around-small">
@@ -74,7 +73,6 @@
                     </lightning-layout-item>
                 </lightning-layout>
 
-
                 <div class=slds-m-top_large>
                     <div class="slds-col slds-text-align_right">
 
@@ -84,7 +82,6 @@
 
                     </div>
                 </div>
-
 
                 <div class="slds-m-around_medium">
                 </div>

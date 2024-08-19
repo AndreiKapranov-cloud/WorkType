@@ -1,5 +1,4 @@
 import {LightningElement} from 'lwc';
-import getRecordsGenericApex from '@salesforce/apex/BaseComponentController.getRecordsGenericApex';
 import getPicklistValuesUsingApex from '@salesforce/apex/BaseComponentController.getPicklistValuesUsingApex';
 import createWorkTypeApexMethod from '@salesforce/apex/WorkTypeController.createWorkTypeApexMethod';
 import {genericShowToast} from "c/utils";
@@ -58,7 +57,6 @@ export default class NewWorkType extends LightningElement {
         } else {
             target.setCustomValidity('');
             this.workTypeNameValid = true;
-
         }
     }
 
@@ -154,7 +152,6 @@ export default class NewWorkType extends LightningElement {
                     this.isLoading = false;
                 }
             )
-
         } else {
             this.genericShowToast('Error creating Work Type.', 'Please, complete required fields properly', 'error');
         }

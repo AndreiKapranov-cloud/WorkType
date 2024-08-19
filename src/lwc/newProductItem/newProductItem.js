@@ -11,7 +11,6 @@ import {genericShowToast} from "c/utils";
 export default class NewProductItem extends LightningElement {
     genericShowToast = genericShowToast.bind(this);
     locationId;
-    getRecordsParamsJsonObject = {};
     locations = [];
     picklistValues = [];
     quantityOnHand;

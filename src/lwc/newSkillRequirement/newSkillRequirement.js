@@ -1,8 +1,6 @@
 import {LightningElement, api} from 'lwc';
 import createSkillRequirementApexMethod
     from '@salesforce/apex/SkillRequirementController.createSkillRequirementApexMethod';
-import getRecordsGenericApex
-    from '@salesforce/apex/BaseComponentController.getRecordsGenericApex';
 import getSkills from '@salesforce/apex/SkillRequirementController.getSkills';
 
 import {genericShowToast} from "c/utils";

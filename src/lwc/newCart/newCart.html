@@ -1,0 +1,75 @@
+<!--
+ - Created by andrey on 8/19/24.
+ -->
+
+<!-- New Cart -->
+<template>
+    <lightning-card>
+
+        <div class="slds-m-horizontal_small">
+            <div class="slds-form-element">
+                <label class="slds-form-element__label"><abbr class="slds-required"
+                                                              title="required">*</abbr>Buyer</label>
+                <div class="slds-form-element__control">
+                    <div class="slds-select_container">
+                        <select class="slds-select" name="buyer"
+                                onchange={handleChangeBuyer}>
+                            <template for:each={buyers} for:item="buyer">
+
+                                <option key={buyer.Id} value={buyer.Id}>{buyer.Name}</option>
+
+                            </template>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="slds-m-horizontal_small">
+            <lightning-input
+                    type="date"
+                    name="startDate"
+                    label="Estimated Delivery Date"
+                    value={EstimatedDeliveryDate}
+                    onchange={handleEstimatedDeliveryDateChange}>
+            </lightning-input>
+        </div>
+
+
+        <div class="slds-m-horizontal_small">
+            <div class="slds-form-element">
+                <label class="slds-form-element__label"><abbr class="slds-required"
+                                                              title="required">*</abbr>Pickup Point Address
+                </label>
+                <lightning-input name="Pickup Point Address"
+                                 onchange={handlePickupPointAddressChange}>
+                </lightning-input>
+            </div>
+        </div>
+
+        <div class="slds-m-horizontal_small">
+            <div class="slds-form-element">
+                <label class="slds-form-element__label"><abbr class="slds-required"
+                                                              title="required">*</abbr>Status
+                </label>
+                <lightning-combobox
+                        options={statusPicklistValues}
+                        onchange={handleStatusChange}
+                        name="status"
+                ></lightning-combobox>
+            </div>
+        </div>
+
+        <div class="slds-p-right_medium">
+            <div class="slds-m-top_small">
+                <div class="slds-clearfix">
+                    <lightning-button label="Save" variant="brand" onclick={createCartApexMethod}
+                                      class="slds-float_right">
+                    </lightning-button>
+                </div>
+            </div>
+        </div>
+
+    </lightning-card>
+</template>

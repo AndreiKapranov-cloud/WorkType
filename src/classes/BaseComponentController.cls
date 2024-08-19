@@ -34,15 +34,18 @@ public with sharing class BaseComponentController {
 
     @AuraEnabled
     public static List<SObject> getRecordsBySOQL(String query) {
+        List<SObject> records = new List<SObject>();
         try {
             return Database.query(query);
+
         } catch (Exception e) {
             System.debug('The following exception has occurred: ' + e.getMessage());
             throw new HandledException('The following exception has occurred: ' + e.getMessage());
         }
     }
 
-    public static SamodelkinWrapper createWrapperInstance(String paramsJSONString, SamodelkinWrapper wrapper) {
+    @AuraEnabled
+    public static SamodelkinWrapper createWrapperInstance(String paramsJSONString,SamodelkinWrapper wrapper) {
         wrapper = (SamodelkinWrapper) JSON.deserialize(paramsJSONString,
                 SamodelkinWrapper.class);
 

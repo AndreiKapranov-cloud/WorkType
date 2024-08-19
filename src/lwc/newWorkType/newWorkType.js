@@ -157,11 +157,3 @@ export default class NewWorkType extends LightningElement {
         }
     }
 }
-
-
-
-
-
-
-
-

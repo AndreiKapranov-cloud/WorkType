@@ -1,0 +1,105 @@
+<!--
+ - Created by andrey on 8/20/24.
+ -->
+
+<!-- Good Search -->
+<template>
+    <div lwc:if={isLoading} class="style-of-spinner">
+        <lightning-spinner variant="base" size="medium"></lightning-spinner>
+    </div>
+    <div lwc:else>
+
+        <lightning-layout>
+            <lightning-layout-item>
+                <lightning-vertical-navigation onselect={handleCategoryChangeAction}
+                                               class="navigation">
+                    <lightning-vertical-navigation-section label="Category">
+                        <template for:each={categoryPicklistValues} for:item="category">
+
+
+                            <lightning-vertical-navigation-item label={category.value}
+                                                                name={category.value}
+                                                                key={category.value}></lightning-vertical-navigation-item>
+                        </template>
+                    </lightning-vertical-navigation-section>
+                </lightning-vertical-navigation>
+            </lightning-layout-item>
+        </lightning-layout>
+
+        <template if:true={displayCostumes}>
+            <div class="slds-m-horizontal_small">
+                <lightning-combobox
+                        options={subCategoryPicklistValues} label="Category"
+                        onchange={handleSubCategoryChange}
+                        name="quantityUnitOfMeasure"
+                ></lightning-combobox>
+            </div>
+        </template>
+
+        <template if:true={displayHoodies}>
+            <div class="slds-m-horizontal_small">
+                <lightning-combobox
+                        options={subCategoryPicklistValues} label="Subcategory"
+                        onchange={handleSubCategoryChange}
+                        name="quantityUnitOfMeasure"
+                ></lightning-combobox>
+            </div>
+        </template>
+
+        <template if:true={displaySneakers}>
+            <div class="slds-m-horizontal_small">
+                <lightning-combobox
+                        options={subCategoryPicklistValues} label="Subcategory"
+                        onchange={handleSubCategoryChange}
+                        name="quantityUnitOfMeasure"
+                ></lightning-combobox>
+            </div>
+        </template>
+
+        <!--   <div class="slds-m-horizontal_small">
+               <lightning-input
+                       type="date"
+                       name="startDate"
+                       label="Estimated Delivery Date"
+                       value={EstimatedDeliveryDate}
+                       onchange={handleEstimatedDeliveryDateChange}>
+               </lightning-input>
+           </div>
+
+           <div class="slds-m-horizontal_small">
+               <div class="slds-form-element">
+                   <div class="slds-form-element__control">
+                       <lightning-input name="Pickup Point Address" label="Pickup Point Address" required="true"
+                                        onchange={handlePickupPointAddressChange}>
+                       </lightning-input>
+                   </div>
+               </div>
+           </div>
+
+           <div class="slds-m-horizontal_small">
+               <div class="slds-form-element">
+                   <div class="slds-form-element">
+                       <div class="slds-form-element__control">
+                           <lightning-combobox
+                                   label="Status"
+                                   required="true"
+                                   options={statusPicklistValues}
+                                   onchange={handleStatusChange}
+                                   name="status"
+                           ></lightning-combobox>
+                       </div>
+                   </div>
+               </div>
+           </div>-->
+
+        <div class="slds-p-right_medium">
+            <div class="slds-m-top_small">
+                <div class="slds-clearfix">
+                    <lightning-button label="Next" variant="brand" onclick={createCartApexMethod}
+                                      class="slds-float_right">
+                    </lightning-button>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>

@@ -1,18 +1,13 @@
 /**
- * Created by andrey on 8/19/24.
+ * Created by andrey on 8/20/24.
  */
+
 import {LightningElement} from 'lwc';
-import createCartApexMethod
-    from '@salesforce/apex/CartController.createCartApexMethod';
-import getBuyers
-    from '@salesforce/apex/CartController.getBuyers';
-import getPicklistValuesUsingApex
-    from '@salesforce/apex/CartController.getPicklistValuesUsingApex';
-import {genericShowToast} from "c/utils";
+
+export default class NewEShopOrder extends LightningElement {
 
 
-export default class NewCart extends LightningElement {
-    isLoading = true;
+    /*isLoading = true;
     genericShowToast = genericShowToast.bind(this);
     buyers = [];
     buyerId;
@@ -28,11 +23,11 @@ export default class NewCart extends LightningElement {
         return object[row];
     }
 
-    displayGoodSearchInBase() {
+    displayNewEshopOrderInBase() {
 
         this.dispatchEvent(new CustomEvent('whichcomponenttodisplay', {
             detail: {
-                'componentToDisplay': 'SelectGood',
+                'componentToDisplay': 'NewShopOrder',
             }
         }));
     }
@@ -117,7 +112,7 @@ export default class NewCart extends LightningElement {
                 console.log('cartObject = ' + this.cartObject);
 
                 this.genericShowToast('Success!', 'Cart Record is created Successfully!', 'success');
-                this.displayGoodSearchInBase();
+                this.displayNewEshopOrderInBase();
             })
             .catch(error => {
                 console.log('error createCart');
@@ -128,5 +123,5 @@ export default class NewCart extends LightningElement {
                 this.isLoading = false;
             }
         )
-    }
+    }*/
 }

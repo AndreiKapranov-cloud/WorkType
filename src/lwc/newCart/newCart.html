@@ -4,8 +4,10 @@
 
 <!-- New Cart -->
 <template>
-    <lightning-card>
-
+    <div lwc:if={isLoading} class="style-of-spinner">
+        <lightning-spinner variant="base" size="medium"></lightning-spinner>
+    </div>
+    <div lwc:else>
         <div class="slds-m-horizontal_small">
             <div class="slds-form-element">
                 <label class="slds-form-element__label"><abbr class="slds-required"
@@ -39,37 +41,38 @@
 
         <div class="slds-m-horizontal_small">
             <div class="slds-form-element">
-                <label class="slds-form-element__label"><abbr class="slds-required"
-                                                              title="required">*</abbr>Pickup Point Address
-                </label>
-                <lightning-input name="Pickup Point Address"
-                                 onchange={handlePickupPointAddressChange}>
-                </lightning-input>
+                <div class="slds-form-element__control">
+                    <lightning-input name="Pickup Point Address" label="Pickup Point Address" required="true"
+                                     onchange={handlePickupPointAddressChange}>
+                    </lightning-input>
+                </div>
             </div>
         </div>
 
         <div class="slds-m-horizontal_small">
             <div class="slds-form-element">
-                <label class="slds-form-element__label"><abbr class="slds-required"
-                                                              title="required">*</abbr>Status
-                </label>
-                <lightning-combobox
-                        options={statusPicklistValues}
-                        onchange={handleStatusChange}
-                        name="status"
-                ></lightning-combobox>
+                <div class="slds-form-element">
+                    <div class="slds-form-element__control">
+                        <lightning-combobox
+                                label="Status"
+                                required="true"
+                                options={statusPicklistValues}
+                                onchange={handleStatusChange}
+                                name="status"
+                        ></lightning-combobox>
+                    </div>
+                </div>
             </div>
         </div>
 
         <div class="slds-p-right_medium">
             <div class="slds-m-top_small">
                 <div class="slds-clearfix">
-                    <lightning-button label="Save" variant="brand" onclick={createCartApexMethod}
+                    <lightning-button label="Next" variant="brand" onclick={createCartApexMethod}
                                       class="slds-float_right">
                     </lightning-button>
                 </div>
             </div>
         </div>
-
-    </lightning-card>
+    </div>
 </template>

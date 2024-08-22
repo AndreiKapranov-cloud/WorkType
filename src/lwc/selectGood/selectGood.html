@@ -29,7 +29,7 @@
         <template if:true={displayCostumes}>
             <div class="slds-m-horizontal_small">
                 <lightning-combobox
-                        options={sneackersSubCategoryPicklistValues} label="Category"
+                        options={costumesSubCategoryPicklistValues} label="Category"
                         onchange={handleSubCategoryChange}
                         name="quantityUnitOfMeasure"
                 ></lightning-combobox>
@@ -39,7 +39,7 @@
         <template if:true={displayHoodies}>
             <div class="slds-m-horizontal_small">
                 <lightning-combobox
-                        options={subCategoryPicklistValues} label="Subcategory"
+                        options={hoodiesSubCategoryPicklistValues} label="Subcategory"
                         onchange={handleSubCategoryChange}
                         name="quantityUnitOfMeasure"
                 ></lightning-combobox>
@@ -49,7 +49,7 @@
         <template if:true={displaySneakers}>
             <div class="slds-m-horizontal_small">
                 <lightning-combobox
-                        options={subCategoryPicklistValues} label="Subcategory"
+                        options={sneackersSubCategoryPicklistValues} label="Subcategory"
                         onchange={handleSubCategoryChange}
                         name="quantityUnitOfMeasure"
                 ></lightning-combobox>

@@ -38,7 +38,8 @@ export default class SelectGood extends LightningElement {
     hoodiesRecordTypeId;
     sneakersRecordTypeId;
     sneackersSubCategoryPicklistValues = [];
-
+    hoodiesSubCategoryPicklistValues = [];
+    costumesSubCategoryPicklistValues = [];
     getValueByKey(object, row) {
         return object[row];
     }
@@ -73,12 +74,42 @@ export default class SelectGood extends LightningElement {
                 this.displayHoodies = true;
                 this.displaySneakers = false;
                 this.displayCostumes = false;
+
+                getSubCategoryPickListValuesByRecordTypeId(({
+                    recordTypeId: this.hoodiesRecordTypeId
+                }))
+                    .then(result => {
+                        this.hoodiesSubCategoryPicklistValues = result;
+                        console.log('this.sneackersSubCategoryPicklistValues: ', this.sneackersSubCategoryPicklistValues);
+
+                    })
+                    .catch(error => {
+                        console.log(error);
+                        console.log('error getting CategoryPickListValues');
+                        this.genericShowToast('Error getting CategoryPickListValues', error.body.message, 'error');
+                    });
+
                 break;
             }
             case 'Costumes' : {
                 this.displayCostumes = true;
                 this.displayHoodies = false;
                 this.displaySneakers = false;
+
+                getSubCategoryPickListValuesByRecordTypeId(({
+                    recordTypeId: this.costumesRecordTypeId
+                }))
+                    .then(result => {
+                        this.costumesSubCategoryPicklistValues = result;
+                        console.log('this.sneackersSubCategoryPicklistValues: ', this.sneackersSubCategoryPicklistValues);
+
+                    })
+                    .catch(error => {
+                        console.log(error);
+                        console.log('error getting CategoryPickListValues');
+                        this.genericShowToast('Error getting CategoryPickListValues', error.body.message, 'error');
+                    });
+
                 break;
             }
             default:

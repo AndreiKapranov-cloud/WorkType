@@ -6,8 +6,13 @@ import getPicklistValuesUsingApex
 import getGoodRecordTypeIdsUsingApex
     from '@salesforce/apex/EShopBaseComponentController.getGoodRecordTypeIdsUsingApex';
 
-import {LightningElement} from 'lwc';
+import getSubCategoryPickListValuesByRecordTypeId
+    from '@salesforce/apex/EShopBaseComponentController.getSubCategoryPickListValuesByRecordTypeId';
+
+import {LightningElement, wire} from 'lwc';
 import {genericShowToast} from "c/utils";
+import GOOD_OBJECT from "@salesforce/schema/Good__c";
+import {getObjectInfo} from "lightning/uiObjectInfoApi";
 
 export default class SelectGood extends LightningElement {
 
@@ -32,6 +37,7 @@ export default class SelectGood extends LightningElement {
     costumesRecordTypeId;
     hoodiesRecordTypeId;
     sneakersRecordTypeId;
+    sneackersSubCategoryPicklistValues = [];
 
     getValueByKey(object, row) {
         return object[row];
@@ -46,6 +52,21 @@ export default class SelectGood extends LightningElement {
                 this.displaySneakers = true;
                 this.displayHoodies = false;
                 this.displayCostumes = false;
+
+                getSubCategoryPickListValuesByRecordTypeId(({
+                    recordTypeId: this.sneakersRecordTypeId
+                }))
+                    .then(result => {
+                        this.sneackersSubCategoryPicklistValues = result;
+                        console.log('this.sneackersSubCategoryPicklistValues: ', this.sneackersSubCategoryPicklistValues);
+
+                    })
+                    .catch(error => {
+                        console.log(error);
+                        console.log('error getting CategoryPickListValues');
+                        this.genericShowToast('Error getting CategoryPickListValues', error.body.message, 'error');
+                    });
+
                 break;
             }
             case 'Hoodies': {
@@ -74,6 +95,10 @@ export default class SelectGood extends LightningElement {
             }
         }));
     }
+
+   /* @wire(getObjectInfo, {objectApiName: GOOD_OBJECT})
+    objectInfo;*/
+
 
     connectedCallback() {
 
@@ -120,6 +145,10 @@ export default class SelectGood extends LightningElement {
                 console.log('error getting QuantityUnitOfMeasure Picklist values');
                 this.genericShowToast('Error getting PickList values', error.body.message, 'error');
             });
+
+
+        console.log('obj info:' + this.objectInfo);
+
 
         /*  getBuyers()
               .then(result => {

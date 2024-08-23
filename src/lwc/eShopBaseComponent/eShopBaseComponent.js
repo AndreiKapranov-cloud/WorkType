@@ -14,11 +14,13 @@ export default class EShopBaseComponent extends LightningElement {
     handleWhichComponentToDisplay(event) {
         switch (event.detail.componentToDisplay) {
             case 'NewCart'  : {
+
                 this.componentName = 'New Cart';
                 this.displayNewCartComponent = true;
                 break;
             }
             case 'SelectGood': {
+                this.cartId = event.detail.cartId;
                 this.componentName = 'Select Good';
                 this.displaySelectGoodComponent = true;
                 this.displayNewCartComponent = false;
@@ -26,7 +28,7 @@ export default class EShopBaseComponent extends LightningElement {
             }
             case 'ViewGoodLineItem': {
                 this.goodLineItemId = event.detail.goodLineItemId;
-                this.componentName = 'Good Line Item';
+                this.componentName = 'Eshop Order';
                 this.displayViewGoodLineItem = true;
                 this.displaySelectGoodComponent = false;
                 break;

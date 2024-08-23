@@ -4,12 +4,16 @@
 import {LightningElement, api} from 'lwc';
 import getGoodLineItemById
     from '@salesforce/apex/EShopBaseComponentController.getGoodLineItemById';
+import createEshopOrderMethod
+    from '@salesforce/apex/EShopBaseComponentController.createEshopOrderMethod';
+
 import {genericShowToast} from "c/utils";
 
 
 export default class ViewGoodLineItem extends LightningElement {
     genericShowToast = genericShowToast.bind(this);
     @api goodLineItemId;
+    @api cartId;
     goodLineItem;
     goodName;
     quantity;
@@ -18,7 +22,10 @@ export default class ViewGoodLineItem extends LightningElement {
     supplierName;
     eShopOrderGoodQuantity;
     estimatedDeliveryDate;
-    eshopOrderJsonObject;
+    eshopOrderJsonObject = {};
+    paramsJSONString = [];
+    eshopOrderObject = {};
+
 
     getValueByKey(object, row) {
         return object[row];
@@ -26,6 +33,9 @@ export default class ViewGoodLineItem extends LightningElement {
 
 
     connectedCallback() {
+
+        this.today = new Date();
+        console.log('Daaaaate' + this.today)
         console.log('connectedCallback:' + this.goodLineItemId);
         getGoodLineItemById(({
             goodLineItemId: this.goodLineItemId
@@ -39,7 +49,6 @@ export default class ViewGoodLineItem extends LightningElement {
                 this.quantity = this.getValueByKey(result, 'Quantity__c');
                 this.colour = this.getValueByKey(this.getValueByKey(result, "Good__r"), 'Colour__c');
                 this.size = this.getValueByKey(this.getValueByKey(result, "Good__r"), 'Size__c');
-                ;
                 this.supplierName = '🥰🥶' + this.getValueByKey(this.getValueByKey(result, "Supplier__r"), 'Name');
                 console.log('this.goodLineItem: ', this.goodLineItem);
             })
@@ -49,6 +58,7 @@ export default class ViewGoodLineItem extends LightningElement {
                 this.genericShowToast('Error getting GoodLineItem', error.body.message, 'error');
             });
 
+        console.log('cdccdcc: ' + this.cartId);
         this.isLoading = false;
     }
 
@@ -66,20 +76,18 @@ export default class ViewGoodLineItem extends LightningElement {
         this.eshopOrderJsonObject.eShopOrderGoodQuantity = this.eShopOrderGoodQuantity;
         this.eshopOrderJsonObject.estimatedDeliveryDate = this.estimatedDeliveryDate;
         this.eshopOrderJsonObject.cartId = this.cartId;
-        this.eshopOrderJsonObject.goodId = this.goodId;
-        this.eshopOrderJsonObject.registrationDate = this.registrationDate;
         this.eshopOrderJsonObject.goodLineItemId = this.goodLineItemId;
 
-        this.paramsJSONString = JSON.stringify(this.workOrderLineItemJsonObject);
+        this.paramsJSONString = JSON.stringify(this.eshopOrderJsonObject);
 
-        createWorkOrderLineItemApexMethod(
+        createEshopOrderMethod(
             {
                 paramsJSONString: this.paramsJSONString
             })
             .then(result => {
                 console.log(result);
-                this.workOrderLineItemObject = result;
-                console.log('workOrderLineItemObject = ' + this.workOrderLineItemObject);
+                this.eshopOrderObject = result;
+                console.log('eshopOrderObject = ' + this.eshopOrderObject);
                 this.genericShowToast('Success!', 'Work Order Line Item Record is created Successfully!', 'success');
             })
             .catch(error => {

@@ -180,18 +180,16 @@ public with sharing class EShopBaseComponentController {
             controllingInfo.put(controllingValue.getLabel(), new List<String>());
         }
 
-        for (Schema.PicklistEntry currdependentValue : dependentValues) {
+        for (Schema.PicklistEntry currDependentValue : dependentValues) {
 
-            String jsonString = JSON.serialize(currdependentValue);
+            String jsonString = JSON.serialize(currDependentValue);
 
             System.debug(jsonString);
             MyPiclistInfo info = (MyPiclistInfo) JSON.deserialize(jsonString, MyPiclistInfo.class);
 
             System.debug(info);
 
-
-            //в 16
-            String hexString = EncodingUtil.convertToHex(EncodingUtil.base64Decode(info.validFor)).toUpperCase();// в блоб
+            String hexString = EncodingUtil.convertToHex(EncodingUtil.base64Decode(info.validFor)).toUpperCase();
 
             System.debug(hexString);
             Integer baseCount = 0;
@@ -205,16 +203,16 @@ public with sharing class EShopBaseComponentController {
                     val = curr - 48;
                 }
                 if ((val & 8) == 8) {
-                    controllingInfo.get(controllingValues[baseCount + 0].getLabel()).add(currdependentValue.getLabel());
+                    controllingInfo.get(controllingValues[baseCount + 0].getLabel()).add(currDependentValue.getLabel());
                 }
                 if ((val & 4) == 4) {
-                    controllingInfo.get(controllingValues[baseCount + 1].getLabel()).add(currdependentValue.getLabel());
+                    controllingInfo.get(controllingValues[baseCount + 1].getLabel()).add(currDependentValue.getLabel());
                 }
                 if ((val & 2) == 2) {
-                    controllingInfo.get(controllingValues[baseCount + 2].getLabel()).add(currdependentValue.getLabel());
+                    controllingInfo.get(controllingValues[baseCount + 2].getLabel()).add(currDependentValue.getLabel());
                 }
                 if ((val & 1) == 1) {
-                    controllingInfo.get(controllingValues[baseCount + 3].getLabel()).add(currdependentValue.getLabel());
+                    controllingInfo.get(controllingValues[baseCount + 3].getLabel()).add(currDependentValue.getLabel());
                 }
                 baseCount += 4;
             }
@@ -248,33 +246,33 @@ public with sharing class EShopBaseComponentController {
     }
 
     @AuraEnabled
-    public static List<Map<String, String>> getSubCategoryPickListValuesForSneakersCategory(){
+    public static List<Map<String, String>> getSubCategoryPickListValuesForSneakersCategory() {
 
         return getSubCategoryPickListValuesCategoryName('Sneakers');
     }
 
     @AuraEnabled
-    public static List<Map<String, String>> getSubCategoryPickListValuesForHoodiesCategory(){
+    public static List<Map<String, String>> getSubCategoryPickListValuesForHoodiesCategory() {
 
         return getSubCategoryPickListValuesCategoryName('Hoodies');
     }
 
     @AuraEnabled
-    public static List<Map<String, String>> getSubCategoryPickListValuesForCostumesCategory(){
+    public static List<Map<String, String>> getSubCategoryPickListValuesForCostumesCategory() {
 
         return getSubCategoryPickListValuesCategoryName('Costumes');
     }
 
     @AuraEnabled
     public static Sobject getGoodLineItemById(String goodLineItemId) {
-   //    String idString = Id.valueOf('goodLineItemId');
+        //    String idString = Id.valueOf('goodLineItemId');
         SObject goodLineItem;
         try {
 
-          String query = 'SELECT Id,Name,Quantity__c,Supplier__r.Name,Good__r.Size__c,Good__r.Name,Good__r.Colour__c FROM GoodLineItem__c WHERE Id = ' + '\'' + goodLineItemId + '\' LIMIT 1';
-       //   String query = 'SELECT Id,Name,Quantity__c,Supplier__r.Name,Good__r.Size__c,Good__r.Colour__c FROM GoodLineItem__c WHERE Good__r.SubCategory__c = ' + '\'' + goodLineItemId + '\' LIMIT 1';
+            String query = 'SELECT Id,Name,Quantity__c,Supplier__r.Name,Good__r.Size__c,Good__r.Name,Good__r.Colour__c FROM GoodLineItem__c WHERE Id = ' + '\'' + goodLineItemId + '\' LIMIT 1';
+            //   String query = 'SELECT Id,Name,Quantity__c,Supplier__r.Name,Good__r.Size__c,Good__r.Colour__c FROM GoodLineItem__c WHERE Good__r.SubCategory__c = ' + '\'' + goodLineItemId + '\' LIMIT 1';
             List<SObject>GoodLineItemList = getRecordsBySOQL(query);
-            If(!GoodLineItemList.isEmpty()){
+            If (!GoodLineItemList.isEmpty()) {
                 goodLineItem = GoodLineItemList[0];
             }
         } catch (Exception e) {
@@ -282,5 +280,31 @@ public with sharing class EShopBaseComponentController {
             throw new AuraHandledException('The following exception has occurred: ' + e.getMessage());
         }
         return goodLineItem;
+    }
+
+    @AuraEnabled
+    public static EShopOrder__c createEshopOrderMethod(String paramsJSONString) {
+
+        EShopOrder__c eshopOrder = new EShopOrder__c();
+
+        try {
+
+            CreateEshopOrderParamsWrapper wrapper = (CreateEshopOrderParamsWrapper) JSON.deserialize(paramsJSONString,
+                    CreateEshopOrderParamsWrapper.class);
+
+            Decimal eShopOrderGoodQuantity = wrapper.eShopOrderGoodQuantity;
+            Date estimatedDeliveryDate = wrapper.estimatedDeliveryDate;
+            Id cartId = wrapper.cartId;
+            Date registrationDate = Date.today();
+            Id goodLineItemId = wrapper.goodLineItemId;
+
+            eshopOrder = new EShopOrder__c(Quantity__c = eShopOrderGoodQuantity, EstimatedDeliveryDate__c = estimatedDeliveryDate,
+            Cart__c = cartId, RegistrationDate__c = registrationDate,Good_Line_Item__c = goodLineItemId);
+            insert eshopOrder;
+        } catch (Exception e) {
+            System.debug('The following exception has occurred: ' + e.getMessage());
+            throw new AuraHandledException('The following exception has occurred: ' + e.getMessage());
+        }
+        return eshopOrder;
     }
 }

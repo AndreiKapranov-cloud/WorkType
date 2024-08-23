@@ -1,32 +1,83 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package xmlns="http://soap.sforce.com/2006/04/metadata">
     <types>
-        <members>*</members>
+        <members>Animal</members>
+        <members>AnimalTest</members>
+        <members>BaseComponentController</members>
+        <members>Black</members>
+        <members>CartController</members>
+        <members>ControllerTest</members>
+        <members>CreateCartParamsWrapper</members>
+        <members>CreateEshopOrderParamsWrapper</members>
+        <members>CreateProductItemParamsWrapper</members>
+        <members>CreateProductRequiredParamsWrapper</members>
+        <members>CreateSkillRequirementParamsWrapper</members>
+        <members>CreateWorkOrderLineItemParamsWrapper</members>
+        <members>CreateWorkOrderParamsWrapper</members>
+        <members>CreateWorkTypeParamsWrapper</members>
+        <members>EShopBaseComponentController</members>
+        <members>EShopOrderTriggerHandler</members>
+        <members>Fish</members>
+        <members>Inhabitant</members>
+        <members>InhabitantTest</members>
+        <members>InitParam</members>
+        <members>JSONServlet</members>
+        <members>JSONServletMapping</members>
+        <members>JSONTagLib</members>
+        <members>JSONWebApp</members>
+        <members>LocationController</members>
+        <members>Mammal</members>
+        <members>Man</members>
+        <members>MyPiclistInfo</members>
+        <members>Predator</members>
+        <members>ProductItemController</members>
+        <members>ProductRequiredController</members>
+        <members>SamodelkinUtilClass</members>
+        <members>SamodelkinWrapper</members>
+        <members>ServletJSONWrapper</members>
+        <members>ServletJSONWrapperPlay</members>
+        <members>ServletJSONWrapperPlayTest</members>
+        <members>SkillRequirementController</members>
+        <members>White</members>
+        <members>WorkOrderController</members>
+        <members>WorkOrderLineItemController</members>
+        <members>WorkTypeController</members>
+        <members>Yellow</members>
+        <members>getPicklistValuesParamsWrapper</members>
+        <members>getRecordsWrapper</members>
         <name>ApexClass</name>
     </types>
     <types>
-        <members>*</members>
-        <name>ApexComponent</name>
-    </types>
-    <types>
-        <members>*</members>
+        <members>SessionId</members>
+        <members>TestSessionId</members>
         <name>ApexPage</name>
     </types>
     <types>
-        <members>*</members>
+        <members>EShopOrderTrigger</members>
         <name>ApexTrigger</name>
     </types>
     <types>
-        <members>*</members>
+        <members>asdasd</members>
         <name>AuraDefinitionBundle</name>
     </types>
     <types>
-        <members>*</members>
+        <members>base</members>
+        <members>baseComponent</members>
+        <members>eShopBaseComponent</members>
+        <members>goodSearch</members>
+        <members>helloWorld</members>
+        <members>newCart</members>
+        <members>newEShopOrder</members>
+        <members>newProductItem</members>
+        <members>newProductRequired</members>
+        <members>newSkillRequirement</members>
+        <members>newWorkOrder</members>
+        <members>newWorkOrderLineItem</members>
+        <members>newWorkType</members>
+        <members>selectGood</members>
+        <members>utils</members>
+        <members>viewGoodLineItem</members>
         <name>LightningComponentBundle</name>
-    </types>
-    <types>
-        <members>*</members>
-        <name>StaticResource</name>
     </types>
     <version>53.0</version>
 </Package>

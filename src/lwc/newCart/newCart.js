@@ -22,7 +22,7 @@ export default class NewCart extends LightningElement {
     status;
     cartJsonObject = {};
     cartObject;
-    cartRecordId;
+    cartId;
 
     getValueByKey(object, row) {
         return object[row];
@@ -33,6 +33,7 @@ export default class NewCart extends LightningElement {
         this.dispatchEvent(new CustomEvent('whichcomponenttodisplay', {
             detail: {
                 'componentToDisplay': 'SelectGood',
+                'cartId': this.cartId,
             }
         }));
     }
@@ -113,9 +114,10 @@ export default class NewCart extends LightningElement {
                 console.log(result);
                 console.log('ID: ', result.Id);
                 this.cartObject = result;
-                this.cartRecordId = result.Id;
+                this.cartId = result.Id;
 
                 console.log('cartObject = ' + this.cartObject);
+                console.log('cartId = ' + this.cartId);
 
                 this.genericShowToast('Success!', 'Cart Record is created Successfully!', 'success');
                 this.displayGoodSearchInBase();

@@ -1,0 +1,83 @@
+<!--
+ - Created by andrey on 8/23/24.
+ -->
+
+<!-- View Good Line Item -->
+<template>
+    <div class="slds-m-horizontal_small">
+        <div class="slds-form-element">
+            <div class="slds-form-element__control">
+                <lightning-input name="Pickup Point Address" label="Good Name"
+                                value = {goodName}>
+                </lightning-input>
+            </div>
+        </div>
+    </div>
+
+    <div class="slds-m-horizontal_small">
+        <div class="slds-form-element">
+            <div class="slds-form-element__control">
+                <lightning-input name="Pickup Point Address" label="Quantity In the Warehouse"
+                                 value = {quantity}>
+                </lightning-input>
+            </div>
+        </div>
+    </div>
+
+    <div class="slds-m-horizontal_small">
+        <lightning-input
+                type="date"
+                name="startDate"
+                label="Estimated Delivery Date"
+                value={estimatedDeliveryDate}
+                onchange={handleEstimatedDeliveryDateChange}>
+        </lightning-input>
+    </div>
+
+    <div class="slds-m-horizontal_small">
+        <div class="slds-form-element">
+            <div class="slds-form-element__control">
+                <lightning-input name="Pickup Point Address" label="Colour"
+                                 value = {colour}>
+                </lightning-input>
+            </div>
+        </div>
+    </div>
+
+    <div class="slds-m-horizontal_small">
+        <div class="slds-form-element">
+            <div class="slds-form-element__control">
+                <lightning-input name="Pickup Point Address" label="Size"
+                                 value = {size}>
+                </lightning-input>
+            </div>
+        </div>
+    </div>
+
+    <div class="slds-m-horizontal_small">
+        <div class="slds-form-element">
+            <div class="slds-form-element__control">
+                <lightning-input name="Pickup Point Address" label="Supplier Name"
+                                 value = {supplierName}>
+                </lightning-input>
+            </div>
+        </div>
+    </div>
+
+    <div class="slds-m-horizontal_small">
+
+        <lightning-input name="description" label="Quantity You Would Like To Add To Cart"
+                         onchange={handleEShoporderGoodQuantityChange}></lightning-input>
+    </div>
+
+    <div class=slds-m-top_x-large>
+        <div class="slds-col slds-text-align_right">
+
+            <lightning-button variant="neutral" label="Back to Goods" class="slds-m-right_medium"
+                              onclick={returnToNewWorkOrderComponent}></lightning-button>
+            <lightning-button variant="brand" label="Add To Cart" class="slds-m-right_large"
+                              onclick={addNewEShopOrderToCart}></lightning-button>
+        </div>
+    </div>
+
+</template>

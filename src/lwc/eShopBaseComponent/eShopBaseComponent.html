@@ -17,5 +17,8 @@
         <template lwc:if={displaySelectGoodComponent}>
             <c-select-good onwhichcomponenttodisplay={handleWhichComponentToDisplay}></c-select-good>
         </template>
+        <template lwc:if={displayViewGoodLineItem}>
+            <c-view-good-line-item good-line-item-id={goodLineItemId} ></c-view-good-line-item >
+        </template>
     </lightning-card>
 </template>

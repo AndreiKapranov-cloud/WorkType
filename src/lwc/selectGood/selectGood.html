@@ -9,93 +9,139 @@
     </div>
     <div lwc:else>
 
-        <lightning-layout>
-            <lightning-layout-item>
-                <lightning-vertical-navigation onselect={handleCategoryChangeAction}
-                                               class="navigation">
-                    <lightning-vertical-navigation-section label="Category">
-                        <template for:each={categoryPicklistValues} for:item="category">
+        <div class="slds-grid slds-wrap">
+            <div class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_4-of-12">
+
+                <lightning-layout>
+                    <lightning-layout-item>
+                        <lightning-vertical-navigation onselect={handleCategoryChangeAction}
+                                                       class="navigation">
+                            <lightning-vertical-navigation-section label="Category">
+                                <template for:each={categoryPicklistValues} for:item="category">
+
+                                    <lightning-vertical-navigation-item label={category.value}
+                                                                        name={category.value}
+                                                                        key={category.value}></lightning-vertical-navigation-item>
+                                </template>
+                            </lightning-vertical-navigation-section>
+                        </lightning-vertical-navigation>
+                    </lightning-layout-item>
+                </lightning-layout>
+
+                <template if:true={displayCostumes}>
 
 
-                            <lightning-vertical-navigation-item label={category.value}
-                                                                name={category.value}
-                                                                key={category.value}></lightning-vertical-navigation-item>
-                        </template>
-                    </lightning-vertical-navigation-section>
-                </lightning-vertical-navigation>
-            </lightning-layout-item>
-        </lightning-layout>
+                    <lightning-layout>
+                        <lightning-layout-item>
+                            <lightning-vertical-navigation onselect={handleSubCategoryChange}
+                                                           class="navigation">
+                                <lightning-vertical-navigation-section label="Costumes">
+                                    <template for:each={costumesSubCategoryPicklistValues} for:item="subCategory">
 
-        <template if:true={displayCostumes}>
-            <div class="slds-m-horizontal_small">
-                <lightning-combobox
-                        options={costumesSubCategoryPicklistValues} label="Category"
-                        onchange={handleSubCategoryChange}
-                        name="quantityUnitOfMeasure"
-                ></lightning-combobox>
+
+                                        <lightning-vertical-navigation-item label={subCategory.value}
+                                                                            name={subCategory.value}
+                                                                            key={subCategory.value}></lightning-vertical-navigation-item>
+                                    </template>
+                                </lightning-vertical-navigation-section>
+                            </lightning-vertical-navigation>
+                        </lightning-layout-item>
+                    </lightning-layout>
+
+                    <!--  <div class="slds-m-horizontal_small">
+                          <lightning-combobox
+                                  options={costumesSubCategoryPicklistValues} label={comboboxLabel}
+                                  onchange={handleSubCategoryChange}
+                                  name="quantityUnitOfMeasure"
+                          ></lightning-combobox>
+                      </div>-->
+                </template>
+
+                <template if:true={displayHoodies}>
+
+                    <lightning-layout>
+                        <lightning-layout-item>
+                            <lightning-vertical-navigation onselect={handleSubCategoryChange}
+                                                           class="navigation">
+                                <lightning-vertical-navigation-section label="Hoodies">
+                                    <template for:each={hoodiesSubCategoryPicklistValues} for:item="subCategory">
+
+
+                                        <lightning-vertical-navigation-item label={subCategory.value}
+                                                                            name={subCategory.value}
+                                                                            key={subCategory.value}></lightning-vertical-navigation-item>
+                                    </template>
+                                </lightning-vertical-navigation-section>
+                            </lightning-vertical-navigation>
+                        </lightning-layout-item>
+                    </lightning-layout>
+
+                    <!--  <div class="slds-m-horizontal_small">
+                          <lightning-combobox
+                                  options={hoodiesSubCategoryPicklistValues} label={comboboxLabel}
+                                  onchange={handleSubCategoryChange}
+                                  name="quantityUnitOfMeasure"
+                          ></lightning-combobox>
+                      </div>-->
+                </template>
+
+                <template if:true={displaySneakers}>
+
+                    <lightning-layout>
+                        <lightning-layout-item>
+                            <lightning-vertical-navigation onselect={handleSubCategoryChange}
+                                                           class="navigation">
+                                <lightning-vertical-navigation-section label="Sneakers">
+                                    <template for:each={sneakersSubCategoryPicklistValues} for:item="subCategory">
+
+
+                                        <lightning-vertical-navigation-item label={subCategory.value}
+                                                                            name={subCategory.value}
+                                                                            key={subCategory.value}></lightning-vertical-navigation-item>
+                                    </template>
+                                </lightning-vertical-navigation-section>
+                            </lightning-vertical-navigation>
+                        </lightning-layout-item>
+                    </lightning-layout>
+
+                    <!--  <div class="slds-m-horizontal_small">
+                          <lightning-combobox
+                                  options={sneackersSubCategoryPicklistValues} label={comboboxLabel}
+                                  onchange={handleSubCategoryChange}
+                                  name="quantityUnitOfMeasure"
+                          ></lightning-combobox>
+                      </div>-->
+                </template>
             </div>
-        </template>
+            <div class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_8-of-12">
+                <div class="slds-m-horizontal_small">
+                    <div class="slds-form-element">
+                        <label class="slds-form-element__label"><abbr class="slds-required"
+                                                                      title="required">*</abbr>Good Line Items</label>
+                        <div class="slds-form-element__control">
+                            <div class="slds-select_container">
+                                <select class="slds-select" name="GoodLineItem"
+                                        onchange={handleChangeGoodLineItems}>
+                                    <template for:each={goodLineItems} for:item="goodLineItem">
 
-        <template if:true={displayHoodies}>
-            <div class="slds-m-horizontal_small">
-                <lightning-combobox
-                        options={hoodiesSubCategoryPicklistValues} label="Subcategory"
-                        onchange={handleSubCategoryChange}
-                        name="quantityUnitOfMeasure"
-                ></lightning-combobox>
+                                        <option key={goodLineItem.Id} value={goodLineItem.Id}>{goodLineItem.Id}
+
+                                        </option>
+
+                                    </template>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </template>
+        </div>
 
-        <template if:true={displaySneakers}>
-            <div class="slds-m-horizontal_small">
-                <lightning-combobox
-                        options={sneackersSubCategoryPicklistValues} label="Subcategory"
-                        onchange={handleSubCategoryChange}
-                        name="quantityUnitOfMeasure"
-                ></lightning-combobox>
-            </div>
-        </template>
-
-        <!--   <div class="slds-m-horizontal_small">
-               <lightning-input
-                       type="date"
-                       name="startDate"
-                       label="Estimated Delivery Date"
-                       value={EstimatedDeliveryDate}
-                       onchange={handleEstimatedDeliveryDateChange}>
-               </lightning-input>
-           </div>
-
-           <div class="slds-m-horizontal_small">
-               <div class="slds-form-element">
-                   <div class="slds-form-element__control">
-                       <lightning-input name="Pickup Point Address" label="Pickup Point Address" required="true"
-                                        onchange={handlePickupPointAddressChange}>
-                       </lightning-input>
-                   </div>
-               </div>
-           </div>
-
-           <div class="slds-m-horizontal_small">
-               <div class="slds-form-element">
-                   <div class="slds-form-element">
-                       <div class="slds-form-element__control">
-                           <lightning-combobox
-                                   label="Status"
-                                   required="true"
-                                   options={statusPicklistValues}
-                                   onchange={handleStatusChange}
-                                   name="status"
-                           ></lightning-combobox>
-                       </div>
-                   </div>
-               </div>
-           </div>-->
 
         <div class="slds-p-right_medium">
             <div class="slds-m-top_small">
                 <div class="slds-clearfix">
-                    <lightning-button label="Next" variant="brand" onclick={createCartApexMethod}
+                    <lightning-button label="Next" variant="brand" onclick={displayViewGoodLineItemInBase}
                                       class="slds-float_right">
                     </lightning-button>
                 </div>

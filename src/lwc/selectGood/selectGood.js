@@ -1,45 +1,39 @@
 /**
  * Created by andrey on 8/20/24.
  */
-import getPicklistValuesUsingApex
-    from '@salesforce/apex/EShopBaseComponentController.getPicklistValuesUsingApex';
-import getGoodRecordTypeIdsUsingApex
-    from '@salesforce/apex/EShopBaseComponentController.getGoodRecordTypeIdsUsingApex';
+import {LightningElement} from 'lwc';
+import getGoodLineItemsBySubCategory
+    from '@salesforce/apex/EShopBaseComponentController.getGoodLineItemsBySubCategory';
+import getCategoryPicklistValuesUsingApex
+    from '@salesforce/apex/EShopBaseComponentController.getCategoryPicklistValuesUsingApex';
+import getSubCategoryPickListValuesForCostumesCategory
+    from '@salesforce/apex/EShopBaseComponentController.getSubCategoryPickListValuesForCostumesCategory';
+import getSubCategoryPickListValuesForHoodiesCategory
+    from '@salesforce/apex/EShopBaseComponentController.getSubCategoryPickListValuesForHoodiesCategory';
+import getSubCategoryPickListValuesForSneakersCategory
+    from '@salesforce/apex/EShopBaseComponentController.getSubCategoryPickListValuesForSneakersCategory';
 
-import getSubCategoryPickListValuesByRecordTypeId
-    from '@salesforce/apex/EShopBaseComponentController.getSubCategoryPickListValuesByRecordTypeId';
-
-import {LightningElement, wire} from 'lwc';
 import {genericShowToast} from "c/utils";
-import GOOD_OBJECT from "@salesforce/schema/Good__c";
-import {getObjectInfo} from "lightning/uiObjectInfoApi";
+
 
 export default class SelectGood extends LightningElement {
-
-
     isLoading = true;
     genericShowToast = genericShowToast.bind(this);
-    buyers = [];
     buyerId;
     estimatedDeliveryDate;
     pickupPointAddress;
-    getPicklistValuesParamsJsonObject = {};
     status;
-    cartJsonObject = {};
-    cartObject;
-    cartRecordId;
     categoryPicklistValues = [];
-    subCategoryPicklistValues = [];
     displaySneakers = false;
     displayCostumes = false;
     displayHoodies = false;
-    recordTypeIdsMap;
-    costumesRecordTypeId;
-    hoodiesRecordTypeId;
-    sneakersRecordTypeId;
-    sneackersSubCategoryPicklistValues = [];
+    sneakersSubCategoryPicklistValues = [];
     hoodiesSubCategoryPicklistValues = [];
     costumesSubCategoryPicklistValues = [];
+    comboboxLabel;
+    goodLineItems = [];
+    goodLineItemId;
+
     getValueByKey(object, row) {
         return object[row];
     }
@@ -49,67 +43,31 @@ export default class SelectGood extends LightningElement {
         switch (event.detail.name) {
 
             case 'Sneakers'  : {
-
+                this.isLoading = true;
+                this.comboboxLabel = 'Sneakers';
                 this.displaySneakers = true;
                 this.displayHoodies = false;
                 this.displayCostumes = false;
-
-                getSubCategoryPickListValuesByRecordTypeId(({
-                    recordTypeId: this.sneakersRecordTypeId
-                }))
-                    .then(result => {
-                        this.sneackersSubCategoryPicklistValues = result;
-                        console.log('this.sneackersSubCategoryPicklistValues: ', this.sneackersSubCategoryPicklistValues);
-
-                    })
-                    .catch(error => {
-                        console.log(error);
-                        console.log('error getting CategoryPickListValues');
-                        this.genericShowToast('Error getting CategoryPickListValues', error.body.message, 'error');
-                    });
-
+                this.isLoading = false;
                 break;
             }
             case 'Hoodies': {
+                this.isLoading = true;
+                this.comboboxLabel = 'Hoodies';
                 this.displayHoodies = true;
                 this.displaySneakers = false;
                 this.displayCostumes = false;
-
-                getSubCategoryPickListValuesByRecordTypeId(({
-                    recordTypeId: this.hoodiesRecordTypeId
-                }))
-                    .then(result => {
-                        this.hoodiesSubCategoryPicklistValues = result;
-                        console.log('this.sneackersSubCategoryPicklistValues: ', this.sneackersSubCategoryPicklistValues);
-
-                    })
-                    .catch(error => {
-                        console.log(error);
-                        console.log('error getting CategoryPickListValues');
-                        this.genericShowToast('Error getting CategoryPickListValues', error.body.message, 'error');
-                    });
-
+                this.isLoading = false;
                 break;
             }
             case 'Costumes' : {
+                this.isLoading = true;
+                this.comboboxLabel = 'Costumes';
                 this.displayCostumes = true;
                 this.displayHoodies = false;
                 this.displaySneakers = false;
 
-                getSubCategoryPickListValuesByRecordTypeId(({
-                    recordTypeId: this.costumesRecordTypeId
-                }))
-                    .then(result => {
-                        this.costumesSubCategoryPicklistValues = result;
-                        console.log('this.sneackersSubCategoryPicklistValues: ', this.sneackersSubCategoryPicklistValues);
-
-                    })
-                    .catch(error => {
-                        console.log(error);
-                        console.log('error getting CategoryPickListValues');
-                        this.genericShowToast('Error getting CategoryPickListValues', error.body.message, 'error');
-                    });
-
+                this.isLoading = false;
                 break;
             }
             default:
@@ -118,42 +76,9 @@ export default class SelectGood extends LightningElement {
         }
     }
 
-    displayNewEshopOrderInBase() {
-
-        this.dispatchEvent(new CustomEvent('whichcomponenttodisplay', {
-            detail: {
-                'componentToDisplay': 'NewCart',
-            }
-        }));
-    }
-
-   /* @wire(getObjectInfo, {objectApiName: GOOD_OBJECT})
-    objectInfo;*/
-
-
     connectedCallback() {
 
-        getGoodRecordTypeIdsUsingApex()
-            .then(result => {
-                this.recordTypeIdsMap = result;
-                console.log('this.recordTypeIdsMap: ', this.recordTypeIdsMap);
-                this.costumesRecordTypeId = this.getValueByKey(result, "Costumes");
-                this.hoodiesRecordTypeId = this.getValueByKey(result, "Hoodies");
-                this.sneakersRecordTypeId = this.getValueByKey(result, "Sneakers");
-                console.log(this.costumesRecordTypeId);
-                console.log(this.hoodiesRecordTypeId);
-                console.log(this.sneakersRecordTypeId);
-
-            })
-            .catch(error => {
-                console.log(error);
-                console.log('error getting recordTypeIdsMap');
-                this.genericShowToast('Error getting recordTypeIdsMap', error.body.message, 'error');
-            });
-
-        getPicklistValuesUsingApex(({
-            fieldName: 'Category__c'
-        }))
+        getCategoryPicklistValuesUsingApex()
             .then(result => {
                 this.categoryPicklistValues = result;
                 console.log('this.picklistValues: ', this.categoryPicklistValues);
@@ -164,67 +89,73 @@ export default class SelectGood extends LightningElement {
                 this.genericShowToast('Error getting PickList values', error.body.message, 'error');
             });
 
-        getPicklistValuesUsingApex(({
-            fieldName: 'SubCategory__c'
-        }))
+        getSubCategoryPickListValuesForHoodiesCategory()
             .then(result => {
-                this.subCategoryPicklistValues = result;
-                console.log('this.subCategoryPicklistValues: ', this.subCategoryPicklistValues);
+                this.hoodiesSubCategoryPicklistValues = result;
+                console.log('this.hoodiesSubCategoryPicklistValues: ', this.hoodiesSubCategoryPicklistValues);
             })
             .catch(error => {
                 console.log(error);
-                console.log('error getting QuantityUnitOfMeasure Picklist values');
-                this.genericShowToast('Error getting PickList values', error.body.message, 'error');
+                console.log('error getting HoodiesSubCategoryPicklistValues');
+                this.genericShowToast('Error getting HoodiesSubCategoryPicklistValues', error.body.message, 'error');
             });
 
-
-        console.log('obj info:' + this.objectInfo);
-
-
-        /*  getBuyers()
-              .then(result => {
-                  this.buyers = result;
-                  console.log('this.buyerId: ', this.buyerId);
-                  console.log('this.buyers: ', this.buyers);
-              })
-              .catch(error => {
-                  console.log(error);
-                  console.log('error getting Buyers');
-                  this.genericShowToast('error getting Buyers', error.body.message, 'error');
-              });
-
-
-          this.getPicklistValuesParamsJsonObject.sObjectType = 'Cart__c';
-          this.getPicklistValuesParamsJsonObject.field = 'Status__c';
-          this.getPicklistValuesParamsJSONString = JSON.stringify(this.getPicklistValuesParamsJsonObject);
-
-          console.log(this.getPicklistValuesParamsJSONString);
-
-          getPicklistValuesUsingApex(({
-              getPicklistValuesParamsJSONString: this.getPicklistValuesParamsJSONString
-          }))
-              .then(result => {
-
-                  this.statusPicklistValues = result;
-                  this.status = this.getValueByKey(result[0], "value");
-                  console.log('this.status: ', this.status);
-                  console.log('this.picklistValues: ', this.statusPicklistValues);
-              })
-              .catch(error => {
-                  console.log(error);
-                  console.log('error getting Status Picklist values');
-                  this.genericShowToast('Error getting PickList values', error.body.message, 'error');
-              })*/
+        getSubCategoryPickListValuesForSneakersCategory()
+            .then(result => {
+                this.sneakersSubCategoryPicklistValues = result;
+                console.log('this.sneakersSubCategoryPicklistValues: ', this.sneakersSubCategoryPicklistValues);
+            })
+            .catch(error => {
+                console.log(error);
+                console.log('error getting SneakersSubCategoryPicklistValues');
+                this.genericShowToast('Error getting SneakersSubCategoryPicklistValues', error.body.message, 'error');
+            });
+        getSubCategoryPickListValuesForCostumesCategory()
+            .then(result => {
+                this.costumesSubCategoryPicklistValues = result;
+                console.log('this.costumesSubCategoryPicklistValues: ', this.costumesSubCategoryPicklistValues);
+            })
+            .catch(error => {
+                console.log(error);
+                console.log('error getting CostumesSubCategoryPicklistValues');
+                this.genericShowToast('Error getting CostumesSubCategoryPicklistValues', error.body.message, 'error');
+            });
 
         this.isLoading = false;
     }
 
-    handleCategoryChange(e) {
-        this.category = e.target.value;
+    handleSubCategoryChange(event) {
+
+        getGoodLineItemsBySubCategory(({
+            subCategory: event.detail.name
+        }))
+            .then(result => {
+                this.goodLineItems = result;
+                this.goodLineItemId = this.getValueByKey(result[0], "Id");
+
+                console.log('this.goodLineItems: ', this.goodLineItems);
+            })
+            .catch(error => {
+                console.log(error);
+                console.log('error getting goodLineItems');
+                this.genericShowToast('Error getting goodLineItems', error.body.message, 'error');
+            });
+
     }
 
-    handleSubCategoryChange(e) {
-        this.subCategory = e.target.value;
+    displayViewGoodLineItemInBase() {
+        console.log('displayViewGoodLineItemInBase,this.goodLineItemId :' + this.goodLineItemId);
+        this.dispatchEvent(new CustomEvent('whichcomponenttodisplay', {
+            detail: {
+                'componentToDisplay': 'ViewGoodLineItem',
+                'goodLineItemId': this.goodLineItemId
+            }
+        }));
+    }
+
+    handleChangeGoodLineItems(e) {
+        this.goodLineItemId = e.target.key;
+        console.log('handleChangeGoodLineItems,this.goodLineItemId :' + this.goodLineItemId);
     }
 
     handlePickupPointAddressChange(e) {
@@ -235,40 +166,4 @@ export default class SelectGood extends LightningElement {
         this.status = e.target.value;
     }
 
-    createCartApexMethod() {
-
-        /*   this.isLoading = true;
-           this.cartJsonObject.buyerId = this.buyerId;
-           this.cartJsonObject.estimatedDeliveryDate = this.estimatedDeliveryDate;
-           this.cartJsonObject.pickupPointAddress = this.pickupPointAddress;
-           this.cartJsonObject.status = this.status;
-
-           this.paramsJSONString = JSON.stringify(this.cartJsonObject);
-           console.log('paramsJSONString:' + this.paramsJSONString);
-
-           createCartApexMethod(
-               {
-                   paramsJSONString: this.paramsJSONString
-               })
-               .then(result => {
-                   console.log(result);
-                   console.log('ID: ', result.Id);
-                   this.cartObject = result;
-                   this.cartRecordId = result.Id;
-
-                   console.log('cartObject = ' + this.cartObject);
-
-                   this.genericShowToast('Success!', 'Cart Record is created Successfully!', 'success');
-                   this.displayNewEshopOrderInBase();
-               })
-               .catch(error => {
-                   console.log('error createCart');
-                   console.log(error);
-                   this.genericShowToast('Error creating Cart.', error.body.message, 'error');
-               }).finally(
-               () => {
-                   this.isLoading = false;
-               }
-           )*/
-    }
 }

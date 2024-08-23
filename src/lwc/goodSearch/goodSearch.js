@@ -1,17 +1,14 @@
 /**
- * Created by andrey on 8/19/24.
+ * Created by andrey on 8/20/24.
  */
-import {LightningElement} from 'lwc';
-import createCartApexMethod
-    from '@salesforce/apex/CartController.createCartApexMethod';
-import getBuyers
-    from '@salesforce/apex/CartController.getBuyers';
 import getPicklistValuesUsingApex
-    from '@salesforce/apex/CartController.getPicklistValuesUsingApex';
+    from '@salesforce/apex/EShopBaseComponentController.getPicklistValuesUsingApex';
+import {LightningElement} from 'lwc';
 import {genericShowToast} from "c/utils";
 
+export default class GoodSearch extends LightningElement {
 
-export default class NewCart extends LightningElement {
+
     isLoading = true;
     genericShowToast = genericShowToast.bind(this);
     buyers = [];
@@ -23,26 +20,53 @@ export default class NewCart extends LightningElement {
     cartJsonObject = {};
     cartObject;
     cartRecordId;
+    categoryPicklistValues = [];
+    subCategoryPicklistValues = [];
 
     getValueByKey(object, row) {
         return object[row];
     }
 
-    displayGoodSearchInBase() {
+    displayNewEshopOrderInBase() {
 
         this.dispatchEvent(new CustomEvent('whichcomponenttodisplay', {
             detail: {
-                'componentToDisplay': 'SelectGood',
+                'componentToDisplay': 'NewCart',
             }
         }));
     }
 
     connectedCallback() {
-        this.isLoading = true;
-        getBuyers()
+
+        getPicklistValuesUsingApex(({
+            fieldName : 'Category__c'
+        }))
+            .then(result => {
+                this.categoryPicklistValues = result;
+                console.log('this.picklistValues: ', this.categoryPicklistValues);
+            })
+            .catch(error => {
+                console.log(error);
+                console.log('error getting QuantityUnitOfMeasure Picklist values');
+                this.genericShowToast('Error getting PickList values', error.body.message, 'error');
+            });
+
+        getPicklistValuesUsingApex(({
+            fieldName : 'SubCategory__c'
+        }))
+            .then(result => {
+                this.subCategoryPicklistValues = result;
+                console.log('this.subCategoryPicklistValues: ', this.subCategoryPicklistValues);
+            })
+            .catch(error => {
+                console.log(error);
+                console.log('error getting QuantityUnitOfMeasure Picklist values');
+                this.genericShowToast('Error getting PickList values', error.body.message, 'error');
+            });
+
+      /*  getBuyers()
             .then(result => {
                 this.buyers = result;
-                this.buyerId = this.getValueByKey(result[0], 'Id');
                 console.log('this.buyerId: ', this.buyerId);
                 console.log('this.buyers: ', this.buyers);
             })
@@ -73,17 +97,17 @@ export default class NewCart extends LightningElement {
                 console.log(error);
                 console.log('error getting Status Picklist values');
                 this.genericShowToast('Error getting PickList values', error.body.message, 'error');
-            })
+            })*/
 
         this.isLoading = false;
     }
 
-    handleChangeBuyer(e) {
-        this.buyerId = e.target.value;
+    handleCategoryChange(e) {
+        this.category = e.target.value;
     }
 
-    handleEstimatedDeliveryDateChange(e) {
-        this.estimatedDeliveryDate = e.target.value;
+    handleSubCategoryChange(e) {
+        this.subCategory = e.target.value;
     }
 
     handlePickupPointAddressChange(e) {
@@ -96,7 +120,7 @@ export default class NewCart extends LightningElement {
 
     createCartApexMethod() {
 
-        this.isLoading = true;
+     /*   this.isLoading = true;
         this.cartJsonObject.buyerId = this.buyerId;
         this.cartJsonObject.estimatedDeliveryDate = this.estimatedDeliveryDate;
         this.cartJsonObject.pickupPointAddress = this.pickupPointAddress;
@@ -118,7 +142,7 @@ export default class NewCart extends LightningElement {
                 console.log('cartObject = ' + this.cartObject);
 
                 this.genericShowToast('Success!', 'Cart Record is created Successfully!', 'success');
-                this.displayGoodSearchInBase();
+                this.displayNewEshopOrderInBase();
             })
             .catch(error => {
                 console.log('error createCart');
@@ -128,6 +152,6 @@ export default class NewCart extends LightningElement {
             () => {
                 this.isLoading = false;
             }
-        )
+        )*/
     }
 }

@@ -1,34 +1,31 @@
 <!--
- - Created by andrey on 8/19/24.
+ - Created by andrey on 8/20/24.
  -->
 
-<!-- New Cart -->
+<!-- Good Search -->
 <template>
     <div lwc:if={isLoading} class="style-of-spinner">
         <lightning-spinner variant="base" size="medium"></lightning-spinner>
     </div>
     <div lwc:else>
+
         <div class="slds-m-horizontal_small">
-            <div class="slds-form-element">
-                <label class="slds-form-element__label"><abbr class="slds-required"
-                                                              title="required">*</abbr>Buyer</label>
-                <div class="slds-form-element__control">
-                    <div class="slds-select_container">
-                        <select class="slds-select" name="buyer"
-                                onchange={handleChangeBuyer}>
-                            <template for:each={buyers} for:item="buyer">
-
-                                <option key={buyer.Id} value={buyer.Id}>{buyer.Name}</option>
-
-                            </template>
-                        </select>
-                    </div>
-                </div>
-            </div>
+            <lightning-combobox
+                    options={categoryPicklistValues} label="Category"
+                    onchange={handleCategoryChange}
+                    name="quantityUnitOfMeasure"
+            ></lightning-combobox>
         </div>
 
-<!--
         <div class="slds-m-horizontal_small">
+            <lightning-combobox
+                    options={subCategoryPicklistValues} label="Subcategory"
+                    onchange={handleSubCategoryChange}
+                    name="quantityUnitOfMeasure"
+            ></lightning-combobox>
+        </div>
+
+     <!--   <div class="slds-m-horizontal_small">
             <lightning-input
                     type="date"
                     name="startDate"
@@ -36,8 +33,7 @@
                     value={EstimatedDeliveryDate}
                     onchange={handleEstimatedDeliveryDateChange}>
             </lightning-input>
-        </div>-->
-
+        </div>
 
         <div class="slds-m-horizontal_small">
             <div class="slds-form-element">
@@ -63,7 +59,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div>-->
 
         <div class="slds-p-right_medium">
             <div class="slds-m-top_small">

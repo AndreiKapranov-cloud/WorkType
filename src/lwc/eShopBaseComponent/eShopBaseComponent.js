@@ -9,6 +9,7 @@ export default class EShopBaseComponent extends LightningElement {
     componentName = 'New Cart';
     displayNewCartComponent = true;
     displaySelectGoodComponent = false;
+    displayViewGoodLineItem = false;
 
     handleWhichComponentToDisplay(event) {
         switch (event.detail.componentToDisplay) {
@@ -19,18 +20,18 @@ export default class EShopBaseComponent extends LightningElement {
             }
             case 'SelectGood': {
                 this.componentName = 'Select Good';
-                // this.workTypeRecordId = event.detail.workTypeRecordId;
                 this.displaySelectGoodComponent = true;
                 this.displayNewCartComponent = false;
                 break;
             }
-            // case 'NewEShopOrder': {
-            //     this.componentName = 'New EShop Order';
-            //     // this.workTypeRecordId = event.detail.workTypeRecordId;
-            //     this.displayNewEShopOrderComponent = true;
-            //     this.displayNewCartComponent = false;
-            //     break;
-            // }
+            case 'ViewGoodLineItem': {
+                this.goodLineItemId = event.detail.goodLineItemId;
+                this.componentName = 'Good Line Item';
+                this.displayViewGoodLineItem = true;
+                this.displaySelectGoodComponent = false;
+                break;
+            }
+
             default:
                 this.displayNewCartComponent = true;
                 //   this.displayNewEShopOrderComponent = false;

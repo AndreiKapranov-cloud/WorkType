@@ -16,6 +16,14 @@ import getSubCategoryPickListValuesForSneakersCategory
 import {genericShowToast} from "c/utils";
 
 
+const columns = [
+    {label: 'Id', fieldName: 'Id'},
+    {label: 'Name', fieldName: 'Name'},
+    {label: 'Quantity', fieldName: 'Quantity__c', type: 'number'},
+    {label: 'Supplier Name', fieldName: 'Supplier__r.Name'},
+];
+
+
 export default class SelectGood extends LightningElement {
     isLoading = true;
     genericShowToast = genericShowToast.bind(this);
@@ -33,6 +41,11 @@ export default class SelectGood extends LightningElement {
     comboboxLabel;
     goodLineItems = [];
     goodLineItemId;
+    columns = columns;
+    goodLineItemWrapperObject = {};
+    item;
+
+
 
     getValueByKey(object, row) {
         return object[row];
@@ -121,6 +134,7 @@ export default class SelectGood extends LightningElement {
                 this.genericShowToast('Error getting CostumesSubCategoryPicklistValues', error.body.message, 'error');
             });
 
+
         this.isLoading = false;
     }
 
@@ -130,7 +144,32 @@ export default class SelectGood extends LightningElement {
             subCategory: event.detail.name
         }))
             .then(result => {
-                this.goodLineItems = result;
+
+                this.listOfTodos=result;
+
+           /*     {label: 'Id', fieldName: 'Id'},
+                {label: 'Name', fieldName: 'Name'},
+                {label: 'Quantity', fieldName: 'Quantity__c', type: 'number'},
+                {label: 'Supplier Name', fieldName: 'Supplier__r.Name'},
+*/
+                for(this.item of this.listOfTodos){
+                    this.goodLineItems.push({
+                        Id: this.item.Id,
+                        Name:this.item.Name/*,
+                        Quantity:this.item.Quantity__c,
+                        SupplierName:this.item.Supplier__r.Name*/});
+                }
+
+                this.result.forEach(item => { this.goodLineItems.push({
+                    Id: item.Id,
+                    Name:item.Name,
+                    Quantity:item.Quantity__c,
+                    SupplierName:item.Supplier__r.Name});});
+
+
+
+
+
                 this.goodLineItemId = this.getValueByKey(result[0], "Id");
 
                 console.log('this.goodLineItems: ', this.goodLineItems);

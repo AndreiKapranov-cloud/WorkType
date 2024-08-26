@@ -94,7 +94,6 @@
                                 <lightning-vertical-navigation-section label="Sneakers">
                                     <template for:each={sneakersSubCategoryPicklistValues} for:item="subCategory">
 
-
                                         <lightning-vertical-navigation-item label={subCategory.value}
                                                                             name={subCategory.value}
                                                                             key={subCategory.value}></lightning-vertical-navigation-item>
@@ -113,30 +112,49 @@
                       </div>-->
                 </template>
             </div>
+
             <div class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_8-of-12">
                 <div class="slds-m-horizontal_small">
                     <div class="slds-form-element">
                         <label class="slds-form-element__label"><abbr class="slds-required"
                                                                       title="required">*</abbr>Good Line Items</label>
                         <div class="slds-form-element__control">
-                            <div class="slds-select_container">
-                                <select class="slds-select" name="GoodLineItem"
-                                        onchange={handleChangeGoodLineItems}>
-                                    <template for:each={goodLineItems} for:item="goodLineItem">
 
-                                        <option key={goodLineItem.Id} value={goodLineItem.Id}>{goodLineItem.Id}
-
-                                        </option>
-
-                                    </template>
-                                </select>
+                            <div style="height: 300px;">
+                                <lightning-datatable
+                                        key-field="id"
+                                        data={goodLineItems}
+                                        columns={columns}>
+                                </lightning-datatable>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
 
+            <!--  <div class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_8-of-12">
+                  <div class="slds-m-horizontal_small">
+                      <div class="slds-form-element">
+                          <label class="slds-form-element__label"><abbr class="slds-required"
+                                                                        title="required">*</abbr>Good Line Items</label>
+                          <div class="slds-form-element__control">
+                              <div class="slds-select_container">
+                                  <select class="slds-select" name="GoodLineItem"
+                                          onchange={handleChangeGoodLineItems}>
+                                      <template for:each={goodLineItems} for:item="goodLineItem">
+
+                                          <option key={goodLineItem.Id} value={goodLineItem.Id}>{goodLineItem.Id}
+
+                                          </option>
+
+                                      </template>
+                                  </select>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              </div>-->
+        </div>
 
         <div class="slds-p-right_medium">
             <div class="slds-m-top_small">

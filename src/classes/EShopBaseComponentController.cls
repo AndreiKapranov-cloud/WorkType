@@ -15,19 +15,7 @@ public with sharing class EShopBaseComponentController {
         }
     }
 
-    @AuraEnabled
-    public static List<SObject> getGoodLineItemsBySubCategory(String subCategory) {
-        List<SObject> goodLineItemsList = new List<SObject>();
-        try {
 
-            String query = 'SELECT Id,Name,Quantity__c,Supplier__r.Name FROM GoodLineItem__c WHERE Good__r.SubCategory__c = ' + '\'' + subCategory + '\'';
-            goodLineItemsList = getRecordsBySOQL(query);
-        } catch (Exception e) {
-            System.debug('The following exception has occurred: ' + e.getMessage());
-            throw new AuraHandledException('The following exception has occurred: ' + e.getMessage());
-        }
-        return goodLineItemsList;
-    }
 
     @AuraEnabled
     public static List<Map<String, String>> getCategoryPicklistValuesUsingApex() {

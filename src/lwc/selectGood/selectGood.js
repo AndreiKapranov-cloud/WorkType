@@ -1,9 +1,12 @@
 /**
  * Created by andrey on 8/20/24.
  */
-import {LightningElement} from 'lwc';
-import getGoodLineItemsBySubCategory
-    from '@salesforce/apex/EShopBaseComponentController.getGoodLineItemsBySubCategory';
+import {LightningElement, track, wire} from 'lwc';
+
+import fetchGoodLineItems
+    from '@salesforce/apex/SelectGoodController.fetchGoodLineItems';
+import getGoodLineItemWrapperObjectsBySubCategory
+    from '@salesforce/apex/SelectGoodController.getGoodLineItemWrapperObjectsBySubCategory';
 import getCategoryPicklistValuesUsingApex
     from '@salesforce/apex/EShopBaseComponentController.getCategoryPicklistValuesUsingApex';
 import getSubCategoryPickListValuesForCostumesCategory
@@ -17,10 +20,12 @@ import {genericShowToast} from "c/utils";
 
 
 const columns = [
-    {label: 'Id', fieldName: 'Id'},
-    {label: 'Name', fieldName: 'Name'},
-    {label: 'Quantity', fieldName: 'Quantity__c', type: 'number'},
-    {label: 'Supplier Name', fieldName: 'Supplier__r.Name'},
+
+    {label: 'Name', fieldName: 'name'},
+    {label: 'Quantity', fieldName: 'quantity'},
+    {label: 'Supplier Name', fieldName: 'supplierName'},
+    {label: 'Size', fieldName: 'size'},
+    {label: 'Colour', fieldName: 'colour'}
 ];
 
 
@@ -39,12 +44,16 @@ export default class SelectGood extends LightningElement {
     hoodiesSubCategoryPicklistValues = [];
     costumesSubCategoryPicklistValues = [];
     comboboxLabel;
-    goodLineItems = [];
+    gooodLineItems = [];
     goodLineItemId;
     columns = columns;
     goodLineItemWrapperObject = {};
     item;
+    searchText = '';
+    subCategory;
+    goodLineItems = [];
 
+    supplierName;
 
 
     getValueByKey(object, row) {
@@ -86,6 +95,21 @@ export default class SelectGood extends LightningElement {
             default:
                 this.displaySneakers = true;
                 break;
+        }
+    }
+
+
+    @wire(fetchGoodLineItems, {searchText: '$searchText', subCategory: '$subCategory'})
+    wiredGoodLineItems(result) {
+
+        this.refreshedData = result
+        if (result.data) {
+            console.log('result  : ' + JSON.stringify(result));
+            console.log('result.data :' + JSON.stringify(result.data));
+            this.goodLineItems = result.data;
+        } else if (result.error) {
+            this.genericShowToast('Error fetching GoodLineItems', result.error.body.message, 'error');
+            console.log('Error fetching GoodLineItems', result.error);
         }
     }
 
@@ -138,41 +162,67 @@ export default class SelectGood extends LightningElement {
         this.isLoading = false;
     }
 
-    handleSubCategoryChange(event) {
+    handleChangeSearchText(event) {
+        this.searchText = event.target.value;
+    }
 
-        getGoodLineItemsBySubCategory(({
+    handleSubCategoryChange(event) {
+        this.subCategory = event.detail.name;
+        getGoodLineItemWrapperObjectsBySubCategory(({
             subCategory: event.detail.name
         }))
             .then(result => {
+                this.goodLineItems = result;
+                /*    console.log(this.goodLineItems);
 
-                this.listOfTodos=result;
+                    console.log(this.getValueByKey(this.getValueByKey(this.goodLineItems[0], "Supplier__r"), 'Name'));
+                    console.log(this.goodLineItems[0].Supplier__r.Name);*/
 
-           /*     {label: 'Id', fieldName: 'Id'},
-                {label: 'Name', fieldName: 'Name'},
-                {label: 'Quantity', fieldName: 'Quantity__c', type: 'number'},
-                {label: 'Supplier Name', fieldName: 'Supplier__r.Name'},
-*/
-                for(this.item of this.listOfTodos){
-                    this.goodLineItems.push({
-                        Id: this.item.Id,
-                        Name:this.item.Name/*,
-                        Quantity:this.item.Quantity__c,
-                        SupplierName:this.item.Supplier__r.Name*/});
-                }
-
-                this.result.forEach(item => { this.goodLineItems.push({
-                    Id: item.Id,
-                    Name:item.Name,
-                    Quantity:item.Quantity__c,
-                    SupplierName:item.Supplier__r.Name});});
+                /*   this.goodLineItems.forEach(record => {
+                       console.log(record.Id);
+                       console.log(record.Name);
+                       console.log(this.getValueByKey(record, "Quantity__c"));
+                       console.log(this.getValueByKey(this.getValueByKey(record, "Supplier__r"), 'Name'));
 
 
+                       this.goodLineItemWrapperObject.Id = record.Id;
+                       this.goodLineItemWrapperObject.Name = record.Name;
+                       this.goodLineItemWrapperObject.Quantity = this.getValueByKey(record, "Quantity__c");
+                       this.goodLineItemWrapperObject.SupplierName = this.getValueByKey(this.getValueByKey(record, "Supplier__r"), 'Name');
+
+                      /!* let goodLineItemWrapperObject = {Id: record.Id, Name: record.Name,Quantity:this.getValueByKey(record, "Quantity__c"),
+                           SupplierName:this.getValueByKey(this.getValueByKey(record, "Supplier__r"), 'Name')};*!/
+
+                       console.log('goodLineItemWrapperObject  :' + JSON.stringify(this.goodLineItemWrapperObject));
+                       this.gooodLineItems.push(JSON.stringify(this.goodLineItemWrapperObject));
+                       console.log('gooodLineItems   :' + this.gooodLineItems);
+                   });*/
 
 
+                //  this.goodName = this.getValueByKey(this.getValueByKey(result, "Good__r"), 'Name');
+                //  this.listOfTodos=result;
 
-                this.goodLineItemId = this.getValueByKey(result[0], "Id");
+                /*     {label: 'Id', fieldName: 'Id'},
+                     {label: 'Name', fieldName: 'Name'},
+                     {label: 'Quantity', fieldName: 'Quantity__c', type: 'number'},
+                     {label: 'Supplier Name', fieldName: 'Supplier__r.Name'},
+     */
+                /* for(this.item of this.goodLineItems){
+                     this.goodLineItems.push({
+                         Id: this.item.Id,
+                         Name:this.item.Name/!*,
+                         Quantity:this.item.Quantity__c,
+                         SupplierName:this.item.Supplier__r.Name*!/});
+                 }*/
 
-                console.log('this.goodLineItems: ', this.goodLineItems);
+                /* this.result.forEach(item => { this.goodLineItems.push({
+                     Id: item.Id,
+                     Name:item.Name,
+                     Quantity:item.Quantity__c,
+                     SupplierName:item.Supplier__r.Name});});*/
+
+
+                console.log('this.gooodLineItems: ', JSON.stringify(this.gooodLineItems));
             })
             .catch(error => {
                 console.log(error);

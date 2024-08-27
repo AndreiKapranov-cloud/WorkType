@@ -119,9 +119,10 @@
                         <label class="slds-form-element__label"><abbr class="slds-required"
                                                                       title="required">*</abbr>Good Line Items</label>
                         <div class="slds-form-element__control">
-
+                            <lightning-input type="search" placeholder="Search opportunity by Name..." onchange={handleChangeSearchText}></lightning-input>
                             <div style="height: 300px;">
                                 <lightning-datatable
+                                        onrowselection={handleRowSelection}
                                         key-field="id"
                                         data={goodLineItems}
                                         columns={columns}>

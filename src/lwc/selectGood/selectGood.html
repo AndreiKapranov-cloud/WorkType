@@ -30,14 +30,12 @@
 
                 <template if:true={displayCostumes}>
 
-
                     <lightning-layout>
                         <lightning-layout-item>
                             <lightning-vertical-navigation onselect={handleSubCategoryChange}
                                                            class="navigation">
                                 <lightning-vertical-navigation-section label="Costumes">
                                     <template for:each={costumesSubCategoryPicklistValues} for:item="subCategory">
-
 
                                         <lightning-vertical-navigation-item label={subCategory.value}
                                                                             name={subCategory.value}
@@ -48,13 +46,6 @@
                         </lightning-layout-item>
                     </lightning-layout>
 
-                    <!--  <div class="slds-m-horizontal_small">
-                          <lightning-combobox
-                                  options={costumesSubCategoryPicklistValues} label={comboboxLabel}
-                                  onchange={handleSubCategoryChange}
-                                  name="quantityUnitOfMeasure"
-                          ></lightning-combobox>
-                      </div>-->
                 </template>
 
                 <template if:true={displayHoodies}>
@@ -66,7 +57,6 @@
                                 <lightning-vertical-navigation-section label="Hoodies">
                                     <template for:each={hoodiesSubCategoryPicklistValues} for:item="subCategory">
 
-
                                         <lightning-vertical-navigation-item label={subCategory.value}
                                                                             name={subCategory.value}
                                                                             key={subCategory.value}></lightning-vertical-navigation-item>
@@ -75,14 +65,6 @@
                             </lightning-vertical-navigation>
                         </lightning-layout-item>
                     </lightning-layout>
-
-                    <!--  <div class="slds-m-horizontal_small">
-                          <lightning-combobox
-                                  options={hoodiesSubCategoryPicklistValues} label={comboboxLabel}
-                                  onchange={handleSubCategoryChange}
-                                  name="quantityUnitOfMeasure"
-                          ></lightning-combobox>
-                      </div>-->
                 </template>
 
                 <template if:true={displaySneakers}>
@@ -102,24 +84,27 @@
                             </lightning-vertical-navigation>
                         </lightning-layout-item>
                     </lightning-layout>
-
-                    <!--  <div class="slds-m-horizontal_small">
-                          <lightning-combobox
-                                  options={sneackersSubCategoryPicklistValues} label={comboboxLabel}
-                                  onchange={handleSubCategoryChange}
-                                  name="quantityUnitOfMeasure"
-                          ></lightning-combobox>
-                      </div>-->
                 </template>
             </div>
 
             <div class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_8-of-12">
-                <div class="slds-m-horizontal_small">
+                <div class="slds-m-around_small">
+                    <div class="slds-m-bottom_large">
+                        <div class="slds-form-element">
+
+                            <div class="slds-form-element__control">
+
+                                <lightning-input label="Good Line Items" type="search"
+                                                 placeholder="Search opportunity by Name..."
+                                                 onchange={handleChangeSearchText}></lightning-input>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="slds-m-around_small">
                     <div class="slds-form-element">
-                        <label class="slds-form-element__label"><abbr class="slds-required"
-                                                                      title="required">*</abbr>Good Line Items</label>
                         <div class="slds-form-element__control">
-                            <lightning-input type="search" placeholder="Search opportunity by Name..." onchange={handleChangeSearchText}></lightning-input>
                             <div style="height: 300px;">
                                 <lightning-datatable
                                         onrowselection={handleRowSelection}
@@ -132,39 +117,17 @@
                     </div>
                 </div>
             </div>
-
-            <!--  <div class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_8-of-12">
-                  <div class="slds-m-horizontal_small">
-                      <div class="slds-form-element">
-                          <label class="slds-form-element__label"><abbr class="slds-required"
-                                                                        title="required">*</abbr>Good Line Items</label>
-                          <div class="slds-form-element__control">
-                              <div class="slds-select_container">
-                                  <select class="slds-select" name="GoodLineItem"
-                                          onchange={handleChangeGoodLineItems}>
-                                      <template for:each={goodLineItems} for:item="goodLineItem">
-
-                                          <option key={goodLineItem.Id} value={goodLineItem.Id}>{goodLineItem.Id}
-
-                                          </option>
-
-                                      </template>
-                                  </select>
-                              </div>
-                          </div>
-                      </div>
-                  </div>
-              </div>-->
-        </div>
-
-        <div class="slds-p-right_medium">
-            <div class="slds-m-top_small">
-                <div class="slds-clearfix">
-                    <lightning-button label="Next" variant="brand" onclick={displayViewGoodLineItemInBase}
-                                      class="slds-float_right">
-                    </lightning-button>
-                </div>
-            </div>
         </div>
     </div>
+
+    <div class=slds-m-top_x-large key={goodLineItem.id}>
+        <div class="slds-col slds-text-align_right">
+            <lightning-button variant="neutral" label="Back to New Cart" class="slds-m-right_medium"
+                              onclick={returnToNewCart}></lightning-button>
+            <lightning-button variant="brand" label="Next" class="slds-m-right_large"
+                              onclick={displayViewGoodLineItemInBase}></lightning-button>
+        </div>
+    </div>
+
+
 </template>

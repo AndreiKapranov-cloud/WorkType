@@ -18,7 +18,6 @@ import getSubCategoryPickListValuesForSneakersCategory
 
 import {genericShowToast} from "c/utils";
 
-
 const columns = [
 
     {label: 'Name', fieldName: 'name'},
@@ -27,7 +26,6 @@ const columns = [
     {label: 'Size', fieldName: 'size'},
     {label: 'Colour', fieldName: 'colour'}
 ];
-
 
 export default class SelectGood extends LightningElement {
     isLoading = true;
@@ -47,18 +45,18 @@ export default class SelectGood extends LightningElement {
     gooodLineItems = [];
     goodLineItemId;
     columns = columns;
-    goodLineItemWrapperObject = {};
     item;
     searchText = '';
     subCategory;
     goodLineItems = [];
-
+    selectedItems = [];
+    selectedRows = [];
+    selectedItemsIds = [];
     supplierName;
+    selectedItemsCopy = [];
+    @track selectedItemsCopyWithoutBackslashes = [];
+    @track selectedItemsQQQcopy = [];
 
-
-    getValueByKey(object, row) {
-        return object[row];
-    }
 
     handleCategoryChangeAction(event) {
 
@@ -102,7 +100,6 @@ export default class SelectGood extends LightningElement {
     @wire(fetchGoodLineItems, {searchText: '$searchText', subCategory: '$subCategory'})
     wiredGoodLineItems(result) {
 
-        this.refreshedData = result
         if (result.data) {
             console.log('result  : ' + JSON.stringify(result));
             console.log('result.data :' + JSON.stringify(result.data));
@@ -112,6 +109,7 @@ export default class SelectGood extends LightningElement {
             console.log('Error fetching GoodLineItems', result.error);
         }
     }
+
 
     connectedCallback() {
 
@@ -166,6 +164,21 @@ export default class SelectGood extends LightningElement {
         this.searchText = event.target.value;
     }
 
+    handleRowSelection(event) {
+
+        this.selectedItems = [...event.detail.selectedRows];
+        this.selectedItemsQQQ = event.detail.selectedRows;
+        this.selectedItemsQQQcopy += JSON.stringify(this.selectedItemsQQQ);
+        this.selectedItemsCopy += JSON.stringify(this.selectedItems);
+        this.selectedItemsCopyWithoutBackslashes = JSON.stringify(this.selectedItemsCopy).split("\\").join("");
+        console.log('this.selectedItems fffffffffffffffffffffffffff: ' + JSON.stringify(this.selectedItems));
+        console.log('this.selectedItemsCopy fffffffffffffffffffffffffff: ' + JSON.stringify(this.selectedItemsCopy));
+        console.log('this.selectedItemsCopy without \\\ fffffffffffffffffffffffffff: ' + JSON.stringify(this.selectedItemsCopy).split("\\").join(""));
+        console.log(' this.selectedItemsQQQ: ' + JSON.stringify(this.selectedItemsQQQ));
+        console.log(' this.selectedItemsQQQcopy: ' + this.selectedItemsQQQcopy);
+
+    }
+
     handleSubCategoryChange(event) {
         this.subCategory = event.detail.name;
         getGoodLineItemWrapperObjectsBySubCategory(({
@@ -173,78 +186,46 @@ export default class SelectGood extends LightningElement {
         }))
             .then(result => {
                 this.goodLineItems = result;
-                /*    console.log(this.goodLineItems);
-
-                    console.log(this.getValueByKey(this.getValueByKey(this.goodLineItems[0], "Supplier__r"), 'Name'));
-                    console.log(this.goodLineItems[0].Supplier__r.Name);*/
-
-                /*   this.goodLineItems.forEach(record => {
-                       console.log(record.Id);
-                       console.log(record.Name);
-                       console.log(this.getValueByKey(record, "Quantity__c"));
-                       console.log(this.getValueByKey(this.getValueByKey(record, "Supplier__r"), 'Name'));
-
-
-                       this.goodLineItemWrapperObject.Id = record.Id;
-                       this.goodLineItemWrapperObject.Name = record.Name;
-                       this.goodLineItemWrapperObject.Quantity = this.getValueByKey(record, "Quantity__c");
-                       this.goodLineItemWrapperObject.SupplierName = this.getValueByKey(this.getValueByKey(record, "Supplier__r"), 'Name');
-
-                      /!* let goodLineItemWrapperObject = {Id: record.Id, Name: record.Name,Quantity:this.getValueByKey(record, "Quantity__c"),
-                           SupplierName:this.getValueByKey(this.getValueByKey(record, "Supplier__r"), 'Name')};*!/
-
-                       console.log('goodLineItemWrapperObject  :' + JSON.stringify(this.goodLineItemWrapperObject));
-                       this.gooodLineItems.push(JSON.stringify(this.goodLineItemWrapperObject));
-                       console.log('gooodLineItems   :' + this.gooodLineItems);
-                   });*/
-
-
-                //  this.goodName = this.getValueByKey(this.getValueByKey(result, "Good__r"), 'Name');
-                //  this.listOfTodos=result;
-
-                /*     {label: 'Id', fieldName: 'Id'},
-                     {label: 'Name', fieldName: 'Name'},
-                     {label: 'Quantity', fieldName: 'Quantity__c', type: 'number'},
-                     {label: 'Supplier Name', fieldName: 'Supplier__r.Name'},
-     */
-                /* for(this.item of this.goodLineItems){
-                     this.goodLineItems.push({
-                         Id: this.item.Id,
-                         Name:this.item.Name/!*,
-                         Quantity:this.item.Quantity__c,
-                         SupplierName:this.item.Supplier__r.Name*!/});
-                 }*/
-
-                /* this.result.forEach(item => { this.goodLineItems.push({
-                     Id: item.Id,
-                     Name:item.Name,
-                     Quantity:item.Quantity__c,
-                     SupplierName:item.Supplier__r.Name});});*/
-
-
-                console.log('this.gooodLineItems: ', JSON.stringify(this.gooodLineItems));
+                console.log('this.goodLineItems: ', JSON.stringify(this.goodLineItems));
             })
             .catch(error => {
                 console.log(error);
                 console.log('error getting goodLineItems');
                 this.genericShowToast('Error getting goodLineItems', error.body.message, 'error');
             });
-
     }
+
 
     displayViewGoodLineItemInBase() {
-        console.log('displayViewGoodLineItemInBase,this.goodLineItemId :' + this.goodLineItemId);
-        this.dispatchEvent(new CustomEvent('whichcomponenttodisplay', {
-            detail: {
-                'componentToDisplay': 'ViewGoodLineItem',
-                'goodLineItemId': this.goodLineItemId
-            }
-        }));
-    }
 
-    handleChangeGoodLineItems(e) {
-        this.goodLineItemId = e.target.key;
-        console.log('handleChangeGoodLineItems,this.goodLineItemId :' + this.goodLineItemId);
+        // if (this.selectedItems.length === 0) {
+        if (this.selectedItemsCopyWithoutBackslashes.length === 0) {
+            this.genericShowToast('Error', 'Please select at least one Good', 'error');
+        } else {
+
+            console.log('this.selectedItems :' + this.selectedItemsCopyWithoutBackslashes);
+
+            /*     for (let i = 0; i < this.selectedItems.length; i++) {
+                     this.selectedItemsIds.push(this.selectedItems[i].id)
+                 }*/
+
+            for (let i = 0; i < this.selectedItemsQQQ.length; i++) {
+                this.selectedItemsIds.push(this.selectedItemsQQQ[i].id)
+            }
+
+            console.log('this.selectedItemsIds :' + this.selectedItemsIds);
+            this.dispatchEvent(new CustomEvent('whichcomponenttodisplay', {
+                detail: {
+                    'componentToDisplay': 'ViewGoodLineItem',
+                    'goodLineItemId': this.goodLineItemId,
+
+                    'selectedItemsIds': this.selectedItemsIds,
+                    'cartId': this.cartId
+                }
+            }));
+
+            console.log('this.selectedItemsCopy :', JSON.stringify(this.selectedItemsCopy));
+        }
     }
 
     handlePickupPointAddressChange(e) {
@@ -255,4 +236,12 @@ export default class SelectGood extends LightningElement {
         this.status = e.target.value;
     }
 
+    returnToNewCart() {
+
+        this.dispatchEvent(new CustomEvent('whichcomponenttodisplay', {
+            detail: {
+                'componentToDisplay': 'NewCart'
+            }
+        }));
+    }
 }

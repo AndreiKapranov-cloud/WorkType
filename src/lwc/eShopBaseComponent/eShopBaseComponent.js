@@ -17,6 +17,8 @@ export default class EShopBaseComponent extends LightningElement {
 
                 this.componentName = 'New Cart';
                 this.displayNewCartComponent = true;
+                this.displayViewGoodLineItem = false;
+                this.displaySelectGoodComponent = false;
                 break;
             }
             case 'SelectGood': {
@@ -24,10 +26,12 @@ export default class EShopBaseComponent extends LightningElement {
                 this.componentName = 'Select Good';
                 this.displaySelectGoodComponent = true;
                 this.displayNewCartComponent = false;
+                this.displayViewGoodLineItem = false;
                 break;
             }
             case 'ViewGoodLineItem': {
                 this.goodLineItemId = event.detail.goodLineItemId;
+                this.selectedItemsIds = event.detail.selectedItemsIds;
                 this.componentName = 'Eshop Order';
                 this.displayViewGoodLineItem = true;
                 this.displaySelectGoodComponent = false;

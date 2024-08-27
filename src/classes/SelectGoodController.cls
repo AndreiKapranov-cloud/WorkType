@@ -52,4 +52,21 @@ public with sharing class SelectGoodController {
 
         return wrapperList;
     }
+
+    @AuraEnabled
+    public static List<GoodLineItemWrapper>  getGoodLineItemWrappersByIds(List<String> goodLineItemsIds) {
+
+        List<GoodLineItem__c> goodLineItems;
+        try {
+
+            // String query = 'SELECT Id,Name,Quantity__c,Supplier__r.Name,Good__r.Size__c,Good__r.Name,Good__r.Colour__c FROM GoodLineItem__c WHERE Id IN: ' + '\'' + goodLineItemsIds + '\' LIMIT 1';
+            goodLineItems = [SELECT Id,Name,Quantity__c,Supplier__r.Name,Good__r.Size__c,Good__r.Name,Good__r.Colour__c FROM GoodLineItem__c WHERE Id IN:  goodLineItemsIds];
+
+
+        } catch (Exception e) {
+            System.debug('The following exception has occurred: ' + e.getMessage());
+            throw new AuraHandledException('The following exception has occurred: ' + e.getMessage());
+        }
+        return getGoodLineItemWrapperList(goodLineItems);
+    }
 }

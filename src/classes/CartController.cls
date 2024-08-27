@@ -43,16 +43,11 @@ public with sharing class CartController {
     }
 
     @AuraEnabled
-    public static List<Map<String, String>> getPicklistValuesUsingApex(String getPicklistValuesParamsJSONString) {
-        getPicklistValuesParamsWrapper wrapper = (getPicklistValuesParamsWrapper) JSON.deserialize(getPicklistValuesParamsJSONString,
-                getPicklistValuesParamsWrapper.class);
-
-        String sObjectType = wrapper.sObjectType;
-        String field = wrapper.field;
+    public static List<Map<String, String>> getCartStatusPicklistValuesUsingApex() {
 
         List<Map<String, String>> values = new List<Map<String, String>>();
         try {
-            List<Schema.PicklistEntry> entries = Schema.getGlobalDescribe().get(sObjectType).getDescribe().fields.getMap().get(field).getDescribe().getPickListValues();
+            List<Schema.PicklistEntry> entries = Schema.getGlobalDescribe().get('Cart__c').getDescribe().fields.getMap().get('Status__c').getDescribe().getPickListValues();
 
             for (Schema.PicklistEntry entry : entries) {
                 Map<String, String> valueMap = new Map<String, String>();

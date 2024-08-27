@@ -1,13 +1,13 @@
 /**
  * Created by andrey on 8/19/24.
  */
-import {LightningElement} from 'lwc';
+import {LightningElement, track} from 'lwc';
 import createCartApexMethod
     from '@salesforce/apex/CartController.createCartApexMethod';
 import getBuyers
     from '@salesforce/apex/CartController.getBuyers';
-import getPicklistValuesUsingApex
-    from '@salesforce/apex/CartController.getPicklistValuesUsingApex';
+import getCartStatusPicklistValuesUsingApex
+    from '@salesforce/apex/CartController.getCartStatusPicklistValuesUsingApex';
 import {genericShowToast} from "c/utils";
 
 
@@ -18,11 +18,11 @@ export default class NewCart extends LightningElement {
     buyerId;
     estimatedDeliveryDate;
     pickupPointAddress;
-    getPicklistValuesParamsJsonObject = {};
     status;
     cartJsonObject = {};
     cartObject;
     cartId;
+    @track statusPicklistValues;
 
     getValueByKey(object, row) {
         return object[row];
@@ -33,10 +33,11 @@ export default class NewCart extends LightningElement {
         this.dispatchEvent(new CustomEvent('whichcomponenttodisplay', {
             detail: {
                 'componentToDisplay': 'SelectGood',
-                'cartId': this.cartId,
+                'cartId': this.cartId
             }
         }));
     }
+
 
     connectedCallback() {
         this.isLoading = true;
@@ -53,22 +54,14 @@ export default class NewCart extends LightningElement {
                 this.genericShowToast('error getting Buyers', error.body.message, 'error');
             });
 
+        getCartStatusPicklistValuesUsingApex()
 
-        this.getPicklistValuesParamsJsonObject.sObjectType = 'Cart__c';
-        this.getPicklistValuesParamsJsonObject.field = 'Status__c';
-        this.getPicklistValuesParamsJSONString = JSON.stringify(this.getPicklistValuesParamsJsonObject);
-
-        console.log(this.getPicklistValuesParamsJSONString);
-
-        getPicklistValuesUsingApex(({
-            getPicklistValuesParamsJSONString: this.getPicklistValuesParamsJSONString
-        }))
             .then(result => {
 
                 this.statusPicklistValues = result;
                 this.status = this.getValueByKey(result[0], "value");
                 console.log('this.status: ', this.status);
-                console.log('this.picklistValues: ', this.statusPicklistValues);
+                console.log('this.statusPicklistValues: ', JSON.stringify(this.statusPicklistValues));
             })
             .catch(error => {
                 console.log(error);

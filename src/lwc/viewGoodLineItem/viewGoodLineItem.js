@@ -2,28 +2,19 @@
  * Created by andrey on 8/23/24.
  */
 import {LightningElement, api} from 'lwc';
-import getGoodLineItemById
-    from '@salesforce/apex/EShopBaseComponentController.getGoodLineItemById';
 import getGoodLineItemWrappersByIds
     from '@salesforce/apex/SelectGoodController.getGoodLineItemWrappersByIds';
-
-getGoodLineItemWrappersByIds
-import getGoodLineItemsByIds
-    from '@salesforce/apex/EShopBaseComponentController.getGoodLineItemsByIds';
 import createEshopOrderMethod
     from '@salesforce/apex/EShopBaseComponentController.createEshopOrderMethod';
 
 import {genericShowToast} from "c/utils";
-
 
 export default class ViewGoodLineItem extends LightningElement {
     genericShowToast = genericShowToast.bind(this);
     @api goodLineItemId;
     @api cartId;
     @api selectedItemsIds;
-    goodLineItem;
     goodLineItems = [];
-    goodName;
     quantity;
     colour;
     size;
@@ -33,15 +24,12 @@ export default class ViewGoodLineItem extends LightningElement {
     eshopOrderJsonObject = {};
     paramsJSONString = [];
     eshopOrderObject = {};
-    goodLineItemWrapperObject = {};
-
-    getValueByKey(object, row) {
-        return object[row];
-    }
+    goodQuantityInputValid = false;
+    isLoading = true;
 
 
     connectedCallback() {
-
+        this.isLoading = true;
         this.today = new Date();
         console.log('Daaaaate' + this.today)
         //   console.log('connectedCallback:' + this.goodLineItemId);
@@ -65,45 +53,82 @@ export default class ViewGoodLineItem extends LightningElement {
     }
 
     handleEShoporderGoodQuantityChange(e) {
+
+        let target = e.target;
         this.eShopOrderGoodQuantity = e.target.value;
+        console.log('eShopOrderGoodQuantity = ' + this.eShopOrderGoodQuantity);
+
+        const isWhitespaceString = str => !str.replace(/\s/g, '').length;
+
+        if (isWhitespaceString(this.eShopOrderGoodQuantity) || this.eShopOrderGoodQuantity === '') {
+            target.setCustomValidity('Complete this field.');
+            this.goodQuantityInputValid = false;
+        } else {
+            target.setCustomValidity('');
+            this.goodQuantityInputValid = true;
+        }
     }
 
     handleEstimatedDeliveryDateChange(e) {
         this.estimatedDeliveryDate = e.target.value;
     }
 
+    validateOrderGoodQuantity() {
+        let goodQuantityInput = this.template.querySelector(".quantity");
+        goodQuantityInput.reportValidity();
+
+        return goodQuantityInput.checkValidity();
+    }
+
+    validateEstimatedDeliveryDate() {
+        let estimatedDeliveryDateInput = this.template.querySelector(".estimatedDeliveryDate");
+        estimatedDeliveryDateInput.reportValidity();
+        return estimatedDeliveryDateInput.checkValidity();
+    }
+
+    checkWorkTypeInputFields() {
+        let isOrderGoodQuantityValid = this.validateOrderGoodQuantity();
+        let estimatedDeliveryDateValid = this.validateEstimatedDeliveryDate()
+        return isOrderGoodQuantityValid && estimatedDeliveryDateValid && this.goodQuantityInputValid;
+    }
+
     addNewEShopOrderToCart() {
 
-        this.eshopOrderJsonObject.eShopOrderGoodQuantity = this.eShopOrderGoodQuantity;
-        this.eshopOrderJsonObject.estimatedDeliveryDate = this.estimatedDeliveryDate;
-        this.eshopOrderJsonObject.cartId = this.cartId;
-        this.eshopOrderJsonObject.goodLineItemId = this.goodLineItemId;
+        if (this.checkWorkTypeInputFields()) {
+            this.isLoading = true;
+            this.eshopOrderJsonObject.eShopOrderGoodQuantity = this.eShopOrderGoodQuantity;
+            this.eshopOrderJsonObject.estimatedDeliveryDate = this.estimatedDeliveryDate;
+            this.eshopOrderJsonObject.cartId = this.cartId;
+            this.eshopOrderJsonObject.goodLineItemId = this.goodLineItemId;
 
-        this.paramsJSONString = JSON.stringify(this.eshopOrderJsonObject);
-        console.log(this.paramsJSONString);
-        createEshopOrderMethod(
-            {
-                paramsJSONString: this.paramsJSONString
-            })
-            .then(result => {
-                console.log(result);
-                this.eshopOrderObject = result;
-                console.log('eshopOrderObject = ' + this.eshopOrderObject);
-                this.genericShowToast('Success!', 'EShop Order Record created Successfully!', 'success');
-            })
-            .catch(error => {
-                console.log('Error creating EShop Order');
-                console.log(error);
-                this.genericShowToast('Error creating EShop Order.', error.body.message, 'error');
-            }).finally(
-            () => {
-                this.isLoading = false;
-            }
-        )
+            this.paramsJSONString = JSON.stringify(this.eshopOrderJsonObject);
+            console.log(this.paramsJSONString);
+            createEshopOrderMethod(
+                {
+                    paramsJSONString: this.paramsJSONString
+                })
+                .then(result => {
+                    console.log(result);
+                    this.eshopOrderObject = result;
+                    console.log('eshopOrderObject = ' + this.eshopOrderObject);
+                    this.genericShowToast('Success!', 'EShop Order Record created Successfully!', 'success');
+                })
+                .catch(error => {
+                    console.log('Error creating EShop Order');
+                    console.log(error);
+                    this.genericShowToast('Error creating EShop Order.', error.body.message, 'error');
+                }).finally(
+                () => {
+                    this.isLoading = false;
+                }
+            )
+        } else {
+            this.genericShowToast('Error creating EShopOrder', 'Please, complete required fields properly', 'error');
+        }
     }
+
     returnToNewCart() {
 
-        console.log('wrrrrrrrr...')
         this.dispatchEvent(new CustomEvent('whichcomponenttodisplay', {
             detail: {
                 'componentToDisplay': 'NewCart'
@@ -113,7 +138,6 @@ export default class ViewGoodLineItem extends LightningElement {
 
     returnToSelectGood() {
 
-        console.log('wrrrrrrrr...')
         this.dispatchEvent(new CustomEvent('whichcomponenttodisplay', {
             detail: {
                 'componentToDisplay': 'SelectGood',
@@ -121,6 +145,5 @@ export default class ViewGoodLineItem extends LightningElement {
             }
         }));
     }
-
 
 }

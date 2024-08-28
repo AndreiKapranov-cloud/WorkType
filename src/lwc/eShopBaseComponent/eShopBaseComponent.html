@@ -4,25 +4,30 @@
 
 <!-- E Shop Base Component -->
 <template>
-    <div style="width: 1000px">
-        <lightning-card>
-            <div class="slds-text-heading_large">
-                <div class="slds-text-align_center">{componentName}</div>
-            </div>
-            <div class="slds-m-around_medium">
-                <div class="slds-border_bottom slds-m-top_large"></div>
-            </div>
-            <template lwc:if={displayNewCartComponent}>
-                <c-new-cart onwhichcomponenttodisplay={handleWhichComponentToDisplay}></c-new-cart>
-            </template>
-            <template lwc:if={displaySelectGoodComponent}>
-                <c-select-good onwhichcomponenttodisplay={handleWhichComponentToDisplay}></c-select-good>
-            </template>
-            <template lwc:if={displayViewGoodLineItem}>
-                <c-view-good-line-item good-line-item-id={goodLineItemId} cart-id={cartId}
-                                       selected-items-ids={selectedItemsIds}
-                                       onwhichcomponenttodisplay={handleWhichComponentToDisplay}></c-view-good-line-item>
-            </template>
-        </lightning-card>
+    <div lwc:if={isLoading} class="style-of-spinner">
+        <lightning-spinner variant="base" size="medium"></lightning-spinner>
+    </div>
+    <div lwc:else>
+        <div class="base-lightning-card">
+            <lightning-card>
+                <div class="slds-text-heading_large">
+                    <div class="slds-text-align_center">{componentName}</div>
+                </div>
+                <div class="slds-m-around_medium">
+                    <div class="slds-border_bottom slds-m-top_large"></div>
+                </div>
+                <template lwc:if={displayNewCartComponent}>
+                    <c-new-cart onwhichcomponenttodisplay={handleWhichComponentToDisplay}></c-new-cart>
+                </template>
+                <template lwc:if={displaySelectGoodComponent}>
+                    <c-select-good onwhichcomponenttodisplay={handleWhichComponentToDisplay}></c-select-good>
+                </template>
+                <template lwc:if={displayViewGoodLineItem}>
+                    <c-view-good-line-item good-line-item-id={goodLineItemId} cart-id={cartId}
+                                           selected-items-ids={selectedItemsIds}
+                                           onwhichcomponenttodisplay={handleWhichComponentToDisplay}></c-view-good-line-item>
+                </template>
+            </lightning-card>
+        </div>
     </div>
 </template>

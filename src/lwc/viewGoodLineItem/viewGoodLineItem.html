@@ -4,86 +4,94 @@
 
 <!-- View Good Line Item -->
 <template>
-    <template if:true={goodLineItems}>
-        <template for:each={goodLineItems} for:item="goodLineItem">
+    <div lwc:if={isLoading} class="style-of-spinner">
+        <lightning-spinner variant="base" size="medium"></lightning-spinner>
+    </div>
+    <div lwc:else>
+        <template if:true={goodLineItems}>
+            <template for:each={goodLineItems} for:item="goodLineItem">
 
-            <div class="slds-m-horizontal_small" key={goodLineItem.id}>
-                <div class="slds-form-element">
-                    <div class="slds-form-element__control">
-                        <lightning-input name="Pickup Point Address" label="Good Name"
-                                         value={goodLineItem.name}>
-                        </lightning-input>
+                <div class="slds-m-horizontal_small" key={goodLineItem.id}>
+                    <div class="slds-form-element">
+                        <div class="slds-form-element__control">
+                            <lightning-input name="Good Name" label="Good Name"
+                                             value={goodLineItem.name}>
+                            </lightning-input>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="slds-m-horizontal_small" key={goodLineItem.id}>
-                <div class="slds-form-element">
-                    <div class="slds-form-element__control">
-                        <lightning-input name="Pickup Point Address" label="Quantity In the Warehouse"
-                                         value={goodLineItem.quantity}>
-                        </lightning-input>
+                <div class="slds-m-horizontal_small" key={goodLineItem.id}>
+                    <div class="slds-form-element">
+                        <div class="slds-form-element__control">
+                            <lightning-input name="Quantity In the Warehouse" label="Quantity In the Warehouse"
+                                             value={goodLineItem.quantity}>
+                            </lightning-input>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="slds-m-horizontal_small" key={goodLineItem.id}>
-                <lightning-input
-                        type="date"
-                        name="startDate"
-                        label="Estimated Delivery Date"
-                        value={estimatedDeliveryDate}
-                        onchange={handleEstimatedDeliveryDateChange}>
-                </lightning-input>
-            </div>
+                <div class="slds-m-horizontal_small" key={goodLineItem.id}>
+                    <lightning-input
+                            class="estimatedDeliveryDate"
+                            type="date"
+                            required="true"
+                            name="EstimatedDeliveryDate"
+                            label="Estimated Delivery Date"
+                            value={estimatedDeliveryDate}
+                            onchange={handleEstimatedDeliveryDateChange}>
+                    </lightning-input>
+                </div>
 
-            <div class="slds-m-horizontal_small" key={goodLineItem.id}>
-                <div class="slds-form-element">
-                    <div class="slds-form-element__control">
-                        <lightning-input name="Pickup Point Address" label="Colour"
-                                         value={goodLineItem.colour}>
-                        </lightning-input>
+                <div class="slds-m-horizontal_small" key={goodLineItem.id}>
+                    <div class="slds-form-element">
+                        <div class="slds-form-element__control">
+                            <lightning-input name="Colour" label="Colour"
+                                             value={goodLineItem.colour}>
+                            </lightning-input>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="slds-m-horizontal_small" key={goodLineItem.id}>
-                <div class="slds-form-element">
-                    <div class="slds-form-element__control">
-                        <lightning-input name="Pickup Point Address" label="Size"
-                                         value={goodLineItem.size}>
-                        </lightning-input>
+                <div class="slds-m-horizontal_small" key={goodLineItem.id}>
+                    <div class="slds-form-element">
+                        <div class="slds-form-element__control">
+                            <lightning-input name="Size" label="Size"
+                                             value={goodLineItem.size}>
+                            </lightning-input>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="slds-m-horizontal_small" key={goodLineItem.id}>
-                <div class="slds-form-element">
-                    <div class="slds-form-element__control">
-                        <lightning-input name="Pickup Point Address" label="Supplier Name"
-                                         value={goodLineItem.supplierName}>
-                        </lightning-input>
+                <div class="slds-m-horizontal_small" key={goodLineItem.id}>
+                    <div class="slds-form-element">
+                        <div class="slds-form-element__control">
+                            <lightning-input name="Supplier Name" label="Supplier Name"
+                                             value={goodLineItem.supplierName}>
+                            </lightning-input>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="slds-m-horizontal_small" key={goodLineItem.id}>
+                <div class="slds-m-horizontal_small" key={goodLineItem.id}>
 
-                <lightning-input name="description" label="Quantity You Would Like To Add To Cart"
-                                 onchange={handleEShoporderGoodQuantityChange}></lightning-input>
-            </div>
-
-            <div class=slds-m-top_x-large key={goodLineItem.id}>
-                <div class="slds-col slds-text-align_right">
-                    <lightning-button variant="neutral" label="Back to New Cart" class="slds-m-right_medium"
-                                      onclick={returnToNewCart}></lightning-button>
-                    <lightning-button variant="neutral" label="Back to Goods" class="slds-m-right_medium"
-                                      onclick={returnToSelectGood}></lightning-button>
-                    <lightning-button variant="brand" label="Add To Cart" class="slds-m-right_large"
-                                      onclick={addNewEShopOrderToCart}></lightning-button>
+                    <lightning-input name="description" label="Quantity You Would Like To Add To Cart" type="number"
+                                     class="quantity" required="true"
+                                     onchange={handleEShoporderGoodQuantityChange}></lightning-input>
                 </div>
-            </div>
 
+                <div class=slds-m-top_x-large key={goodLineItem.id}>
+                    <div class="slds-col slds-text-align_right">
+                        <lightning-button variant="neutral" label="Back to New Cart" class="slds-m-right_medium"
+                                          onclick={returnToNewCart}></lightning-button>
+                        <lightning-button variant="neutral" label="Back to Goods" class="slds-m-right_medium"
+                                          onclick={returnToSelectGood}></lightning-button>
+                        <lightning-button variant="brand" label="Add To Cart" class="slds-m-right_large"
+                                          onclick={addNewEShopOrderToCart}></lightning-button>
+                    </div>
+                </div>
+
+            </template>
         </template>
-    </template>
+    </div>
 </template>

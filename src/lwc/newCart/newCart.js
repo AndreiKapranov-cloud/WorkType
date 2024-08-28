@@ -23,6 +23,7 @@ export default class NewCart extends LightningElement {
     cartObject;
     cartId;
     @track statusPicklistValues;
+    pickupPointAddressValid = false;
 
     getValueByKey(object, row) {
         return object[row];
@@ -81,7 +82,20 @@ export default class NewCart extends LightningElement {
     }
 
     handlePickupPointAddressChange(e) {
+
+        let target = e.target;
         this.pickupPointAddress = e.target.value;
+        console.log('pickupPointAddress = ' + this.pickupPointAddress);
+        console.log(this.pickupPointAddress.includes(` `));
+        const isWhitespaceString = str => !str.replace(/\s/g, '').length;
+
+        if (isWhitespaceString(this.pickupPointAddress) || this.pickupPointAddress === '') {
+            target.setCustomValidity('Complete this field.');
+            this.pickupPointAddressValid = false;
+        } else {
+            target.setCustomValidity('');
+            this.pickupPointAddressValid = true;
+        }
     }
 
     handleStatusChange(e) {
@@ -89,40 +103,43 @@ export default class NewCart extends LightningElement {
     }
 
     createCartApexMethod() {
+        if (this.pickupPointAddressValid) {
+            this.isLoading = true;
+            this.cartJsonObject.buyerId = this.buyerId;
+            this.cartJsonObject.estimatedDeliveryDate = this.estimatedDeliveryDate;
+            this.cartJsonObject.pickupPointAddress = this.pickupPointAddress;
+            this.cartJsonObject.status = this.status;
 
-        this.isLoading = true;
-        this.cartJsonObject.buyerId = this.buyerId;
-        this.cartJsonObject.estimatedDeliveryDate = this.estimatedDeliveryDate;
-        this.cartJsonObject.pickupPointAddress = this.pickupPointAddress;
-        this.cartJsonObject.status = this.status;
+            this.paramsJSONString = JSON.stringify(this.cartJsonObject);
+            console.log('paramsJSONString:' + this.paramsJSONString);
 
-        this.paramsJSONString = JSON.stringify(this.cartJsonObject);
-        console.log('paramsJSONString:' + this.paramsJSONString);
+            createCartApexMethod(
+                {
+                    paramsJSONString: this.paramsJSONString
+                })
+                .then(result => {
+                    console.log(result);
+                    console.log('ID: ', result.Id);
+                    this.cartObject = result;
+                    this.cartId = result.Id;
 
-        createCartApexMethod(
-            {
-                paramsJSONString: this.paramsJSONString
-            })
-            .then(result => {
-                console.log(result);
-                console.log('ID: ', result.Id);
-                this.cartObject = result;
-                this.cartId = result.Id;
+                    console.log('cartObject = ' + this.cartObject);
+                    console.log('cartId = ' + this.cartId);
 
-                console.log('cartObject = ' + this.cartObject);
-                console.log('cartId = ' + this.cartId);
-
-                this.genericShowToast('Success!', 'Cart Record is created Successfully!', 'success');
-                this.displayGoodSearchInBase();
-            })
-            .catch(error => {
-                console.log('error createCart');
-                console.log(error);
-                this.genericShowToast('Error creating Cart.', error.body.message, 'error');
-            }).finally(
-            () => {
-                this.isLoading = false;
-            }
-        )
+                    this.genericShowToast('Success!', 'Cart Record is created Successfully!', 'success');
+                    this.displayGoodSearchInBase();
+                })
+                .catch(error => {
+                    console.log('error createCart');
+                    console.log(error);
+                    this.genericShowToast('Error creating Cart.', error.body.message, 'error');
+                }).finally(
+                () => {
+                    this.isLoading = false;
+                }
+            )
+        }else{
+            this.genericShowToast('Error creating New Cart.', 'Please, complete required fields properly', 'error');
+        }
     }
 }

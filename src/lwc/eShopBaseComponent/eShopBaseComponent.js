@@ -5,13 +5,14 @@
 import {LightningElement} from 'lwc';
 
 export default class EShopBaseComponent extends LightningElement {
-
+    isLoading = false;
     componentName = 'New Cart';
     displayNewCartComponent = true;
     displaySelectGoodComponent = false;
     displayViewGoodLineItem = false;
 
     handleWhichComponentToDisplay(event) {
+        this.isLoading = true;
         switch (event.detail.componentToDisplay) {
             case 'NewCart'  : {
 
@@ -19,6 +20,7 @@ export default class EShopBaseComponent extends LightningElement {
                 this.displayNewCartComponent = true;
                 this.displayViewGoodLineItem = false;
                 this.displaySelectGoodComponent = false;
+                this.isLoading = false;
                 break;
             }
             case 'SelectGood': {
@@ -27,6 +29,7 @@ export default class EShopBaseComponent extends LightningElement {
                 this.displaySelectGoodComponent = true;
                 this.displayNewCartComponent = false;
                 this.displayViewGoodLineItem = false;
+                this.isLoading = false;
                 break;
             }
             case 'ViewGoodLineItem': {
@@ -35,11 +38,13 @@ export default class EShopBaseComponent extends LightningElement {
                 this.componentName = 'Eshop Order';
                 this.displayViewGoodLineItem = true;
                 this.displaySelectGoodComponent = false;
+                this.isLoading = false;
                 break;
             }
 
             default:
                 this.displayNewCartComponent = true;
+                this.isLoading = false;
                 //   this.displayNewEShopOrderComponent = false;
                 break;
         }

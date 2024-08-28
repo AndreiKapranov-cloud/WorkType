@@ -10,7 +10,7 @@
     <div lwc:else>
 
         <div class="slds-grid slds-wrap">
-            <div class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_4-of-12">
+            <div class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_3-of-12">
 
                 <lightning-layout>
                     <lightning-layout-item>
@@ -87,7 +87,21 @@
                 </template>
             </div>
 
-            <div class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_8-of-12">
+            <div class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_9-of-12">
+
+                <div class="slds-m-around_small">
+                    <div class="slds-form-element">
+                        <div class="slds-form-element__control">
+                            <lightning-radio-group name="radioGroup"
+                                                   label="Search Options"
+                                                   onchange={handleChangeRadioSearchOptions}
+                                                   options={options}
+                                                   value={value}
+                                                   type="radio"></lightning-radio-group>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="slds-m-around_small">
                     <div class="slds-m-bottom_large">
                         <div class="slds-form-element">
@@ -95,7 +109,7 @@
                             <div class="slds-form-element__control">
 
                                 <lightning-input label="Good Line Items" type="search"
-                                                 placeholder="Search opportunity by Name..."
+                                                 placeholder="Search good line item by Name..."
                                                  onchange={handleChangeSearchText}></lightning-input>
                             </div>
                         </div>
@@ -105,7 +119,7 @@
                 <div class="slds-m-around_small">
                     <div class="slds-form-element">
                         <div class="slds-form-element__control">
-                            <div style="height: 300px;">
+                            <div class="datatable">
                                 <lightning-datatable
                                         onrowselection={handleRowSelection}
                                         key-field="id"
@@ -128,6 +142,5 @@
                               onclick={displayViewGoodLineItemInBase}></lightning-button>
         </div>
     </div>
-
 
 </template>

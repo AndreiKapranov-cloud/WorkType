@@ -65,7 +65,7 @@ export default class SelectGood extends LightningElement {
     supplierName;
     @track selectedItemsCopyWithoutBackslashes = [];
     @track isTableLoading;
-    @track selectedOption;
+    @track selectedOption = 'Global Search';
     @track preselectedRows = [];
     value = 'Global Search';
     lineItems = [];

@@ -3,8 +3,6 @@
  */
 import {LightningElement, api, track} from 'lwc';
 
-import createEshopOrderList
-    from '@salesforce/apex/EShopBaseComponentController.createEshopOrderList';
 import createEshopOrderMethod
     from '@salesforce/apex/EShopBaseComponentController.createEshopOrderMethod';
 
@@ -30,7 +28,7 @@ export default class ViewGoodLineItem extends LightningElement {
     isLoading = true;
     @track lineItem;
     index = 0;
-    goToNextEShopOrderButtonDisabled = false;
+    goToNextEShopOrderButtonDisabled = true;
     goToPreviousEShopOrderButtonDisabled = true;
     @track eshopOrderWrapperList = [];
     @track clonedLineItems = [];
@@ -49,7 +47,10 @@ export default class ViewGoodLineItem extends LightningElement {
 
         this.selectedLineItemsDeepCopy = JSON.parse(JSON.stringify(this.lineItems));
 
-       this.lineItem = this.selectedLineItemsDeepCopy[this.index];
+        this.lineItem = this.selectedLineItemsDeepCopy[this.index];
+        if (this.selectedLineItemsDeepCopy.length > 1) {
+            this.goToNextEShopOrderButtonDisabled = false;
+        }
 
         console.log('this.lineItem    :' + this.lineItem);
 
@@ -63,7 +64,7 @@ export default class ViewGoodLineItem extends LightningElement {
         try {
             let target = e.target;
             this.lineItem.quantityToAddToCart = e.target.value;
-            console.log('this.lineItem.quantityToAddToCart = ' +   this.lineItem.quantityToAddToCart);
+            console.log('this.lineItem.quantityToAddToCart = ' + this.lineItem.quantityToAddToCart);
 
             const isWhitespaceString = str => !str.replace(/\s/g, '').length;
 
@@ -118,7 +119,11 @@ export default class ViewGoodLineItem extends LightningElement {
 
     controlIfButtonIsDisabledDependingOnIndex() {
         this.goToPreviousEShopOrderButtonDisabled = this.index <= 0;
-        this.goToNextEShopOrderButtonDisabled = this.index >= this.lineItems.length - 1;
+        this.goToNextEShopOrderButtonDisabled = this.index >= this.selectedLineItemsDeepCopy.length-1;
+       if(this.selectedLineItemsDeepCopy.length === 1){
+           this.goToNextEShopOrderButtonDisabled = true;
+           this.goToPreviousEShopOrderButtonDisabled = true;
+       }
     }
 
     goToNextEShopOrder() {
@@ -160,7 +165,7 @@ export default class ViewGoodLineItem extends LightningElement {
 
                     this.selectedLineItemsDeepCopy = this.selectedLineItemsDeepCopy.filter(e => e !== this.selectedLineItemsDeepCopy[this.index]);
 
-                    if( this.selectedLineItemsDeepCopy.length === 0){
+                    if (this.selectedLineItemsDeepCopy.length === 0) {
                         this.returnToSelectGood();
                     }
 

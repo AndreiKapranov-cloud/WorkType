@@ -23,8 +23,10 @@
                     <c-select-good onwhichcomponenttodisplay={handleWhichComponentToDisplay}></c-select-good>
                 </template>
                 <template lwc:if={displayViewGoodLineItem}>
-                    <c-view-good-line-item good-line-item-id={goodLineItemId} cart-id={cartId}
+                    <c-view-good-line-item good-line-item-id={goodLineItemId}
+                                           cart-id={cartId}
                                            selected-items-ids={selectedItemsIds}
+                                           line-items={lineItems}
                                            onwhichcomponenttodisplay={handleWhichComponentToDisplay}></c-view-good-line-item>
                 </template>
             </lightning-card>

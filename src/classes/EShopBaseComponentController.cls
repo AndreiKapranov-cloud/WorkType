@@ -158,6 +158,26 @@ public with sharing class EShopBaseComponentController {
         return goodLineItem;
     }
 
+    @AuraEnabled
+    public static List<CreateEshopOrderParamsWrapper> createEshopOrderList(List<String>goodLineItemsIdsList) {
+        List<CreateEshopOrderParamsWrapper> createEshopOrderParamsWrappers = new List <CreateEshopOrderParamsWrapper>();
+
+        try {
+            for (Integer i = 0; i < goodLineItemsIdsList.size(); i++) {
+                CreateEshopOrderParamsWrapper createEshopOrderParamsWrapper = new CreateEshopOrderParamsWrapper();
+                createEshopOrderParamsWrapper.goodLineItemId = goodLineItemsIdsList[i];
+                createEshopOrderParamsWrappers.add(createEshopOrderParamsWrapper);
+            }
+
+            return createEshopOrderParamsWrappers;
+        } catch (Exception e) {
+            System.debug('The following exception has occurred: ' + e.getMessage());
+            throw new AuraHandledException('The following exception has occurred: ' + e.getMessage());
+        }
+    }
+
+
+
 
 
     @AuraEnabled

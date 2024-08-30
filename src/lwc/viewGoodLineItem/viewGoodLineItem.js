@@ -1,9 +1,10 @@
 /**
  * Created by andrey on 8/23/24.
  */
-import {LightningElement, api} from 'lwc';
-import getGoodLineItemWrappersByIds
-    from '@salesforce/apex/SelectGoodController.getGoodLineItemWrappersByIds';
+import {LightningElement, api, track} from 'lwc';
+
+import createEshopOrderList
+    from '@salesforce/apex/EShopBaseComponentController.createEshopOrderList';
 import createEshopOrderMethod
     from '@salesforce/apex/EShopBaseComponentController.createEshopOrderMethod';
 
@@ -13,7 +14,8 @@ export default class ViewGoodLineItem extends LightningElement {
     genericShowToast = genericShowToast.bind(this);
     @api goodLineItemId;
     @api cartId;
-    @api selectedItemsIds;
+    @api selectedItemsIds = [];
+    @api lineItems;
     goodLineItems = [];
     quantity;
     colour;
@@ -26,51 +28,73 @@ export default class ViewGoodLineItem extends LightningElement {
     eshopOrderObject = {};
     goodQuantityInputValid = false;
     isLoading = true;
+    @track lineItem;
+    index = 0;
+    goToNextEShopOrderButtonDisabled = false;
+    goToPreviousEShopOrderButtonDisabled = true;
+    @track eshopOrderWrapperList = [];
+    @track clonedLineItems = [];
+
+
+    @track selectedLineItemsDeepCopy = [];
 
 
     connectedCallback() {
+        console.log('connectedCallback');
         this.isLoading = true;
         this.today = new Date();
-        console.log('Daaaaate' + this.today)
-        //   console.log('connectedCallback:' + this.goodLineItemId);
-        getGoodLineItemWrappersByIds(({
-            goodLineItemsIds: this.selectedItemsIds
-        }))
-            .then(result => {
+        console.log('Daaaaate' + this.today);
 
-                this.goodLineItems = result;
+        console.log('JSON' + JSON.parse(JSON.stringify(this.lineItems)));
 
-                console.log('this.goodLineItems: ', this.goodLineItems);
-            })
-            .catch(error => {
-                console.log(error);
-                console.log('error getting GoodLineItem');
-                this.genericShowToast('Error getting GoodLineItem', error.body.message, 'error');
-            });
+        this.selectedLineItemsDeepCopy = JSON.parse(JSON.stringify(this.lineItems));
+
+       this.lineItem = this.selectedLineItemsDeepCopy[this.index];
+
+        console.log('this.lineItem    :' + this.lineItem);
+
+        console.log(' this.selectedItemsIdsssssssssssss    :' + this.selectedItemsIds);
 
         console.log('cdccdcc: ' + this.cartId);
         this.isLoading = false;
     }
 
     handleEShoporderGoodQuantityChange(e) {
+        try {
+            let target = e.target;
+            this.lineItem.quantityToAddToCart = e.target.value;
+            console.log('this.lineItem.quantityToAddToCart = ' +   this.lineItem.quantityToAddToCart);
 
-        let target = e.target;
-        this.eShopOrderGoodQuantity = e.target.value;
-        console.log('eShopOrderGoodQuantity = ' + this.eShopOrderGoodQuantity);
+            const isWhitespaceString = str => !str.replace(/\s/g, '').length;
 
-        const isWhitespaceString = str => !str.replace(/\s/g, '').length;
+            if (isWhitespaceString(this.lineItem.quantityToAddToCart) || this.lineItem.quantityToAddToCart === '') {
+                target.setCustomValidity('Complete this field.');
+                this.goodQuantityInputValid = false;
+            } else {
+                target.setCustomValidity('');
+                this.goodQuantityInputValid = true;
+            }
 
-        if (isWhitespaceString(this.eShopOrderGoodQuantity) || this.eShopOrderGoodQuantity === '') {
-            target.setCustomValidity('Complete this field.');
-            this.goodQuantityInputValid = false;
-        } else {
-            target.setCustomValidity('');
-            this.goodQuantityInputValid = true;
+        } catch (e) {
+            console.log(e.message)
         }
     }
 
-    handleEstimatedDeliveryDateChange(e) {
-        this.estimatedDeliveryDate = e.target.value;
+
+    handleOrderEstimatedDeliveryDateChange(e) {
+
+        try {
+            console.log('this.lineItem.estimatedDeliveryDate  ' + this.lineItem.estimatedDeliveryDate);
+
+            console.log('this.lineItems[this.index].estimatedDeliveryDate    ' + this.lineItems[this.index].estimatedDeliveryDate);
+            console.log('e.target.value ' + e.target.value);
+
+
+            this.lineItem.estimatedDeliveryDate = e.target.value;
+
+        } catch (e) {
+            console.log(e.message)//error when handling result
+        }
     }
 
     validateOrderGoodQuantity() {
@@ -92,12 +116,35 @@ export default class ViewGoodLineItem extends LightningElement {
         return isOrderGoodQuantityValid && estimatedDeliveryDateValid && this.goodQuantityInputValid;
     }
 
+    controlIfButtonIsDisabledDependingOnIndex() {
+        this.goToPreviousEShopOrderButtonDisabled = this.index <= 0;
+        this.goToNextEShopOrderButtonDisabled = this.index >= this.lineItems.length - 1;
+    }
+
+    goToNextEShopOrder() {
+        if (this.index < this.selectedLineItemsDeepCopy.length - 1) {
+            this.index += 1;
+            this.lineItem = this.selectedLineItemsDeepCopy[this.index];
+            console.log('this.lineItem    :' + this.lineItem);
+            this.controlIfButtonIsDisabledDependingOnIndex();
+        }
+    }
+
+    goToPreviousEShopOrder() {
+        if (this.index > 0) {
+            this.index -= 1;
+            this.lineItem = this.selectedLineItemsDeepCopy[this.index];
+            console.log('this.lineItem    :' + this.lineItem);
+            this.controlIfButtonIsDisabledDependingOnIndex();
+        }
+    }
+
     addNewEShopOrderToCart() {
 
         if (this.checkWorkTypeInputFields()) {
             this.isLoading = true;
-            this.eshopOrderJsonObject.eShopOrderGoodQuantity = this.eShopOrderGoodQuantity;
-            this.eshopOrderJsonObject.estimatedDeliveryDate = this.estimatedDeliveryDate;
+            this.eshopOrderJsonObject.eShopOrderGoodQuantity = this.lineItem.eShopOrderGoodQuantity;
+            this.eshopOrderJsonObject.estimatedDeliveryDate = this.lineItem.estimatedDeliveryDate;
             this.eshopOrderJsonObject.cartId = this.cartId;
             this.eshopOrderJsonObject.goodLineItemId = this.goodLineItemId;
 
@@ -110,6 +157,13 @@ export default class ViewGoodLineItem extends LightningElement {
                 .then(result => {
                     console.log(result);
                     this.eshopOrderObject = result;
+
+                    this.selectedLineItemsDeepCopy = this.selectedLineItemsDeepCopy.filter(e => e !== this.selectedLineItemsDeepCopy[this.index]);
+
+                    if( this.selectedLineItemsDeepCopy.length === 0){
+                        this.returnToSelectGood();
+                    }
+
                     console.log('eshopOrderObject = ' + this.eshopOrderObject);
                     this.genericShowToast('Success!', 'EShop Order Record created Successfully!', 'success');
                 })

@@ -3,6 +3,8 @@
  */
 import {LightningElement, track, wire} from 'lwc';
 
+import fetchGoodLineItemsInGlobalSearch
+    from '@salesforce/apex/SelectGoodController.fetchGoodLineItemsInGlobalSearch';
 import fetchGoodLineItemsInCategory
     from '@salesforce/apex/SelectGoodController.fetchGoodLineItemsInCategory';
 import fetchGoodLineItemsInSubCategory
@@ -51,7 +53,6 @@ export default class SelectGood extends LightningElement {
     goodLineItemId;
     columns = columns;
     item;
-    searchText = '';
     globalSearchText = '';
     categorySearchText = '';
     subCategorySearchText = '';
@@ -65,7 +66,11 @@ export default class SelectGood extends LightningElement {
     @track selectedItemsCopyWithoutBackslashes = [];
     @track isTableLoading;
     @track selectedOption;
+    @track preselectedRows = [];
     value = 'Global Search';
+    lineItems = [];
+    sneakersItems = [];
+    categoryValue;
 
 
     handleCategoryChangeAction(event) {
@@ -77,21 +82,17 @@ export default class SelectGood extends LightningElement {
                 this.isLoading = true;
                 this.comboboxLabel = 'Sneakers';
                 this.displaySneakers = true;
+
                 this.displayHoodies = false;
                 this.displayCostumes = false;
 
-                getGoodLineItemWrapperObjectsByCategory(({
-                    category: event.detail.name
-                }))
-                    .then(result => {
-                        this.goodLineItems = result;
-                        console.log('this.goodLineItems: ', JSON.stringify(this.goodLineItems));
-                    })
-                    .catch(error => {
-                        console.log(error);
-                        console.log('error getting goodLineItems');
-                        this.genericShowToast('Error getting goodLineItems', error.body.message, 'error');
-                    })
+                console.log('this.goodLineItemsssssssss :' + JSON.stringify(this.goodLineItems));
+                this.sneakersItems = JSON.stringify(this.goodLineItems);
+                console.log(' this.sneakersItem :' + JSON.stringify(this.sneakersItems));
+
+                console.log('this.goodLineItems :' + JSON.stringify(this.goodLineItems));
+
+                this.getLineItemsByCategory(event.detail.name);
 
                 this.isLoading = false;
                 break;
@@ -103,18 +104,7 @@ export default class SelectGood extends LightningElement {
                 this.displaySneakers = false;
                 this.displayCostumes = false;
 
-                getGoodLineItemWrapperObjectsByCategory(({
-                    category: event.detail.name
-                }))
-                    .then(result => {
-                        this.goodLineItems = result;
-                        console.log('this.goodLineItems: ', JSON.stringify(this.goodLineItems));
-                    })
-                    .catch(error => {
-                        console.log(error);
-                        console.log('error getting goodLineItems');
-                        this.genericShowToast('Error getting goodLineItems', error.body.message, 'error');
-                    })
+                this.getLineItemsByCategory(event.detail.name);
 
                 this.isLoading = false;
                 break;
@@ -126,18 +116,7 @@ export default class SelectGood extends LightningElement {
                 this.displayHoodies = false;
                 this.displaySneakers = false;
 
-                getGoodLineItemWrapperObjectsByCategory(({
-                    category: event.detail.name
-                }))
-                    .then(result => {
-                        this.goodLineItems = result;
-                        console.log('this.goodLineItems: ', JSON.stringify(this.goodLineItems));
-                    })
-                    .catch(error => {
-                        console.log(error);
-                        console.log('error getting goodLineItems');
-                        this.genericShowToast('Error getting goodLineItems', error.body.message, 'error');
-                    })
+                this.getLineItemsByCategory(event.detail.name);
 
                 this.isLoading = false;
                 break;
@@ -147,6 +126,22 @@ export default class SelectGood extends LightningElement {
                 this.isLoading = false;
                 break;
         }
+    }
+
+    getLineItemsByCategory(categoryValue) {
+        getGoodLineItemWrapperObjectsByCategory(({
+            category: categoryValue
+        }))
+            .then(result => {
+                this.goodLineItems = result;
+                console.log('this.goodLineItems: ', this.goodLineItems);
+                console.log('this.goodLineItems: ', JSON.stringify(this.goodLineItems));
+            })
+            .catch(error => {
+                console.log(error);
+                console.log('error getting goodLineItems');
+                this.genericShowToast('Error getting goodLineItems', error.body.message, 'error');
+            })
     }
 
     get options() {
@@ -171,73 +166,86 @@ export default class SelectGood extends LightningElement {
             case 'Global Search'  : {
 
                 this.globalSearchText = event.target.value;
+
+                fetchGoodLineItemsInGlobalSearch(({searchText: this.globalSearchText}))
+                    .then(result => {
+
+                        console.log('result  : ' + JSON.stringify(result));
+                        console.log('result.data :' + JSON.stringify(result.data));
+                        this.goodLineItems = result;
+                    })
+                    .catch(error => {
+                        console.log(error);
+                        this.genericShowToast('Error fetching GoodLineItems', result.error.body.message, 'error');
+                        console.log('Error fetching GoodLineItems', result.error);
+                    });
+            }
                 console.log('global');
                 break;
-            }
-            case 'Search in Category': {
+            case
+            'Search in Category': {
                 this.categorySearchText = event.target.value;
-                console.log('in Category');
 
+                fetchGoodLineItemsInCategory(({searchText: this.categorySearchText, category: this.category}))
+                    .then(result => {
+
+                        console.log('result  : ' + JSON.stringify(result));
+
+                        this.goodLineItems = result;
+                    })
+                    .catch(error => {
+                        console.log(error);
+                        this.genericShowToast('Error fetching GoodLineItems', result.error.body.message, 'error');
+                        console.log('Error fetching GoodLineItems', result.error);
+                    });
+                console.log('in Category');
                 break;
             }
-            case 'Search in SubCategory' : {
+            case
+            'Search in SubCategory': {
                 this.subCategorySearchText = event.target.value;
+
+                fetchGoodLineItemsInSubCategory(({
+                    searchText: this.subCategorySearchText,
+                    subCategory: this.subCategory
+                }))
+                    .then(result => {
+
+                        console.log('result  : ' + JSON.stringify(result));
+
+                        this.goodLineItems = result;
+                    })
+                    .catch(error => {
+                        console.log(error);
+                        this.genericShowToast('Error fetching GoodLineItems', result.error.body.message, 'error');
+                        console.log('Error fetching GoodLineItems', result.error);
+                    });
                 console.log('in SubCategory');
                 break;
             }
             default:
-                this.globalSearchText = event.target.value;
+                this
+                    .globalSearchText = event.target.value;
                 break;
         }
-
         event.target.isLoading = false;
     }
 
-    @wire(fetchGoodLineItems, {searchText: '$globalSearchText'})
-    wiredGoodLineItems(result) {
-        this.isLoading = true;
-        if (result.data) {
-            console.log('result  : ' + JSON.stringify(result));
-            console.log('result.data :' + JSON.stringify(result.data));
-            this.goodLineItems = result.data;
-        } else if (result.error) {
-            this.genericShowToast('Error fetching GoodLineItems', result.error.body.message, 'error');
-            console.log('Error fetching GoodLineItems', result.error);
-        }
-        this.isLoading = false;
-    }
-
-    @wire(fetchGoodLineItemsInCategory, {searchText: '$categorySearchText', category: '$category'})
-    wiredGoodLineItemsByCategory(result) {
-        this.isLoading = true;
-        if (result.data) {
-            console.log('hello from category')
-            /*  console.log('result   : ' + JSON.stringify(result));
-              console.log('result.data :' + JSON.stringify(result.data));*/
-            this.goodLineItems = result.data;
-        } else if (result.error) {
-            this.genericShowToast('Error fetching GoodLineItems', result.error.body.message, 'error');
-            console.log('Error fetching GoodLineItems', result.error);
-        }
-        this.isLoading = false;
-    }
-
-    @wire(fetchGoodLineItemsInSubCategory, {searchText: '$subCategorySearchText', subCategory: '$subCategory'})
-    wiredGoodLineItemsBySubcategory(result) {
-        this.isLoading = true;
-        if (result.data) {
-            console.log('result  : ' + JSON.stringify(result));
-            console.log('result.data :' + JSON.stringify(result.data));
-            this.goodLineItems = result.data;
-        } else if (result.error) {
-            this.genericShowToast('Error fetching GoodLineItems', result.error.body.message, 'error');
-            console.log('Error fetching GoodLineItems', result.error);
-        }
-        this.isLoading = false;
-    }
 
     connectedCallback() {
         this.isLoading = true;
+
+        fetchGoodLineItems()
+            .then(result => {
+                this.goodLineItems = result;
+                console.log('this.goodLineItems: ', this.goodLineItems);
+            })
+            .catch(error => {
+                console.log(error);
+                console.log('error getting GoodLineItems');
+                this.genericShowToast('Error getting GoodLineItems', error.body.message, 'error');
+            });
+
         getCategoryPicklistValuesUsingApex()
             .then(result => {
                 this.categoryPicklistValues = result;
@@ -287,27 +295,41 @@ export default class SelectGood extends LightningElement {
 
     handleRowSelection(event) {
         console.log(JSON.stringify(this.options));
+
+        console.log('event.detail.config.action: ', event.detail.config.action);
+        console.log('event.detail.action: ', event.detail.action);
+        console.log('event.detail.action: ', event.detail.selectedRows);
+
+
+        console.log('event.detail.config.value: ', event.detail.config.value);
+
+
         switch (event.detail.config.action) {
             case 'selectAllRows':
                 for (let i = 0; i < event.detail.selectedRows.length; i++) {
-                    this.selectedItems.push(event.detail.selectedRows[i].id);
+                    this.selectedItems.push(event.detail.selectedRows[i]);
+                    this.preselectedRows.push(event.detail.selectedRows[i].id);
                 }
                 console.log(JSON.stringify(this.selectedItems));
                 break;
 
             case 'deselectAllRows':
                 this.selectedItems = [];
+                this.preselectedRows = [];
                 break;
 
             case 'rowSelect':
                 this.selectedItems.push(event.detail.config.value);
+                this.preselectedRows.push(event.detail.config.value);
+
+                console.log(JSON.stringify(this.preselectedRows));
                 console.log(JSON.stringify(this.selectedItems));
                 break;
 
             case 'rowDeselect':
-                this.selectedItems = this.selectedItems.filter(function (e) {
-                    return e !== event.detail.config.value;
-                });
+                this.preselectedRows = this.preselectedRows.filter(e => e !== event.detail.config.value);
+                this.selectedItems = this.selectedItems.filter(e => e !== event.detail.config.value);
+
                 console.log(JSON.stringify(this.selectedItems));
                 break;
 
@@ -318,7 +340,7 @@ export default class SelectGood extends LightningElement {
     }
 
     handleSubCategoryChange(event) {
-        this.isLoading = true;
+
         this.subCategory = event.detail.name;
         getGoodLineItemWrapperObjectsBySubCategory(({
             subCategory: event.detail.name
@@ -335,33 +357,36 @@ export default class SelectGood extends LightningElement {
                 console.log(error);
                 console.log('error getting goodLineItems');
                 this.genericShowToast('Error getting goodLineItems', error.body.message, 'error');
-            }).finally(
-            () => {
-                this.isLoading = false;
-            }
-        )
+            })
     }
 
 
     displayViewGoodLineItemInBase() {
         this.isLoading = true;
+        console.log('displayViewGoodLineItemInBase');
         if (this.selectedItems.length === 0) {
 
             this.genericShowToast('Error', 'Please select at least one Good', 'error');
             this.isLoading = false;
         } else {
 
+            /*for (let i = 0; i < this.selectedItems.length; i++) {
+                this.selectedItemsIds.push(this.selectedItems[i]);
+            }*/
+
+
             for (let i = 0; i < this.selectedItems.length; i++) {
-                this.selectedItemsIds.push(this.selectedItems[i])
+                this.item = this.goodLineItems.find(x => x.id === this.selectedItems[i]);
+                this.lineItems.push(this.item);
             }
 
-            console.log('this.selectedItemsIds :' + this.selectedItemsIds);
+
             this.dispatchEvent(new CustomEvent('whichcomponenttodisplay', {
                 detail: {
                     'componentToDisplay': 'ViewGoodLineItem',
                     'goodLineItemId': this.goodLineItemId,
-
-                    'selectedItemsIds': this.selectedItemsIds,
+                    'lineItems': this.lineItems,
+                    'selectedItemsIds': this.selectedItems,
                     'cartId': this.cartId
                 }
             }));

@@ -119,13 +119,17 @@
                 <div class="slds-m-around_small">
                     <div class="slds-form-element">
                         <div class="slds-form-element__control">
-                            <div class="datatable">
-                                <lightning-datatable
-                                        onrowselection={handleRowSelection}
-                                        key-field="id"
-                                        data={goodLineItems}
-                                        columns={columns}>
-                                </lightning-datatable>
+
+                            <div lwc:if={goodLineItems.length}>
+                                <div class="datatable-style" >
+                                    <lightning-datatable
+                                            onrowselection={handleRowSelection}
+                                            key-field="id"
+                                            data={goodLineItems}
+                                            selected-rows={preselectedRows}
+                                            columns={columns}>
+                                    </lightning-datatable>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -133,6 +137,7 @@
             </div>
         </div>
     </div>
+
 
     <div class=slds-m-top_x-large key={goodLineItem.id}>
         <div class="slds-col slds-text-align_right">

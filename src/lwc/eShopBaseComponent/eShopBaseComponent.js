@@ -2,7 +2,7 @@
  * Created by andrey on 8/20/24.
  */
 
-import {LightningElement} from 'lwc';
+import {LightningElement, track} from 'lwc';
 
 export default class EShopBaseComponent extends LightningElement {
     isLoading = false;
@@ -10,6 +10,7 @@ export default class EShopBaseComponent extends LightningElement {
     displayNewCartComponent = true;
     displaySelectGoodComponent = false;
     displayViewGoodLineItem = false;
+    @track lineItems;
 
     handleWhichComponentToDisplay(event) {
         this.isLoading = true;
@@ -33,8 +34,11 @@ export default class EShopBaseComponent extends LightningElement {
                 break;
             }
             case 'ViewGoodLineItem': {
+                console.log('ViewGoodLineItem');
                 this.goodLineItemId = event.detail.goodLineItemId;
                 this.selectedItemsIds = event.detail.selectedItemsIds;
+
+                this.lineItems = event.detail.lineItems;
                 this.componentName = 'Eshop Order';
                 this.displayViewGoodLineItem = true;
                 this.displaySelectGoodComponent = false;

@@ -22,14 +22,13 @@ public with sharing class BaseComponentController {
                 valueMap.put('value', entry.getValue());
                 values.add(valueMap);
             }
-
+            return values;
         } catch (Exception e) {
 
             System.debug('The following exception has occurred: ' + e.getMessage());
 
             throw new AuraHandledException('The following exception has occurred: ' + e.getMessage());
         }
-        return values;
     }
 
     @AuraEnabled
@@ -43,50 +42,5 @@ public with sharing class BaseComponentController {
             throw new HandledException('The following exception has occurred: ' + e.getMessage());
         }
     }
-
-    @AuraEnabled
-    public static SamodelkinWrapper createWrapperInstance(String paramsJSONString,SamodelkinWrapper wrapper) {
-        wrapper = (SamodelkinWrapper) JSON.deserialize(paramsJSONString,
-                SamodelkinWrapper.class);
-
-        return wrapper;
-    }
-
-    /*@AuraEnabled
-   public static List<SObject> getRecordsGenericApex(String getRecordsParamsJSONString) {
-
-       try {
-           getRecordsWrapper wrapper = (getRecordsWrapper) JSON.deserialize(getRecordsParamsJSONString,
-                   getRecordsWrapper.class);
-
-           String fieldToQueryWithEscapedSingleQuotes = String.escapeSingleQuotes(wrapper.fieldToQuery);
-           String nameOfFieldAfterWhereClause = String.escapeSingleQuotes(wrapper.nameOfFieldAfterWhereClause);
-           String valueOfFieldAfterWhereClause = wrapper.valueOfFieldAfterWhereClause;
-           String sObjectName = String.escapeSingleQuotes(wrapper.sObjectName);
-
-            *//* String query = 'SELECT ' + fieldToQueryWithEscapedSingleQuotes + ' FROM ' + sObjectName;
-               if (String.isBlank(nameOfFieldAfterWhereClause)) {
-
-                   records = Database.query(shortQuary);
-                   return records;
-               } else {
-                   String query = shortQuary + ' WHERE ' + nameOfFieldAfterWhereClause + ' = \'' + valueOfFieldAfterWhereClause + '\'';
-
-                   records = Database.query(query);
-                   return records;
-               }*//*
-            String query = 'SELECT ' + fieldToQueryWithEscapedSingleQuotes + ' FROM ' + sObjectName;
-
-            if (!String.isBlank(nameOfFieldAfterWhereClause)) {
-                query += ' WHERE ' + nameOfFieldAfterWhereClause + ' = \'' + valueOfFieldAfterWhereClause + '\'';
-            }
-            return Database.query(query);
-
-
-        } catch (Exception e) {
-            System.debug('The following exception has occurred: ' + e.getMessage());
-            throw new AuraHandledException('The following exception has occurred: ' + e.getMessage());
-        }
-    }*/
 
 }

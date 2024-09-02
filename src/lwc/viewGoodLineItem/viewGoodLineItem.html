@@ -77,7 +77,20 @@
 
                 <lightning-input name="quantity" label="Quantity You Would Like To Add To Cart" type="number"
                                  class="quantity" required="true" value={lineItem.quantityToAddToCart}
-                                 onchange={handleEShoporderGoodQuantityChange}></lightning-input>
+                                 onchange={handleEShopOrderGoodQuantityChange}></lightning-input>
+            </div>
+
+            <div class=slds-m-top_x-large>
+                <div class="slds-col slds-text-align_right">
+                    <lightning-button variant="neutral" class="slds-m-right_large" label="<<<"
+                                      onclick={goToPreviousEShopOrder} disabled={goToPreviousEShopOrderButtonDisabled}
+                    >
+                    </lightning-button>
+                    <lightning-button variant="neutral" class="slds-m-right_large" label=">>>"
+                                      onclick={goToNextEShopOrder} disabled={goToNextEShopOrderButtonDisabled}
+                    >
+                    </lightning-button>
+                </div>
             </div>
 
             <div class=slds-m-top_x-large>
@@ -88,14 +101,6 @@
                                       onclick={returnToSelectGood}></lightning-button>
                     <lightning-button variant="brand" label="Add To Cart" class="slds-m-right_large"
                                       onclick={addNewEShopOrderToCart}></lightning-button>
-                    <lightning-button variant="neutral" class="slds-m-right_large" label="<<<"
-                                      onclick={goToPreviousEShopOrder} disabled={goToPreviousEShopOrderButtonDisabled}
-                    >
-                    </lightning-button>
-                    <lightning-button variant="neutral" class="slds-m-right_large" label=">>>"
-                                      onclick={goToNextEShopOrder} disabled={goToNextEShopOrderButtonDisabled}
-                    >
-                    </lightning-button>
                 </div>
             </div>
         </template>

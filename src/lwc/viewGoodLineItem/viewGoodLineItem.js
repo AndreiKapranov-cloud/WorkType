@@ -3,6 +3,8 @@
  */
 import {LightningElement, api, track} from 'lwc';
 
+import checkCartEstimatedDeliveryDateAndChangeItDependingOnEshopOrderRecordEstimatedDeliveryDate
+    from '@salesforce/apex/EShopBaseComponentController.checkCartEstimatedDeliveryDateAndChangeItDependingOnEshopOrderRecordEstimatedDeliveryDate';
 import createEshopOrderMethod
     from '@salesforce/apex/EShopBaseComponentController.createEshopOrderMethod';
 
@@ -32,6 +34,9 @@ export default class ViewGoodLineItem extends LightningElement {
     goToPreviousEShopOrderButtonDisabled = true;
     @track eshopOrderWrapperList = [];
     @track clonedLineItems = [];
+    removedRecordIndex;
+    itemsList = [];
+    currentIndex;
 
 
     @track selectedLineItemsDeepCopy = [];
@@ -41,29 +46,25 @@ export default class ViewGoodLineItem extends LightningElement {
         console.log('connectedCallback');
         this.isLoading = true;
         this.today = new Date();
-        console.log('Daaaaate' + this.today);
-
-        console.log('JSON' + JSON.parse(JSON.stringify(this.lineItems)));
 
         this.selectedLineItemsDeepCopy = JSON.parse(JSON.stringify(this.lineItems));
 
         this.lineItem = this.selectedLineItemsDeepCopy[this.index];
+
         if (this.selectedLineItemsDeepCopy.length > 1) {
             this.goToNextEShopOrderButtonDisabled = false;
         }
 
         console.log('this.lineItem    :' + this.lineItem);
 
-        console.log(' this.selectedItemsIdsssssssssssss    :' + this.selectedItemsIds);
-
-        console.log('cdccdcc: ' + this.cartId);
         this.isLoading = false;
     }
 
-    handleEShoporderGoodQuantityChange(e) {
+    handleEShopOrderGoodQuantityChange(e) {
         try {
             let target = e.target;
             this.lineItem.quantityToAddToCart = e.target.value;
+
             console.log('this.lineItem.quantityToAddToCart = ' + this.lineItem.quantityToAddToCart);
 
             const isWhitespaceString = str => !str.replace(/\s/g, '').length;
@@ -87,14 +88,10 @@ export default class ViewGoodLineItem extends LightningElement {
         try {
             console.log('this.lineItem.estimatedDeliveryDate  ' + this.lineItem.estimatedDeliveryDate);
 
-            console.log('this.lineItems[this.index].estimatedDeliveryDate    ' + this.lineItems[this.index].estimatedDeliveryDate);
-            console.log('e.target.value ' + e.target.value);
-
-
             this.lineItem.estimatedDeliveryDate = e.target.value;
 
         } catch (e) {
-            console.log(e.message)//error when handling result
+            console.log(e.message)
         }
     }
 
@@ -117,13 +114,13 @@ export default class ViewGoodLineItem extends LightningElement {
         return isOrderGoodQuantityValid && estimatedDeliveryDateValid && this.goodQuantityInputValid;
     }
 
-    controlIfButtonIsDisabledDependingOnIndex() {
+    checkIfButtonIsDisabledDependingOnIndex() {
         this.goToPreviousEShopOrderButtonDisabled = this.index <= 0;
-        this.goToNextEShopOrderButtonDisabled = this.index >= this.selectedLineItemsDeepCopy.length-1;
-       if(this.selectedLineItemsDeepCopy.length === 1){
-           this.goToNextEShopOrderButtonDisabled = true;
-           this.goToPreviousEShopOrderButtonDisabled = true;
-       }
+        this.goToNextEShopOrderButtonDisabled = this.index >= this.selectedLineItemsDeepCopy.length - 1;
+        if (this.selectedLineItemsDeepCopy.length === 1) {
+            this.goToNextEShopOrderButtonDisabled = true;
+            this.goToPreviousEShopOrderButtonDisabled = true;
+        }
     }
 
     goToNextEShopOrder() {
@@ -131,7 +128,7 @@ export default class ViewGoodLineItem extends LightningElement {
             this.index += 1;
             this.lineItem = this.selectedLineItemsDeepCopy[this.index];
             console.log('this.lineItem    :' + this.lineItem);
-            this.controlIfButtonIsDisabledDependingOnIndex();
+            this.checkIfButtonIsDisabledDependingOnIndex();
         }
     }
 
@@ -140,15 +137,28 @@ export default class ViewGoodLineItem extends LightningElement {
             this.index -= 1;
             this.lineItem = this.selectedLineItemsDeepCopy[this.index];
             console.log('this.lineItem    :' + this.lineItem);
-            this.controlIfButtonIsDisabledDependingOnIndex();
+            this.checkIfButtonIsDisabledDependingOnIndex();
         }
     }
+
+    /*  checkIndexAfterInsertedRecordRemoval(removedRecordIndex, itemsList) {
+
+
+          if(itemsList.length > 1 && removedRecordIndex !== itemsList.length - 1){
+              this.currentIndex = removedRecordIndex + 1;
+          }
+
+          if (removedRecordIndex === 0) {
+              this.currentIndex = 1;
+          }
+          return this.currentIndex;
+      }*/
 
     addNewEShopOrderToCart() {
 
         if (this.checkWorkTypeInputFields()) {
             this.isLoading = true;
-            this.eshopOrderJsonObject.eShopOrderGoodQuantity = this.lineItem.eShopOrderGoodQuantity;
+            this.eshopOrderJsonObject.eShopOrderGoodQuantity = this.lineItem.quantityToAddToCart;
             this.eshopOrderJsonObject.estimatedDeliveryDate = this.lineItem.estimatedDeliveryDate;
             this.eshopOrderJsonObject.cartId = this.cartId;
             this.eshopOrderJsonObject.goodLineItemId = this.goodLineItemId;
@@ -160,18 +170,35 @@ export default class ViewGoodLineItem extends LightningElement {
                     paramsJSONString: this.paramsJSONString
                 })
                 .then(result => {
-                    console.log(result);
-                    this.eshopOrderObject = result;
+                        console.log(result);
+                        this.eshopOrderObject = result;
+                        console.log(this.eshopOrderObject);
+                        checkCartEstimatedDeliveryDateAndChangeItDependingOnEshopOrderRecordEstimatedDeliveryDate(
+                            {
+                                eShopOrder: this.eshopOrderObject
+                            });
 
-                    this.selectedLineItemsDeepCopy = this.selectedLineItemsDeepCopy.filter(e => e !== this.selectedLineItemsDeepCopy[this.index]);
 
-                    if (this.selectedLineItemsDeepCopy.length === 0) {
-                        this.returnToSelectGood();
+                        this.selectedLineItemsDeepCopy = this.selectedLineItemsDeepCopy.filter(e => e !== this.selectedLineItemsDeepCopy[this.index]);
+
+                        if (this.index === this.selectedLineItemsDeepCopy.length) {
+                            this.index -= 1;
+                        }
+                        this.lineItem = this.selectedLineItemsDeepCopy[this.index];
+
+                        this.checkIfButtonIsDisabledDependingOnIndex();
+
+                        console.log('length after:  ' + this.selectedLineItemsDeepCopy.length);
+
+
+                        if (this.selectedLineItemsDeepCopy.length === 0) {
+                            this.returnToSelectGood();
+                        }
+
+                        console.log('eshopOrderObject = ' + this.eshopOrderObject);
+                        this.genericShowToast('Success!', 'EShop Order Record created Successfully!', 'success');
                     }
-
-                    console.log('eshopOrderObject = ' + this.eshopOrderObject);
-                    this.genericShowToast('Success!', 'EShop Order Record created Successfully!', 'success');
-                })
+                )
                 .catch(error => {
                     console.log('Error creating EShop Order');
                     console.log(error);
@@ -188,7 +215,7 @@ export default class ViewGoodLineItem extends LightningElement {
 
     returnToNewCart() {
 
-        this.dispatchEvent(new CustomEvent('whichcomponenttodisplay', {
+        this.dispatchEvent(new CustomEvent('switchtonewcart', {
             detail: {
                 'componentToDisplay': 'NewCart'
             }
@@ -197,7 +224,7 @@ export default class ViewGoodLineItem extends LightningElement {
 
     returnToSelectGood() {
 
-        this.dispatchEvent(new CustomEvent('whichcomponenttodisplay', {
+        this.dispatchEvent(new CustomEvent('switchtoselectgood', {
             detail: {
                 'componentToDisplay': 'SelectGood',
                 'cartId': this.cartId

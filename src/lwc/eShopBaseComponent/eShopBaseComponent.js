@@ -12,7 +12,45 @@ export default class EShopBaseComponent extends LightningElement {
     displayViewGoodLineItem = false;
     @track lineItems;
 
-    handleWhichComponentToDisplay(event) {
+    handleSwitchToNewCart(event){
+        this.isLoading = true;
+        this.componentName = 'New Cart';
+        this.displayNewCartComponent = true;
+        this.displayViewGoodLineItem = false;
+        this.displaySelectGoodComponent = false;
+        this.isLoading = false;
+    }
+
+    handleSwitchToSelectGood(event) {
+        this.isLoading = true;
+        this.cartId = event.detail.cartId;
+        this.componentName = 'Select Good';
+        this.displaySelectGoodComponent = true;
+        this.displayNewCartComponent = false;
+        this.displayViewGoodLineItem = false;
+        this.isLoading = false;
+    }
+
+    handleSwitchToViewGoodLineItem(event) {
+        this.isLoading = true;
+        this.goodLineItemId = event.detail.goodLineItemId;
+        this.selectedItemsIds = event.detail.selectedItemsIds;
+
+        this.lineItems = event.detail.lineItems;
+        this.componentName = 'Eshop Order';
+        this.displayViewGoodLineItem = true;
+        this.displaySelectGoodComponent = false;
+        this.isLoading = false;
+    }
+
+
+
+
+
+
+
+
+   /* handleWhichComponentToDisplay(event) {
         this.isLoading = true;
         switch (event.detail.componentToDisplay) {
             case 'NewCart'  : {
@@ -49,8 +87,7 @@ export default class EShopBaseComponent extends LightningElement {
             default:
                 this.displayNewCartComponent = true;
                 this.isLoading = false;
-                //   this.displayNewEShopOrderComponent = false;
                 break;
         }
-    }
+    }*/
 }

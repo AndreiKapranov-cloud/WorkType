@@ -28,7 +28,7 @@
                     </lightning-layout-item>
                 </lightning-layout>
 
-                <template if:true={displayCostumes}>
+                <template lwc:if={displayCostumes}>
 
                     <lightning-layout>
                         <lightning-layout-item>
@@ -48,7 +48,7 @@
 
                 </template>
 
-                <template if:true={displayHoodies}>
+                <template lwc:if={displayHoodies}>
 
                     <lightning-layout>
                         <lightning-layout-item>
@@ -67,7 +67,7 @@
                     </lightning-layout>
                 </template>
 
-                <template if:true={displaySneakers}>
+                <template lwc:if={displaySneakers}>
 
                     <lightning-layout>
                         <lightning-layout-item>
@@ -127,8 +127,14 @@
                                             key-field="id"
                                             data={goodLineItems}
                                             selected-rows={preselectedRows}
+                                            is-loading={isTableLoading}
                                             columns={columns}>
                                     </lightning-datatable>
+                                    <template lwc:if={isTableLoading}>
+                                        <div class="loading-spinner">
+                                            <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+                                        </div>
+                                    </template>
                                 </div>
                             </div>
                         </div>

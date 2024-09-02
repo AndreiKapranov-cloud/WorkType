@@ -17,19 +17,23 @@
                     <div class="slds-border_bottom slds-m-top_large"></div>
                 </div>
                 <template lwc:if={displayNewCartComponent}>
-                    <c-new-cart onwhichcomponenttodisplay={handleWhichComponentToDisplay}></c-new-cart>
+                    <c-new-cart onswitchtoselectgood={handleSwitchToSelectGood}></c-new-cart>
                 </template>
                 <template lwc:if={displaySelectGoodComponent}>
-                    <c-select-good onwhichcomponenttodisplay={handleWhichComponentToDisplay}></c-select-good>
+                    <c-select-good onswitchtoviewgoodlineitem={handleSwitchToViewGoodLineItem}
+                                   onswitchtonewcart={handleSwitchToNewCart}></c-select-good>
                 </template>
                 <template lwc:if={displayViewGoodLineItem}>
                     <c-view-good-line-item good-line-item-id={goodLineItemId}
                                            cart-id={cartId}
                                            selected-items-ids={selectedItemsIds}
                                            line-items={lineItems}
-                                           onwhichcomponenttodisplay={handleWhichComponentToDisplay}></c-view-good-line-item>
+                                           onswitchtoselectgood={handleSwitchToSelectGood}
+                                           onswitchtonewcart={handleSwitchToNewCart}
+                    ></c-view-good-line-item>
                 </template>
             </lightning-card>
         </div>
     </div>
 </template>
+

@@ -31,7 +31,7 @@ export default class NewCart extends LightningElement {
 
     displayGoodSearchInBase() {
 
-        this.dispatchEvent(new CustomEvent('whichcomponenttodisplay', {
+        this.dispatchEvent(new CustomEvent('switchtoselectgood', {
             detail: {
                 'componentToDisplay': 'SelectGood',
                 'cartId': this.cartId
@@ -75,10 +75,6 @@ export default class NewCart extends LightningElement {
 
     handleChangeBuyer(e) {
         this.buyerId = e.target.value;
-    }
-
-    handleEstimatedDeliveryDateChange(e) {
-        this.estimatedDeliveryDate = e.target.value;
     }
 
     handlePickupPointAddressChange(e) {

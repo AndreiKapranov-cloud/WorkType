@@ -120,19 +120,20 @@
                     <div class="slds-form-element">
                         <div class="slds-form-element__control">
 
-                            <div lwc:if={goodLineItems.length}>
-                                <div class="datatable-style" >
+                            <div lwc:if={goodLineItemsDisplayedInTable.length}>
+                                <div class="datatable-style">
                                     <lightning-datatable
                                             onrowselection={handleRowSelection}
                                             key-field="id"
-                                            data={goodLineItems}
+                                            data={goodLineItemsDisplayedInTable}
                                             selected-rows={preselectedRows}
                                             is-loading={isTableLoading}
                                             columns={columns}>
                                     </lightning-datatable>
                                     <template lwc:if={isTableLoading}>
                                         <div class="loading-spinner">
-                                            <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+                                            <lightning-spinner alternative-text="Loading"
+                                                               size="medium"></lightning-spinner>
                                         </div>
                                     </template>
                                 </div>

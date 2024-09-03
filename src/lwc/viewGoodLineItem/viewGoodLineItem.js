@@ -45,7 +45,7 @@ export default class ViewGoodLineItem extends LightningElement {
     connectedCallback() {
         console.log('connectedCallback');
         this.isLoading = true;
-        this.today = new Date();
+        this.today = new Date();//???  this ????
 
         this.selectedLineItemsDeepCopy = JSON.parse(JSON.stringify(this.lineItems));
 

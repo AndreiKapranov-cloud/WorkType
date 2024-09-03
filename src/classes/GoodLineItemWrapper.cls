@@ -14,6 +14,6 @@ public with sharing class GoodLineItemWrapper {
     @AuraEnabled public String subCategory;
     @AuraEnabled public Date estimatedDeliveryDate;
     @AuraEnabled public Decimal quantityToAddToCart;
-
+    @AuraEnabled public Boolean checked;
 
 }

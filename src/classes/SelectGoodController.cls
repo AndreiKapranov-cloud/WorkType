@@ -41,7 +41,7 @@ public with sharing class SelectGoodController {
         }
     }
 
-    @AuraEnabled(Cacheable=true)
+    @AuraEnabled
     public static List<GoodLineItemWrapper>fetchGoodLineItemsInCategory(String searchText, String category) {
         List<GoodLineItemWrapper> goodLineItemWrappers = new List<GoodLineItemWrapper>();
         String searchKey = '%' + searchText + '%';
@@ -59,7 +59,7 @@ public with sharing class SelectGoodController {
         }
     }
 
-    @AuraEnabled(Cacheable=true)
+    @AuraEnabled
     public static List<GoodLineItemWrapper> fetchGoodLineItemsInSubCategory(String searchText, String subCategory) {
         List<GoodLineItemWrapper> goodLineItemWrappers = new List<GoodLineItemWrapper>();
         String searchKey = '%' + searchText + '%';
@@ -77,33 +77,6 @@ public with sharing class SelectGoodController {
         }
     }
 
-    /* @AuraEnabled
-     public static List<GoodLineItemWrapper> getGoodLineItemWrapperObjectsBySubCategory(String subCategory) {
-         List<SObject> goodLineItems = new List<SObject>();
-         try {
-
-             String query = 'SELECT Id,Name,Good__r.Size__c,Good__r.Name,Good__r.Colour__c,Quantity__c,Supplier__r.Name FROM GoodLineItem__c WHERE Good__r.subcategory__c = ' + '\'' + subCategory + '\'';
-             goodLineItems = EShopBaseComponentController.getRecordsBySOQL(query);
-             return getGoodLineItemWrapperList(goodLineItems);
-         } catch (Exception e) {
-             System.debug('The following exception has occurred: ' + e.getMessage());
-             throw new AuraHandledException('The following exception has occurred: ' + e.getMessage());
-         }
-     }
-
-     @AuraEnabled
-     public static List<GoodLineItemWrapper> getGoodLineItemWrapperObjectsByCategory(String category) {
-         List<SObject> goodLineItems = new List<SObject>();
-         try {
-
-             String query = 'SELECT Id,Name,Good__r.Size__c,Good__r.Name,Good__r.Colour__c,Quantity__c,Supplier__r.Name FROM GoodLineItem__c WHERE Good__r.Category__c = ' + '\'' + category + '\'';
-             goodLineItems = EShopBaseComponentController.getRecordsBySOQL(query);
-             return getGoodLineItemWrapperList(goodLineItems);
-         } catch (Exception e) {
-             System.debug('The following exception has occurred: ' + e.getMessage());
-             throw new AuraHandledException('The following exception has occurred: ' + e.getMessage());
-         }
-     }*/
 
     private static List<GoodLineItemWrapper> getGoodLineItemWrapperList(List<GoodLineItem__c>goodLineItems) {
         List<GoodLineItemWrapper> wrapperList = new List<GoodLineItemWrapper>();

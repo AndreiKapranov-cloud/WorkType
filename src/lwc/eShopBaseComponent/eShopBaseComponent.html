@@ -24,12 +24,11 @@
                                    onswitchtonewcart={handleSwitchToNewCart}></c-select-good>
                 </template>
                 <template lwc:if={displayViewGoodLineItem}>
-                    <c-view-good-line-item good-line-item-id={goodLineItemId}
-                                           cart-id={cartId}
-                                           selected-items-ids={selectedItemsIds}
-                                           line-items={lineItems}
-                                           onswitchtoselectgood={handleSwitchToSelectGood}
-                                           onswitchtonewcart={handleSwitchToNewCart}
+                    <c-view-good-line-item
+                            cart-id={cartId}
+                            line-items={lineItems}
+                            onswitchtoselectgood={handleSwitchToSelectGood}
+                            onswitchtonewcart={handleSwitchToNewCart}
                     ></c-view-good-line-item>
                 </template>
             </lightning-card>

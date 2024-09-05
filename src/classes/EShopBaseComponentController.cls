@@ -5,7 +5,7 @@
 public with sharing class EShopBaseComponentController {
     @AuraEnabled
     public static List<SObject> getRecordsBySOQL(String query) {
-        List<SObject> records = new List<SObject>();
+
         try {
             return Database.query(query);
 
@@ -38,7 +38,7 @@ public with sharing class EShopBaseComponentController {
     }
 
 
-    public static Map<String, List <String>> getGlobalPickList() {
+    private static Map<String, List <String>> getGlobalPickList() {
 
         try {
             String objectName = 'Good__c';
@@ -183,6 +183,10 @@ public with sharing class EShopBaseComponentController {
             eshopOrder = new EShopOrder__c(Quantity__c = eShopOrderGoodQuantity, EstimatedDeliveryDate__c = estimatedDeliveryDate,
                     Cart__c = cartId, RegistrationDate__c = registrationDate, Good_Line_Item__c = goodLineItemId);
             insert eshopOrder;
+
+            changeCartEstimatedDeliveryDate(eshopOrder);
+            changeGoodLineItemQuantity(eshopOrder);
+
             return eshopOrder;
         } catch (Exception e) {
             System.debug('The following exception has occurred: ' + e.getMessage());
@@ -190,8 +194,8 @@ public with sharing class EShopBaseComponentController {
         }
     }
 
-    @AuraEnabled
-    public static void checkCartEstimatedDeliveryDateAndChangeItDependingOnEshopOrderRecordEstimatedDeliveryDate(EShopOrder__c eShopOrder) {
+
+    private static void changeCartEstimatedDeliveryDate(EShopOrder__c eShopOrder) {
         try {
             Cart__c cart = [
                     SELECT Id,EstimatedDeliveryDate__c
@@ -199,16 +203,35 @@ public with sharing class EShopBaseComponentController {
                     WHERE Id = :eShopOrder.Cart__c
             ];
 
-
             if (cart.EstimatedDeliveryDate__c == null || cart.EstimatedDeliveryDate__c < eShopOrder.EstimatedDeliveryDate__c) {
                 cart.EstimatedDeliveryDate__c = eShopOrder.EstimatedDeliveryDate__c;
             }
             update cart;
         } catch (Exception e) {
             System.debug('The following exception has occurred: ' + e.getMessage());
-            throw new AuraHandledException('The following exception has occurred: ' + e.getMessage());
+            throw new HandledException(e.getMessage());
         }
 
     }
 
+
+    private static void changeGoodLineItemQuantity(EShopOrder__c eShopOrder)  {
+
+        try {
+
+            GoodLineItem__c goodLineItem = [SELECT Quantity__c FROM GoodLineItem__c WHERE Id = :eShopOrder.Good_Line_Item__c];
+
+            goodLineItem.Quantity__c -= eShopOrder.Quantity__c;
+
+            update goodLineItem;
+        } catch (Exception e) {
+            System.debug('The following exception has occurred: ' + e.getMessage());
+            throw new HandledException(e.getMessage());
+        }
+    }
+
+
+    @AuraEnabled
+    public static EShopOrder__c createEshopOrderMethod(String paramsJSONString) {
+    createEshopOrderMethod(
 }

@@ -5,12 +5,14 @@
 import {LightningElement, track} from 'lwc';
 
 export default class EShopBaseComponent extends LightningElement {
+
+    @track lineItems;
     isLoading = false;
     componentName = 'New Cart';
     displayNewCartComponent = true;
     displaySelectGoodComponent = false;
     displayViewGoodLineItem = false;
-    @track lineItems;
+
 
     handleSwitchToNewCart(event){
         this.isLoading = true;
@@ -33,9 +35,6 @@ export default class EShopBaseComponent extends LightningElement {
 
     handleSwitchToViewGoodLineItem(event) {
         this.isLoading = true;
-        this.goodLineItemId = event.detail.goodLineItemId;
-        this.selectedItemsIds = event.detail.selectedItemsIds;
-
         this.lineItems = event.detail.lineItems;
         this.componentName = 'Eshop Order';
         this.displayViewGoodLineItem = true;

@@ -12,8 +12,11 @@ import {genericShowToast} from "c/utils";
 
 
 export default class NewCart extends LightningElement {
-    isLoading = true;
+
     genericShowToast = genericShowToast.bind(this);
+
+    @track statusPicklistValues;
+    isLoading = true;
     buyers = [];
     buyerId;
     estimatedDeliveryDate;
@@ -22,12 +25,8 @@ export default class NewCart extends LightningElement {
     cartJsonObject = {};
     cartObject;
     cartId;
-    @track statusPicklistValues;
     pickupPointAddressValid = false;
 
-    getValueByKey(object, row) {
-        return object[row];
-    }
 
     displayGoodSearchInBase() {
 
@@ -45,7 +44,8 @@ export default class NewCart extends LightningElement {
         getBuyers()
             .then(result => {
                 this.buyers = result;
-                this.buyerId = this.getValueByKey(result[0], 'Id');
+                console.log('result    :' + JSON.stringify(result));
+                this.buyerId = this.buyers[0]['Id'];
                 console.log('this.buyerId: ', this.buyerId);
                 console.log('this.buyers: ', this.buyers);
             })
@@ -60,7 +60,7 @@ export default class NewCart extends LightningElement {
             .then(result => {
 
                 this.statusPicklistValues = result;
-                this.status = this.getValueByKey(result[0], "value");
+                this.status = result[0]['value'];
                 console.log('this.status: ', this.status);
                 console.log('this.statusPicklistValues: ', JSON.stringify(this.statusPicklistValues));
             })
@@ -134,7 +134,7 @@ export default class NewCart extends LightningElement {
                     this.isLoading = false;
                 }
             )
-        }else{
+        } else {
             this.genericShowToast('Error creating New Cart.', 'Please, complete required fields properly', 'error');
         }
     }

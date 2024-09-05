@@ -82,10 +82,12 @@
 
             <div class=slds-m-top_x-large>
                 <div class="slds-col slds-text-align_right">
-                    <lightning-button variant="neutral" class="slds-m-right_large" label="<<<"
+                    <lightning-button variant="neutral" class="slds-m-right_small" label="<<<"
                                       onclick={goToPreviousEShopOrder} disabled={goToPreviousEShopOrderButtonDisabled}
                     >
                     </lightning-button>
+                    <span class="slds-badge slds-m-right_small">{incrementedIndex}</span>
+
                     <lightning-button variant="neutral" class="slds-m-right_large" label=">>>"
                                       onclick={goToNextEShopOrder} disabled={goToNextEShopOrderButtonDisabled}
                     >
@@ -101,6 +103,8 @@
                                       onclick={returnToSelectGood}></lightning-button>
                     <lightning-button variant="brand" label="Add To Cart" class="slds-m-right_large"
                                       onclick={addNewEShopOrderToCart}></lightning-button>
+                    <lightning-button variant="brand" label="Add All to Cart" class="slds-m-right_large" disabled={addAllButtonDisabled}
+                                      onclick={addAllOrdersToCart}></lightning-button>
                 </div>
             </div>
         </template>

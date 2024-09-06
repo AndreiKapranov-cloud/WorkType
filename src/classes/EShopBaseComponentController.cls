@@ -145,7 +145,7 @@ public with sharing class EShopBaseComponentController {
     }
 
     @AuraEnabled
-    public static Sobject getGoodLineItemById(String goodLineItemId) {
+    public static SObject getGoodLineItemById(String goodLineItemId) {
 
         SObject goodLineItem;
         try {
@@ -153,7 +153,7 @@ public with sharing class EShopBaseComponentController {
             String query = 'SELECT Id,Name,Quantity__c,Supplier__r.Name,Good__r.Size__c,Good__r.Name,Good__r.Colour__c FROM GoodLineItem__c WHERE Id = ' + '\'' + goodLineItemId + '\' LIMIT 1';
 
             List<SObject>GoodLineItemList = getRecordsBySOQL(query);
-            If (!GoodLineItemList.isEmpty()) {
+            if (!GoodLineItemList.isEmpty()) {
                 goodLineItem = GoodLineItemList[0];
             }
             return goodLineItem;
@@ -165,12 +165,96 @@ public with sharing class EShopBaseComponentController {
 
 
     @AuraEnabled
-    public static EShopOrder__c createEshopOrderMethod(String paramsJSONString) {
+    public static EShopOrder__c createEshopOrder(String paramsJSONString) {
 
-        EShopOrder__c eshopOrder = new EShopOrder__c();
+
+        try {
+            List<EShopOrder__c> eShopOrders = new List<EShopOrder__c>();
+
+            EShopOrder__c eShopOrder = createOrderWrapperAndOrder(paramsJSONString);
+
+            eShopOrders.add(eShopOrder);
+            insert eShopOrder;
+
+            changeCartEstimatedDeliveryDate(eShopOrders);
+            changeGoodLineItemQuantity(eShopOrders);
+
+            return eShopOrder;
+        } catch (Exception e) {
+            System.debug('The following exception has occurred: ' + e.getMessage());
+            throw new AuraHandledException('The following exception has occurred: ' + e.getMessage());
+        }
+    }
+
+
+    private static void changeCartEstimatedDeliveryDate(List<EShopOrder__c> eShopOrders) {
+        try {
+
+            if (eShopOrders.size() > 0) {
+                Cart__c cart = [
+                        SELECT Id,EstimatedDeliveryDate__c
+                        FROM Cart__c
+                        WHERE Id = :eShopOrders[0].Cart__c
+                ];
+
+
+                for (EShopOrder__c eShopOrder : eShopOrders) {
+
+                    if (cart.EstimatedDeliveryDate__c == null || cart.EstimatedDeliveryDate__c < eShopOrder.EstimatedDeliveryDate__c) {
+
+                        cart.EstimatedDeliveryDate__c = eShopOrder.EstimatedDeliveryDate__c;
+                    }
+                }
+
+                update cart;
+            }
+        } catch (Exception e) {
+            System.debug('The following exception has occurred: ' + e.getMessage());
+            throw new HandledException(e.getMessage());
+        }
+
+    }
+
+
+    private static void changeGoodLineItemQuantity(List<EShopOrder__c> eShopOrders) {
 
         try {
 
+            List<String> goodLineItemIds = new List<String>();
+
+            for (EShopOrder__c eShopOrder : eShopOrders) {
+
+                goodLineItemIds.add(eShopOrder.Good_Line_Item__c);
+
+            }
+
+
+            List<GoodLineItem__c> goodLineItems = [SELECT Id,Quantity__c FROM GoodLineItem__c WHERE Id IN:goodLineItemIds];
+
+            for (GoodLineItem__c goodLineItem : goodLineItems) {
+
+                for (EShopOrder__c eShopOrder : eShopOrders) {
+
+                    if (eShopOrder.Good_Line_Item__c == goodLineItem.Id) {
+
+                        goodLineItem.Quantity__c -= eShopOrder.Quantity__c;
+                    }
+                }
+
+            }
+
+            update goodLineItems;
+        } catch (Exception e) {
+            System.debug('The following exception has occurred: ' + e.getMessage());
+            throw new HandledException(e.getMessage());
+        }
+    }
+
+
+    @AuraEnabled
+    public static EShopOrder__c createOrderWrapperAndOrder(String paramsJSONString) {
+
+        try {
             CreateEshopOrderParamsWrapper wrapper = (CreateEshopOrderParamsWrapper) JSON.deserialize(paramsJSONString,
                     CreateEshopOrderParamsWrapper.class);
 
@@ -180,50 +264,9 @@ public with sharing class EShopBaseComponentController {
             Date registrationDate = Date.today();
             Id goodLineItemId = wrapper.goodLineItemId;
 
-            eshopOrder = new EShopOrder__c(Quantity__c = eShopOrderGoodQuantity, EstimatedDeliveryDate__c = estimatedDeliveryDate,
+            EShopOrder__c eshopOrder = new EShopOrder__c(Quantity__c = eShopOrderGoodQuantity, EstimatedDeliveryDate__c = estimatedDeliveryDate,
                     Cart__c = cartId, RegistrationDate__c = registrationDate, Good_Line_Item__c = goodLineItemId);
-            insert eshopOrder;
-
-            changeCartEstimatedDeliveryDate(eshopOrder);
-            changeGoodLineItemQuantity(eshopOrder);
-
             return eshopOrder;
-        } catch (Exception e) {
-            System.debug('The following exception has occurred: ' + e.getMessage());
-            throw new AuraHandledException('The following exception has occurred: ' + e.getMessage());
-        }
-    }
-
-
-    private static void changeCartEstimatedDeliveryDate(EShopOrder__c eShopOrder) {
-        try {
-            Cart__c cart = [
-                    SELECT Id,EstimatedDeliveryDate__c
-                    FROM Cart__c
-                    WHERE Id = :eShopOrder.Cart__c
-            ];
-
-            if (cart.EstimatedDeliveryDate__c == null || cart.EstimatedDeliveryDate__c < eShopOrder.EstimatedDeliveryDate__c) {
-                cart.EstimatedDeliveryDate__c = eShopOrder.EstimatedDeliveryDate__c;
-            }
-            update cart;
-        } catch (Exception e) {
-            System.debug('The following exception has occurred: ' + e.getMessage());
-            throw new HandledException(e.getMessage());
-        }
-
-    }
-
-
-    private static void changeGoodLineItemQuantity(EShopOrder__c eShopOrder)  {
-
-        try {
-
-            GoodLineItem__c goodLineItem = [SELECT Quantity__c FROM GoodLineItem__c WHERE Id = :eShopOrder.Good_Line_Item__c];
-
-            goodLineItem.Quantity__c -= eShopOrder.Quantity__c;
-
-            update goodLineItem;
         } catch (Exception e) {
             System.debug('The following exception has occurred: ' + e.getMessage());
             throw new HandledException(e.getMessage());
@@ -232,6 +275,27 @@ public with sharing class EShopBaseComponentController {
 
 
     @AuraEnabled
-    public static EShopOrder__c createEshopOrderMethod(String paramsJSONString) {
-    createEshopOrderMethod(
+    public static List<EShopOrder__c> createEshopOrders(List<String> allParamsJSONString) {
+
+        List<EShopOrder__c> eshopOrders = new List<EShopOrder__c>();
+        try {
+
+            for (String param : allParamsJSONString) {
+
+                EShopOrder__c eShopOrder = createOrderWrapperAndOrder(param);
+
+                eshopOrders.add(eShopOrder);
+
+            }
+
+            insert eshopOrders;
+
+            changeCartEstimatedDeliveryDate(eShopOrders);
+            changeGoodLineItemQuantity(eShopOrders);
+            return eshopOrders;
+        } catch (Exception e) {
+            System.debug('The following exception has occurred: ' + e.getMessage());
+            throw new AuraHandledException('The following exception has occurred: ' + e.getMessage());
+        }
+    }
 }

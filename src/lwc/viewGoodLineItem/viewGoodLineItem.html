@@ -39,7 +39,12 @@
                         name="EstimatedDeliveryDate"
                         lwc:ref="estimatedDeliveryDate"
                         label="Estimated Delivery Date"
-                        onchange={handleOrderEstimatedDeliveryDateChange}>
+                        onchange={handleOrderEstimatedDeliveryDateChange}
+                        onblur={handleBlur}
+                        onreset={handleResetEstimatedDeliveryDate}
+                        onemptied={handleEmptied}
+
+                >
                 </lightning-input>
             </div>
 

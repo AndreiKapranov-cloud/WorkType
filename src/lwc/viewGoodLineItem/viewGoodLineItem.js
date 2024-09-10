@@ -3,8 +3,7 @@
  */
 import {LightningElement, api, track} from 'lwc';
 
-import createEshopOrder
-    from '@salesforce/apex/EShopBaseComponentController.createEshopOrder';
+
 import createEshopOrders
     from '@salesforce/apex/EShopBaseComponentController.createEshopOrders';
 
@@ -27,6 +26,7 @@ export default class ViewGoodLineItem extends LightningElement {
     @track allParamsJSONString = [];
     @track eshopOrderObjects = [];
     @track indexesOfOrdersNotValid = [];
+    @track eshopOrderJsonObjects = [];
 
     isWhitespaceString = str => !str.replace(/\s/g, '').length;
 
@@ -91,33 +91,33 @@ export default class ViewGoodLineItem extends LightningElement {
         try {
             let target = e.target;
 
-            this.estimatedDeliveryDateTarget = e.target;
+            // this.estimatedDeliveryDateTarget = e.target;
 
             this.lineItem.quantityToAddToCart = e.target.value;
             this.selectedLineItemsDeepCopy[this.index].quantityToAddToCart = e.target.value;
 
-            //   const isWhitespaceString = str => !str.replace(/\s/g, '').length;
+            /*    const isWhitespaceString = str => !str.replace(/\s/g, '').length;
 
-            if (this.isWhitespaceString(this.lineItem.quantityToAddToCart) || this.lineItem.quantityToAddToCart === '') {
-                target.setCustomValidity('Complete this field.');
-                this.goodQuantityInputNotSpaces = false;
-            } else {
-                target.setCustomValidity('');
-                this.goodQuantityInputNotSpaces = true;
-            }
+                if (isWhitespaceString(this.lineItem.quantityToAddToCart) || this.lineItem.quantityToAddToCart === '') {
+                    target.setCustomValidity('Complete this field.');
+                    this.goodQuantityInputNotSpaces = false;
+                } else {
+                    target.setCustomValidity('');
+                    this.goodQuantityInputNotSpaces = true;
+                }
 
-            if (this.lineItem.quantityToAddToCart > this.lineItem.quantity) {
-                target.setCustomValidity('Do not Have This Amount of Goods In The Warehouse.');
-                this.quantityEnough = false;
-            } else {
-                target.setCustomValidity('');
-                this.quantityEnough = true;
-            }
+                if (this.lineItem.quantityToAddToCart > this.lineItem.quantity) {
+                    target.setCustomValidity('Do not Have This Amount of Goods In The Warehouse.');
+                    this.quantityEnough = false;
+                } else {
+                    target.setCustomValidity('');
+                    this.quantityEnough = true;
+                }
 
-            if (this.goodQuantityInputNotSpaces && this.quantityEnough) {
+                if (this.goodQuantityInputNotSpaces && this.quantityEnough) {
 
-                this.isQuantityValid = true;
-            }
+                    this.isQuantityValid = true;
+                }*/
 
 
         } catch (e) {
@@ -194,66 +194,66 @@ export default class ViewGoodLineItem extends LightningElement {
     }
 
 
-    handleResetEstimatedDeliveryDate(e){
+    /*  handleResetEstimatedDeliveryDate(e){
 
-        let target = e.target;
-        target.setCustomValidity('');
+          let target = e.target;
+          target.setCustomValidity('');
 
-    }
+      }
 
-    handleBlur(e){
+      handleBlur(e){
 
-        let target = e.target;
-        target.setCustomValidity('');
+          let target = e.target;
+          target.setCustomValidity('');
 
-    }
-    handleEmptied(e){
+      }
+      handleEmptied(e){
 
-        let target = e.target;
-        target.setCustomValidity('');
+          let target = e.target;
+          target.setCustomValidity('');
 
-    }
-
-
-   /* valiDate(date, target) {
-        let estimatedDeliveryDateValue = new Date(date);
-
-        let today = new Date();
-
-        let yyyyMmDdEstimatedDeliveryDateValue = estimatedDeliveryDateValue.toISOString().slice(0, 10);
-        let yyyyMmDdToday = today.toISOString().slice(0, 10);
-
-        if (yyyyMmDdEstimatedDeliveryDateValue < yyyyMmDdToday) {
-            target.setCustomValidity('Date not Valid.');
-            this.isEstimatedDeliveryDateValid = false;
-        } else {
-            target.setCustomValidity('');
-            this.selectedLineItemsDeepCopy[this.index].estimatedDeliveryDate = e.target.value;
-            this.isEstimatedDeliveryDateValid = true;
-        }
-    }*/
+      }*/
 
 
-    validateOrderGoodQuantity() {
-        let goodQuantityInput = this.template.querySelector(".quantity");
-        goodQuantityInput.reportValidity();
+    /* valiDate(date, target) {
+         let estimatedDeliveryDateValue = new Date(date);
 
-        return goodQuantityInput.checkValidity() && this.isQuantityValid;
-    }
+         let today = new Date();
+
+         let yyyyMmDdEstimatedDeliveryDateValue = estimatedDeliveryDateValue.toISOString().slice(0, 10);
+         let yyyyMmDdToday = today.toISOString().slice(0, 10);
+
+         if (yyyyMmDdEstimatedDeliveryDateValue < yyyyMmDdToday) {
+             target.setCustomValidity('Date not Valid.');
+             this.isEstimatedDeliveryDateValid = false;
+         } else {
+             target.setCustomValidity('');
+             this.selectedLineItemsDeepCopy[this.index].estimatedDeliveryDate = e.target.value;
+             this.isEstimatedDeliveryDateValid = true;
+         }
+     }*/
 
 
-    validateEstimatedDeliveryDate() {
-        let estimatedDeliveryDateInput = this.template.querySelector(".estimatedDeliveryDate");
-        estimatedDeliveryDateInput.reportValidity();
-        return estimatedDeliveryDateInput.checkValidity() && this.isEstimatedDeliveryDateValid;
-    }
+    /* validateOrderGoodQuantity() {
+         let goodQuantityInput = this.template.querySelector(".quantity");
+         goodQuantityInput.reportValidity();
+
+         return goodQuantityInput.checkValidity() && this.isQuantityValid;
+     }
 
 
-    checkEShopOrderInputFields() {
-        let isOrderGoodQuantityValid = this.validateOrderGoodQuantity();
-        let estimatedDeliveryDateValid = this.validateEstimatedDeliveryDate()
-        return isOrderGoodQuantityValid && estimatedDeliveryDateValid;
-    }
+     validateEstimatedDeliveryDate() {
+         let estimatedDeliveryDateInput = this.template.querySelector(".estimatedDeliveryDate");
+         estimatedDeliveryDateInput.reportValidity();
+         return estimatedDeliveryDateInput.checkValidity() && this.isEstimatedDeliveryDateValid;
+     }
+
+
+     checkEShopOrderInputFields() {
+         let isOrderGoodQuantityValid = this.validateOrderGoodQuantity();
+         let estimatedDeliveryDateValid = this.validateEstimatedDeliveryDate()
+         return isOrderGoodQuantityValid && estimatedDeliveryDateValid;
+     }*/
 
 
     checkIfButtonIsDisabledDependingOnIndex() {
@@ -276,15 +276,17 @@ export default class ViewGoodLineItem extends LightningElement {
 
           */
 
-       /*  this.checkEShopOrderInputFields();
-        let estimatedDeliveryDateInput = this.template.querySelector(".estimatedDeliveryDate");
-        let goodQuantityInput = this.template.querySelector(".quantity");
+        /*  this.checkEShopOrderInputFields();
+         let estimatedDeliveryDateInput = this.template.querySelector(".estimatedDeliveryDate");
+         let goodQuantityInput = this.template.querySelector(".quantity");
 
 
-        estimatedDeliveryDateInput.setCustomValidity('');
-        goodQuantityInput.setCustomValidity('');
+         estimatedDeliveryDateInput.setCustomValidity('');
+         goodQuantityInput.setCustomValidity('');
 
-*/
+ */
+
+        this.template.querySelector("c-line-item-input").sendValuesToParent();
         // if (this.checkEShopOrderInputFields()) {
         if (this.index < this.selectedLineItemsDeepCopy.length - 1) {
             this.index += 1;
@@ -299,28 +301,31 @@ export default class ViewGoodLineItem extends LightningElement {
               this.genericShowToast('Input not valid.', 'Please, complete required fields properly.', 'error');
           }*/
 
-    //    this.checkEShopOrderInputFields();
+        //    this.checkEShopOrderInputFields();
         let estimatedDeliveryDateInput = this.template.querySelector(".estimatedDeliveryDate");
         let goodQuantityInput = this.template.querySelector(".quantity");
 
 
         estimatedDeliveryDateInput.setCustomValidity('');
         goodQuantityInput.setCustomValidity('');
+
+
     }
 
 
     goToPreviousEShopOrder() {
 
         //   this.dispatchEvent(new RefreshEvent);
-       /* this.checkEShopOrderInputFields();
-        let estimatedDeliveryDateInput = this.template.querySelector(".estimatedDeliveryDate");
-        let goodQuantityInput = this.template.querySelector(".quantity");
+        /* this.checkEShopOrderInputFields();
+         let estimatedDeliveryDateInput = this.template.querySelector(".estimatedDeliveryDate");
+         let goodQuantityInput = this.template.querySelector(".quantity");
 
 
-        estimatedDeliveryDateInput.setCustomValidity('');
-        goodQuantityInput.setCustomValidity('');*/
-       // this.checkEShopOrderInputFields();
+         estimatedDeliveryDateInput.setCustomValidity('');
+         goodQuantityInput.setCustomValidity('');*/
+        // this.checkEShopOrderInputFields();
 
+        this.template.querySelector("c-line-item-input").sendValuesToParent();
         //  if (this.checkEShopOrderInputFields()) {
         if (this.index > 0) {
             this.index -= 1;
@@ -335,7 +340,7 @@ export default class ViewGoodLineItem extends LightningElement {
              }*/
         }
 
-    //    this.checkEShopOrderInputFields();
+        //    this.checkEShopOrderInputFields();
         let estimatedDeliveryDateInput = this.template.querySelector(".estimatedDeliveryDate");
         let goodQuantityInput = this.template.querySelector(".quantity");
 
@@ -346,171 +351,211 @@ export default class ViewGoodLineItem extends LightningElement {
 
 
     addNewEShopOrderToCart() {
+        this.template.querySelector("c-line-item-input").sendValuesToParent();
+        //  if (this.checkEShopOrderInputFields()) {
+        this.allParamsJSONString = [];
+        this.isLoading = true;
+        this.eshopOrderJsonObject.eShopOrderGoodQuantity = this.lineItem.quantityToAddToCart;
+        this.eshopOrderJsonObject.estimatedDeliveryDate = this.lineItem.estimatedDeliveryDate;
+        this.eshopOrderJsonObject.cartId = this.cartId;
+        this.eshopOrderJsonObject.goodLineItemId = this.lineItem.id;
+        /*
 
-        if (this.checkEShopOrderInputFields()) {
-            this.isLoading = true;
-            this.eshopOrderJsonObject.eShopOrderGoodQuantity = this.lineItem.quantityToAddToCart;
-            this.eshopOrderJsonObject.estimatedDeliveryDate = this.lineItem.estimatedDeliveryDate;
-            this.eshopOrderJsonObject.cartId = this.cartId;
-            this.eshopOrderJsonObject.goodLineItemId = this.lineItem.id;
+                    this.paramsJSONString = JSON.stringify(this.eshopOrderJsonObject);
 
-            this.paramsJSONString = JSON.stringify(this.eshopOrderJsonObject);
-            console.log(this.paramsJSONString);
-            createEshopOrder(
-                {
-                    paramsJSONString: this.paramsJSONString
-                })
-                .then(result => {
-                        this.eshopOrderObject = result;
-                        console.log(this.eshopOrderObject);
+                    this.allParamsJSONString.push(this.paramsJSONString);
+        */
 
-                        this.selectedLineItemsDeepCopy = this.selectedLineItemsDeepCopy.filter(e => e !== this.selectedLineItemsDeepCopy[this.index]);
 
-                        if (this.index === this.selectedLineItemsDeepCopy.length) {
-                            this.index -= 1;
-                        }
-                        this.incrementedIndex = this.index + 1;
-                        this.lineItem = this.selectedLineItemsDeepCopy[this.index];
+        this.eshopOrderJsonObjects.push(this.eshopOrderJsonObject);
 
-                        this.checkIfButtonIsDisabledDependingOnIndex();
 
-                        if (this.selectedLineItemsDeepCopy.length === 0) {
-                            this.returnToSelectGood();
-                        }
+        //  this.allParamsJSONString.push(this.paramsJSONString);
 
-                        this.genericShowToast('Success!', 'EShop Order Record created Successfully!', 'success');
+        this.allParamsJSONString = JSON.stringify(this.eshopOrderJsonObjects);
+
+
+        console.log('this.allParamsJSONString  :' + this.allParamsJSONString);
+
+        createEshopOrders(
+            {
+                allParamsJSONString: this.allParamsJSONString
+            })
+            .then(result => {
+
+                    console.log('result    :' + result);
+
+                    this.eshopOrderObject = result[0];
+                    console.log('this.eshopOrderObject   :' + this.eshopOrderObject);
+
+                    this.selectedLineItemsDeepCopy = this.selectedLineItemsDeepCopy.filter(e => e !== this.selectedLineItemsDeepCopy[this.index]);
+
+                    if (this.index === this.selectedLineItemsDeepCopy.length) {
+                        this.index -= 1;
                     }
-                )
-                .catch(error => {
-                    console.log('Error creating EShop Order');
-                    console.log(error);
-                    this.genericShowToast('Error creating EShop Order.', error.body.message, 'error');
-                }).finally(
-                () => {
-                    this.isLoading = false;
+                    this.incrementedIndex = this.index + 1;
+                    this.lineItem = this.selectedLineItemsDeepCopy[this.index];
+
+                    this.checkIfButtonIsDisabledDependingOnIndex();
+
+                    if (this.selectedLineItemsDeepCopy.length === 0) {
+                        this.returnToSelectGood();
+                    }
+
+                    this.genericShowToast('Success!', 'EShop Order Record created Successfully!', 'success');
                 }
             )
-        } else {
-            this.genericShowToast('Error creating EShopOrder', 'Please, complete required fields properly', 'error');
-        }
+            .catch(error => {
+                console.log('Error creating EShop Order');
+                console.log(error);
+                this.genericShowToast('Error creating EShop Order.', error.body.message, 'error');
+            }).finally(
+            () => {
+                this.isLoading = false;
+            }
+        )
+        /*  } else {
+              this.genericShowToast('Error creating EShopOrder', 'Please, complete required fields properly', 'error');
+          }*/
     }
 
 
     addAllOrdersToCart() {
+        this.template.querySelector("c-line-item-input").sendValuesToParent();
+        // if (this.checkEShopOrderInputFields()) {
+        this.allParamsJSONString = [];
+        this.indexesOfOrdersNotValid = [];
+        this.eshopOrderJsonObjects = [];
 
-        if (this.checkEShopOrderInputFields()) {
-            this.allParamsJSONString = [];
-            this.indexesOfOrdersNotValid = [];
+        console.log('this.selectedLineItemsDeepCopy   :' + JSON.stringify(this.selectedLineItemsDeepCopy));
 
-            this.selectedLineItemsDeepCopy.forEach(e => {
+        this.selectedLineItemsDeepCopy.forEach(selectedLineItem => {
 
-                this.eshopOrderJsonObject.eShopOrderGoodQuantity = e.quantityToAddToCart;
-                this.eshopOrderJsonObject.eShopOrderGoodQuantity = e.quantityToAddToCart;
-                this.eshopOrderJsonObject.estimatedDeliveryDate = e.estimatedDeliveryDate;
+            let eshopOrderJsonObject = {};
 
-
-                this.eshopOrderJsonObject.cartId = this.cartId;
-                this.eshopOrderJsonObject.goodLineItemId = e.id;
-
-                this.paramsJSONString = JSON.stringify(this.eshopOrderJsonObject);
-                //     console.log(this.paramsJSONString);
-
-                this.allParamsJSONString.push(this.paramsJSONString);
-
-            });
+            eshopOrderJsonObject.eShopOrderGoodQuantity = selectedLineItem.quantityToAddToCart;
+            eshopOrderJsonObject.eShopOrderGoodQuantity = selectedLineItem.quantityToAddToCart;
+            eshopOrderJsonObject.estimatedDeliveryDate = selectedLineItem.estimatedDeliveryDate;
 
 
-            this.selectedLineItemsDeepCopy.forEach((e, index) => {
+            eshopOrderJsonObject.cartId = this.cartId;
+            eshopOrderJsonObject.goodLineItemId = selectedLineItem.id;
+
+            console.log('this.eshopOrderJsonObject   :' + JSON.stringify(eshopOrderJsonObject));
+
+            this.eshopOrderJsonObjects.push(eshopOrderJsonObject);
+
+            console.log('this.eshopOrderJsonObjects   :' + JSON.stringify(this.eshopOrderJsonObjects));
+
+        });
+
+        //  this.allParamsJSONString.push(this.paramsJSONString);
+
+        console.log('this.eshopOrderJsonObjects   :' + JSON.stringify(this.eshopOrderJsonObjects));
+
+        this.allParamsJSONString = JSON.stringify(this.eshopOrderJsonObjects);
 
 
-                if (e.estimatedDeliveryDate) {
-                    let estimatedDeliveryDateValue = new Date(e.estimatedDeliveryDate);
-
-                    let today = new Date();
+          this.selectedLineItemsDeepCopy.forEach((e, index) => {
 
 
-                    let yyyyMmDdEstimatedDeliveryDateValue = estimatedDeliveryDateValue.toISOString().slice(0, 10);
-                    let yyyyMmDdToday = today.toISOString().slice(0, 10);
+              if (e.estimatedDeliveryDate) {
+                  let estimatedDeliveryDateValue = new Date(e.estimatedDeliveryDate);
+
+                  let today = new Date();
 
 
-                    console.log('yyyyMmDdEstimatedDeliveryDateValue:  ' + yyyyMmDdEstimatedDeliveryDateValue);
-                    console.log('yyyyMmDdToday :  ' + yyyyMmDdToday);
+                  let yyyyMmDdEstimatedDeliveryDateValue = estimatedDeliveryDateValue.toISOString().slice(0, 10);
+                  let yyyyMmDdToday = today.toISOString().slice(0, 10);
 
 
-                    this.deliveryDateValid = yyyyMmDdEstimatedDeliveryDateValue > yyyyMmDdToday;
-                    console.log('this.deliveryDateValid    :' + this.deliveryDateValid);
-                } else {
-                    this.deliveryDateValid = false;
+                  console.log('yyyyMmDdEstimatedDeliveryDateValue:  ' + yyyyMmDdEstimatedDeliveryDateValue);
+                  console.log('yyyyMmDdToday :  ' + yyyyMmDdToday);
+
+
+                  this.deliveryDateValid = yyyyMmDdEstimatedDeliveryDateValue > yyyyMmDdToday;
+                  console.log('this.deliveryDateValid    :' + this.deliveryDateValid);
+              } else {
+                  this.deliveryDateValid = false;
+              }
+
+
+              if (e.quantityToAddToCart) {
+                  const isWhitespaceString = str => !str.replace(/\s/g, '').length;
+
+                  this.orderQuantityBlank = (isWhitespaceString(e.quantityToAddToCart) || e.quantityToAddToCart === '');
+
+
+                  console.log('this.orderQuantityBlank : ' + this.orderQuantityBlank);
+
+                  this.wareHouseQuantityEnough = e.quantityToAddToCart <= e.quantity;
+
+                  console.log('this.wareHouseQuantityEnough    :' + this.wareHouseQuantityEnough);
+
+              }
+
+
+              if (!this.deliveryDateValid || this.orderQuantityBlank || !this.wareHouseQuantityEnough || !e.estimatedDeliveryDate || !e.quantityToAddToCart) {
+
+                  console.log('e.index   :' + (index + 1));
+                  this.indexesOfOrdersNotValid.push(index + 1);
+                  console.log('this.indexesOfOrdersNotValid//////////////////////////// :' + this.indexesOfOrdersNotValid);
+              }
+
+          });
+
+
+        //  if (this.indexesOfOrdersNotValid.length === 0) {
+        console.log('this.allParamsJSONString   :' + this.allParamsJSONString);
+        createEshopOrders(
+            {
+                allParamsJSONString: this.allParamsJSONString
+            })
+            .then(result => {
+
+
+                    this.eshopOrderObjects = result;
+
+
+                    console.log('this.eshopOrderObjects    :' + this.eshopOrderObjects);
+                    this.returnToSelectGood();
                 }
+            )
+            .catch(error => {
+                console.log('Error creating EShop Orders');
+                console.log(error);
+                this.genericShowToast('Error creating EShop Orders.', error.body.message, 'error');
+            })
+
+        this.genericShowToast('Success!', 'EShop Order Records created Successfully!', 'success');
 
 
-                if (e.quantityToAddToCart) {
-                    const isWhitespaceString = str => !str.replace(/\s/g, '').length;
+        /*  } else {
 
-                    this.orderQuantityBlank = (isWhitespaceString(e.quantityToAddToCart) || e.quantityToAddToCart === '');
+              this.genericShowToast('Error creating EShopOrder', 'Please, complete required fields properly  for Orders, having this numbers: ' +
+                  this.indexesOfOrdersNotValid, 'error');
 
+          }*/
 
-                    console.log('this.orderQuantityBlank : ' + this.orderQuantityBlank);
+        /*  } else {
 
-                    this.wareHouseQuantityEnough = e.quantityToAddToCart <= e.quantity;
-
-                    console.log('this.wareHouseQuantityEnough    :' + this.wareHouseQuantityEnough);
-
-                }
-
-
-                if (!this.deliveryDateValid || this.orderQuantityBlank || !this.wareHouseQuantityEnough || !e.estimatedDeliveryDate || !e.quantityToAddToCart) {
-
-                    console.log('e.index   :' + (index + 1));
-                    this.indexesOfOrdersNotValid.push(index + 1);
-                    console.log('this.indexesOfOrdersNotValid//////////////////////////// :' + this.indexesOfOrdersNotValid);
-                }
-
-            });
-
-
-            if (this.indexesOfOrdersNotValid.length === 0) {
-                console.log('this.allParamsJSONString   :' + this.allParamsJSONString);
-                createEshopOrders(
-                    {
-                        allParamsJSONString: this.allParamsJSONString
-                    })
-                    .then(result => {
-
-
-                            this.eshopOrderObjects = result;
-
-
-                            console.log('this.eshopOrderObjects    :' + this.eshopOrderObjects);
-                            this.returnToSelectGood();
-                        }
-                    )
-                    .catch(error => {
-                        console.log('Error creating EShop Orders');
-                        console.log(error);
-                        this.genericShowToast('Error creating EShop Orders.', error.body.message, 'error');
-                    })
-
-                this.genericShowToast('Success!', 'EShop Order Records created Successfully!', 'success');
-
-
-            } else {
-
-                this.genericShowToast('Error creating EShopOrder', 'Please, complete required fields properly  for Orders, having this numbers: ' +
-                    this.indexesOfOrdersNotValid, 'error');
-
-            }
-
-        } else {
-
-            this.genericShowToast('Error creating EShopOrder', 'Please, complete required fields properly.', 'error');
-        }
+              this.genericShowToast('Error creating EShopOrder', 'Please, complete required fields properly.', 'error');
+          }*/
 
 
         this.isLoading = false;
     }
 
 
+    handleValuesFromLineItemInput(event) {
+
+
+        this.lineitem = event.detail.lineItem;
+        this.selectedLineItemsDeepCopy[this.index].estimatedDeliveryDate = this.lineitem.estimatedDeliveryDate;
+        this.selectedLineItemsDeepCopy[this.index].quantityToAddToCart = this.lineitem.quantityToAddToCart;
+        console.log('this.lineitem from child   :' + JSON.stringify(this.lineitem));
+
+    }
     returnToNewCart() {
 
         this.dispatchEvent(new CustomEvent('switchtonewcart', {
@@ -519,7 +564,6 @@ export default class ViewGoodLineItem extends LightningElement {
             }
         }));
     }
-
 
     returnToSelectGood() {
 
@@ -530,5 +574,6 @@ export default class ViewGoodLineItem extends LightningElement {
             }
         }));
     }
+
 
 }

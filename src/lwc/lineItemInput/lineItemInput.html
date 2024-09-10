@@ -1,0 +1,80 @@
+<!--
+ - Created by andrey on 9/10/24.
+ -->
+
+<!-- Line Item Input -->
+<template>
+    <template lwc:if={lineItemCopy}>
+
+        <div class="slds-m-horizontal_small">
+            <div class="slds-form-element">
+                <div class="slds-form-element__control">
+                    <lightning-input name="Good Name" label="Good Name"
+                                     value={lineItemCopy.name} read-only="true">
+                    </lightning-input>
+                </div>
+            </div>
+        </div>
+
+        <div class="slds-m-horizontal_small">
+            <div class="slds-form-element">
+                <div class="slds-form-element__control">
+                    <lightning-input name="Quantity In the Warehouse" label="Quantity In the Warehouse"
+                                     value={lineItemCopy.quantity} read-only="true">
+                    </lightning-input>
+                </div>
+            </div>
+        </div>
+
+        <div class="slds-m-horizontal_small">
+            <lightning-input
+                    class="estimatedDeliveryDate"
+                    type="date"
+                    value={lineItemCopy.estimatedDeliveryDate}
+                    required="true"
+                    name="EstimatedDeliveryDate"
+                    label="Estimated Delivery Date"
+                    onchange={handleOrderEstimatedDeliveryDateChange}
+            >
+            </lightning-input>
+        </div>
+
+        <div class="slds-m-horizontal_small">
+            <div class="slds-form-element">
+                <div class="slds-form-element__control">
+                    <lightning-input name="Colour" label="Colour"
+                                     value={lineItemCopy.colour} read-only="true">
+                    </lightning-input>
+                </div>
+            </div>
+        </div>
+
+        <div class="slds-m-horizontal_small">
+            <div class="slds-form-element">
+                <div class="slds-form-element__control">
+                    <lightning-input name="Size" label="Size"
+                                     value={lineItemCopy.size}
+                                     read-only="true">
+                    </lightning-input>
+                </div>
+            </div>
+        </div>
+
+        <div class="slds-m-horizontal_small">
+            <div class="slds-form-element">
+                <div class="slds-form-element__control">
+                    <lightning-input name="Supplier Name" label="Supplier Name"
+                                     value={lineItemCopy.supplierName} read-only="true">
+                    </lightning-input>
+                </div>
+            </div>
+        </div>
+
+        <div class="slds-m-horizontal_small">
+
+            <lightning-input name="quantity" label="Quantity You Would Like To Add To Cart" type="number"
+                             class="quantity" required="true" value={lineItemCopy.quantityToAddToCart}
+                             onchange={handleEShopOrderGoodQuantityChange}></lightning-input>
+        </div>
+    </template>
+</template>

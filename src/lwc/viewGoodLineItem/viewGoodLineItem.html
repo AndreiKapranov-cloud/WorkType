@@ -8,9 +8,9 @@
         <lightning-spinner variant="base" size="medium"></lightning-spinner>
     </div>
     <div lwc:else>
-        <template lwc:if={lineItem}>
+<!--        <template lwc:if={lineItem}>-->
 
-            <div class="slds-m-horizontal_small">
+            <!--<div class="slds-m-horizontal_small">
                 <div class="slds-form-element">
                     <div class="slds-form-element__control">
                         <lightning-input name="Good Name" label="Good Name"
@@ -37,13 +37,8 @@
                         value={lineItem.estimatedDeliveryDate}
                         required="true"
                         name="EstimatedDeliveryDate"
-                        lwc:ref="estimatedDeliveryDate"
                         label="Estimated Delivery Date"
                         onchange={handleOrderEstimatedDeliveryDateChange}
-                        onblur={handleBlur}
-                        onreset={handleResetEstimatedDeliveryDate}
-                        onemptied={handleEmptied}
-
                 >
                 </lightning-input>
             </div>
@@ -84,7 +79,10 @@
                 <lightning-input name="quantity" label="Quantity You Would Like To Add To Cart" type="number"
                                  class="quantity" required="true" value={lineItem.quantityToAddToCart}
                                  onchange={handleEShopOrderGoodQuantityChange}></lightning-input>
-            </div>
+            </div>-->
+        <c-line-item-input line-item={lineItem} index={index} selected-line-items-deep-copy={selectedLineItemsDeepCopy}
+                           onsendvaluestoviewgoodlineitem={handleValuesFromLineItemInput}> </c-line-item-input>
+
 
             <div class=slds-m-top_x-large>
                 <div class="slds-col slds-text-align_right">
@@ -113,6 +111,6 @@
                                       onclick={addAllOrdersToCart}></lightning-button>
                 </div>
             </div>
-        </template>
+<!--        </template>-->
     </div>
 </template>

@@ -10,27 +10,26 @@ public with sharing class ScheduledCartStatusChange implements Schedulable {
 
         try {
             List<Cart__c> carts = [SELECT Id, Status__c, EstimatedDeliveryDate__c, (SELECT Id,Status__c FROM EShop_Orders__r) FROM Cart__c];
+            Integer counter = 0;
 
             if (carts.size() > 0) {
 
                 for (Cart__c cart : carts) {
 
-                    List<Boolean> delivered = new List<Boolean>();
                     for (EShopOrder__c eShopOrder : cart.EShop_Orders__r) {
 
                         if (eShopOrder.Status__c == 'Delivered') {
-                            delivered.add(true);
-
+                            counter++;
                         }
                     }
 
-                    if (cart.EShop_Orders__r.size() == delivered.size()) {
+                    if (cart.EShop_Orders__r.size() == counter) {
 
-                        cart.Status__c = 'Delivered';
+                        cart.Status__c = 'Delivered Not Paid';
 
-                    }else if(cart.EstimatedDeliveryDate__c >= Date.today()){
+                    } else if (cart.EstimatedDeliveryDate__c >= Date.today()) {
 
-                        cart.Status__c = 'IsLate';
+                        cart.Status__c = 'Is Late';
 
                     }
                 }

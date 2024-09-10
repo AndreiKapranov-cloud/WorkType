@@ -164,27 +164,27 @@ public with sharing class EShopBaseComponentController {
     }
 
 
-    @AuraEnabled
-    public static EShopOrder__c createEshopOrder(String paramsJSONString) {
+    /* @AuraEnabled
+     public static EShopOrder__c createEshopOrder(String paramsJSONString) {
 
 
-        try {
-            List<EShopOrder__c> eShopOrders = new List<EShopOrder__c>();
+         try {
 
-            EShopOrder__c eShopOrder = createOrderWrapperAndOrder(paramsJSONString);
 
-            eShopOrders.add(eShopOrder);
-            insert eShopOrder;
+             List<EShopOrder__c> eShopOrders = createOrderWrapperAndOrder(paramsJSONString);
 
-            changeCartEstimatedDeliveryDate(eShopOrders);
-            changeGoodLineItemQuantity(eShopOrders);
 
-            return eShopOrder;
-        } catch (Exception e) {
-            System.debug('The following exception has occurred: ' + e.getMessage());
-            throw new AuraHandledException('The following exception has occurred: ' + e.getMessage());
-        }
-    }
+             insert eShopOrders;
+
+             changeCartEstimatedDeliveryDate(eShopOrders);
+             changeGoodLineItemQuantity(eShopOrders);
+
+             return eShopOrders;
+         } catch (Exception e) {
+             System.debug('The following exception has occurred: ' + e.getMessage());
+             throw new AuraHandledException('The following exception has occurred: ' + e.getMessage());
+         }
+     }*/
 
 
     private static void changeCartEstimatedDeliveryDate(List<EShopOrder__c> eShopOrders) {
@@ -251,22 +251,35 @@ public with sharing class EShopBaseComponentController {
     }
 
 
-    @AuraEnabled
-    public static EShopOrder__c createOrderWrapperAndOrder(String paramsJSONString) {
+    private static List<EShopOrder__c> createOrderWrappersAndOrders(String paramsJSONString) {
 
         try {
-            CreateEshopOrderParamsWrapper wrapper = (CreateEshopOrderParamsWrapper) JSON.deserialize(paramsJSONString,
-                    CreateEshopOrderParamsWrapper.class);
+            List<CreateEshopOrderParamsWrapper> wrappers = (List<CreateEshopOrderParamsWrapper>) JSON.deserialize(paramsJSONString,
+                    List<CreateEshopOrderParamsWrapper>.class);
 
-            Decimal eShopOrderGoodQuantity = wrapper.eShopOrderGoodQuantity;
-            Date estimatedDeliveryDate = wrapper.estimatedDeliveryDate;
-            Id cartId = wrapper.cartId;
-            Date registrationDate = Date.today();
-            Id goodLineItemId = wrapper.goodLineItemId;
 
-            EShopOrder__c eshopOrder = new EShopOrder__c(Quantity__c = eShopOrderGoodQuantity, EstimatedDeliveryDate__c = estimatedDeliveryDate,
-                    Cart__c = cartId, RegistrationDate__c = registrationDate, Good_Line_Item__c = goodLineItemId);
-            return eshopOrder;
+            /*   CreateEshopOrderParamsWrapper wrapper = (CreateEshopOrderParamsWrapper) JSON.deserialize(paramsJSONString,
+                       CreateEshopOrderParamsWrapper.class);
+   */
+
+            List<EShopOrder__c> eshopOrders = new List<EShopOrder__c>();
+
+            for (CreateEshopOrderParamsWrapper wrapper : wrappers) {
+
+                Decimal eShopOrderGoodQuantity = wrapper.eShopOrderGoodQuantity;
+                Date estimatedDeliveryDate = wrapper.estimatedDeliveryDate;
+                Id cartId = wrapper.cartId;
+                Date registrationDate = Date.today();
+                Id goodLineItemId = wrapper.goodLineItemId;
+
+                EShopOrder__c eshopOrder = new EShopOrder__c(Quantity__c = eShopOrderGoodQuantity, EstimatedDeliveryDate__c = estimatedDeliveryDate,
+                        Cart__c = cartId, RegistrationDate__c = registrationDate, Good_Line_Item__c = goodLineItemId);
+
+                eshopOrders.add(eshopOrder);
+            }
+
+
+            return eshopOrders;
         } catch (Exception e) {
             System.debug('The following exception has occurred: ' + e.getMessage());
             throw new HandledException(e.getMessage());
@@ -275,24 +288,19 @@ public with sharing class EShopBaseComponentController {
 
 
     @AuraEnabled
-    public static List<EShopOrder__c> createEshopOrders(List<String> allParamsJSONString) {
+    public static List<EShopOrder__c> createEshopOrders(String allParamsJSONString) {
 
-        List<EShopOrder__c> eshopOrders = new List<EShopOrder__c>();
+
         try {
 
-            for (String param : allParamsJSONString) {
+            List<EShopOrder__c> eShopOrders = createOrderWrappersAndOrders(allParamsJSONString);
 
-                EShopOrder__c eShopOrder = createOrderWrapperAndOrder(param);
-
-                eshopOrders.add(eShopOrder);
-
-            }
-
-            insert eshopOrders;
+            insert eShopOrders;
 
             changeCartEstimatedDeliveryDate(eShopOrders);
             changeGoodLineItemQuantity(eShopOrders);
-            return eshopOrders;
+
+            return eShopOrders;
         } catch (Exception e) {
             System.debug('The following exception has occurred: ' + e.getMessage());
             throw new AuraHandledException('The following exception has occurred: ' + e.getMessage());

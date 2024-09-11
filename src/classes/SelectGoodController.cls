@@ -13,7 +13,7 @@ public with sharing class SelectGoodController {
             goodLineItemWrappers =
                     getGoodLineItemWrapperList([
                             SELECT Id,Name,Good__r.Size__c,Good__r.Name,Good__r.Colour__c,Quantity__c,Supplier__r.Name,Good__r.Category__c,Good__r.Subcategory__c
-                            FROM GoodLineItem__c
+                            FROM GoodLineItem__c WHERE Quantity__c > 0
                     ]);
             return goodLineItemWrappers;
         } catch (Exception e) {

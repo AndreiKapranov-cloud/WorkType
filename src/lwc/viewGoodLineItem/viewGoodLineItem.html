@@ -8,9 +8,16 @@
         <lightning-spinner variant="base" size="medium"></lightning-spinner>
     </div>
     <div lwc:else>
-<!--        <template lwc:if={lineItem}>-->
 
-            <!--<div class="slds-m-horizontal_small">
+        <template lwc:if={lineItem}>
+
+            <div class="slds-col slds-text-align_right">
+                <lightning-button-icon  onclick={deleteItemFromView} icon-name="utility:delete" alternative-text="Delete"
+                                       class="slds-m-left_xx-small slds-m-right_medium"
+                                       title="Delete"></lightning-button-icon>
+            </div>
+
+            <div class="slds-m-horizontal_small">
                 <div class="slds-form-element">
                     <div class="slds-form-element__control">
                         <lightning-input name="Good Name" label="Good Name"
@@ -79,10 +86,10 @@
                 <lightning-input name="quantity" label="Quantity You Would Like To Add To Cart" type="number"
                                  class="quantity" required="true" value={lineItem.quantityToAddToCart}
                                  onchange={handleEShopOrderGoodQuantityChange}></lightning-input>
-            </div>-->
-        <c-line-item-input line-item={lineItem} index={index} selected-line-items-deep-copy={selectedLineItemsDeepCopy}
-                           onsendvaluestoviewgoodlineitem={handleValuesFromLineItemInput}> </c-line-item-input>
-
+            </div>
+          <!--  <c-line-item-input line-item={lineItem} index={index}
+                               selected-line-items-deep-copy={selectedLineItemsDeepCopy}
+                               onsendvaluestoviewgoodlineitem={handleValuesFromLineItemInput}></c-line-item-input>-->
 
             <div class=slds-m-top_x-large>
                 <div class="slds-col slds-text-align_right">
@@ -90,7 +97,7 @@
                                       onclick={goToPreviousEShopOrder} disabled={goToPreviousEShopOrderButtonDisabled}
                     >
                     </lightning-button>
-                    <span class="slds-badge slds-m-right_small">{incrementedIndex}</span>
+                    <span class="slds-badge slds-m-right_small">{incrementedIndex} of {selectedLineItemsDeepCopy.length}</span>
 
                     <lightning-button variant="neutral" class="slds-m-right_large" label=">>>"
                                       onclick={goToNextEShopOrder} disabled={goToNextEShopOrderButtonDisabled}
@@ -106,11 +113,14 @@
                     <lightning-button variant="neutral" label="Back to Goods" class="slds-m-right_medium"
                                       onclick={returnToSelectGood}></lightning-button>
                     <lightning-button variant="brand" label="Add To Cart" class="slds-m-right_large"
+                                      icon-name="utility:cart" alternative-text="Add To Cart"
                                       onclick={addNewEShopOrderToCart}></lightning-button>
-                    <lightning-button variant="brand" label="Add All to Cart" class="slds-m-right_large" disabled={addAllButtonDisabled}
+                    <lightning-button variant="brand" label="Add All to Cart" class="slds-m-right_large"
+                                      icon-name="utility:checkout" alternative-text="Add All To Cart"
+                                      disabled={addAllButtonDisabled}
                                       onclick={addAllOrdersToCart}></lightning-button>
                 </div>
             </div>
-<!--        </template>-->
+        </template>
     </div>
 </template>

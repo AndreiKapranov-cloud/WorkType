@@ -288,12 +288,12 @@ public with sharing class EShopBaseComponentController {
 
 
     @AuraEnabled
-    public static List<EShopOrder__c> createEshopOrders(String allParamsJSONString) {
+    public static List<EShopOrder__c> createEshopOrders(String paramsJSONString) {
 
 
         try {
 
-            List<EShopOrder__c> eShopOrders = createOrderWrappersAndOrders(allParamsJSONString);
+            List<EShopOrder__c> eShopOrders = createOrderWrappersAndOrders(paramsJSONString);
 
             insert eShopOrders;
 

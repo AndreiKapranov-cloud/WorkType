@@ -6,7 +6,7 @@
         <members>BaseComponentController</members>
         <members>Black</members>
         <members>CartController</members>
-        <members>CartStatusChangeScheduler</members>
+        <members>CartScheduler</members>
         <members>ControllerTest</members>
         <members>CreateCartParamsWrapper</members>
         <members>CreateEshopOrderParamsWrapper</members>

@@ -72,18 +72,6 @@ export default class ViewGoodLineItem extends LightningElement {
         this.isLoading = false;
     }
 
-    /*  renderedCallback() {
-         // super.renderedCallback();
-
-          let estimatedDeliveryDateInput = this.template.querySelector(".estimatedDeliveryDate");
-          let goodQuantityInput = this.template.querySelector(".quantity");
-
-          console.log('estimatedDeliveryDateInput  : ' + estimatedDeliveryDateInput);
-          console.log('goodQuantityInput  : ' + goodQuantityInput);
-
-          estimatedDeliveryDateInput.setCustomValidity('');
-          goodQuantityInput.setCustomValidity('');
-      }*/
 
     handleEShopOrderGoodQuantityChange(e) {
         try {
@@ -204,34 +192,16 @@ export default class ViewGoodLineItem extends LightningElement {
             this.incrementedIndex += 1;
             this.lineItem = this.selectedLineItemsDeepCopy[this.index];
             this.checkIfButtonIsDisabledDependingOnIndex();
-        /*    if (this.index === this.selectedLineItemsDeepCopy.length - 1) {
-                this.addAllButtonDisabled = false;
-            }*/
+
         }
         /*  } else {
               this.genericShowToast('Input not valid.', 'Please, complete required fields properly.', 'error');
           }*/
 
-        //    this.checkEShopOrderInputFields();
-        /*  let estimatedDeliveryDateInput = this.template.querySelector(".estimatedDeliveryDate");
-          let goodQuantityInput = this.template.querySelector(".quantity");
-
-          estimatedDeliveryDateInput.setCustomValidity('');
-          goodQuantityInput.setCustomValidity('');
-  */
-
     }
 
 
     goToPreviousEShopOrder() {
-
-        /* this.checkEShopOrderInputFields();
-         let estimatedDeliveryDateInput = this.template.querySelector(".estimatedDeliveryDate");
-         let goodQuantityInput = this.template.querySelector(".quantity");
-
-         estimatedDeliveryDateInput.setCustomValidity('');
-         goodQuantityInput.setCustomValidity('');*/
-        // this.checkEShopOrderInputFields();
 
         // this.template.querySelector("c-line-item-input").sendValuesToParent();
         //  if (this.checkEShopOrderInputFields()) {
@@ -247,14 +217,6 @@ export default class ViewGoodLineItem extends LightningElement {
 
              }*/
         }
-
-        //    this.checkEShopOrderInputFields();
-        /*  let estimatedDeliveryDateInput = this.template.querySelector(".estimatedDeliveryDate");
-          let goodQuantityInput = this.template.querySelector(".quantity");
-
-
-          estimatedDeliveryDateInput.setCustomValidity('');
-          goodQuantityInput.setCustomValidity('');*/
     }
 
 
@@ -292,21 +254,6 @@ export default class ViewGoodLineItem extends LightningElement {
                         this.eshopOrderResultObject = result[0];
                         console.log('this.eshopOrderObject   :' + this.eshopOrderResultObject);
 
-                        /* this.selectedLineItemsDeepCopy = this.selectedLineItemsDeepCopy.filter(e => e !== this.selectedLineItemsDeepCopy[this.index]);
-
-                         if (this.index === this.selectedLineItemsDeepCopy.length) {
-                             this.index -= 1;
-                         }
-                         this.incrementedIndex = this.index + 1;
-                         this.lineItem = this.selectedLineItemsDeepCopy[this.index];
-
-                         this.checkIfButtonIsDisabledDependingOnIndex();
-
-                         if (this.selectedLineItemsDeepCopy.length === 0) {
-                             this.returnToSelectGood();
-                         }
-     */
-
                         this.deleteItemFromView();
                         this.genericShowToast('Success!', 'EShop Order Record created Successfully!', 'success');
                     }
@@ -334,6 +281,7 @@ export default class ViewGoodLineItem extends LightningElement {
             this.lineItemsNotValid = [];
             this.namesOfItemsNotValid = [];
             this.namesOfValidItems = [];
+            this.isLoading = true;
 
 
             this.selectedLineItemsDeepCopy.forEach((selectedLineItem, index) => {
@@ -346,7 +294,7 @@ export default class ViewGoodLineItem extends LightningElement {
                     let yyyyMmDdEstimatedDeliveryDateValue = estimatedDeliveryDateValue.toISOString().slice(0, 10);
                     let yyyyMmDdToday = today.toISOString().slice(0, 10);
 
-                    this.isDeliveryDateValid = yyyyMmDdEstimatedDeliveryDateValue > yyyyMmDdToday;
+                    this.isDeliveryDateValid = yyyyMmDdEstimatedDeliveryDateValue >= yyyyMmDdToday;
                 } else {
                     this.isDeliveryDateValid = false;
                 }
@@ -400,16 +348,15 @@ export default class ViewGoodLineItem extends LightningElement {
                     paramsJSONString: this.paramsJSONString
                 })
                 .then(result => {
-
+                        console.log('result   : ' + JSON.stringify(result));
                         this.eshopOrderResultObjects = result;
+                        this.genericShowToast('Success!', 'EShop Order Records created Successfully, having names: ' + this.namesOfValidItems, 'success');
                     }
                 )
                 .catch(error => {
                     console.log(error);
                     this.genericShowToast('Error creating EShop Orders.', error.body.message, 'error');
                 })
-
-            this.genericShowToast('Success!', 'EShop Order Records created Successfully, having names: ' + this.namesOfValidItems, 'success');
 
             this.selectedLineItemsDeepCopy = this.lineItemsNotValid;
 

@@ -80,7 +80,6 @@ export default class SelectGood extends LightningElement {
         fetchGoodLineItems()
             .then(result => {
                 this.goodLineItems = result;
-
                 this.goodLineItemsCopy = JSON.parse(JSON.stringify(this.goodLineItems));
                 this.goodLineItemsDisplayedInTable = JSON.parse(JSON.stringify(this.goodLineItems));
 

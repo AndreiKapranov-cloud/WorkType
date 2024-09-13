@@ -30,6 +30,8 @@ public with sharing class ScheduledCartStatusChange implements Schedulable {
                 ];
 
                 Integer deliveredOrdersCounter = 0;
+                Date cartActualDeliveryDate = null;
+
                 List<EShopOrder__c> eShopOrdersToUpdate = new List<EShopOrder__c>();
                 List<Cart__c> cartsToUpdate = new List<Cart__c>();
 
@@ -41,6 +43,7 @@ public with sharing class ScheduledCartStatusChange implements Schedulable {
                         if (cart.Status__c == 'Is Late') {
 
                             deliveredOrdersCounter = 0;
+                            cartActualDeliveryDate = null;
 
                             for (EShopOrder__c eShopOrder : cart.EShop_Orders__r) {
 
@@ -49,6 +52,14 @@ public with sharing class ScheduledCartStatusChange implements Schedulable {
 
                                     if (eShopOrder.ActualDeliveryDate__c <= Date.today()) {
                                         eShopOrder.Done__c = true;
+
+                                        if (cartActualDeliveryDate == null) {
+
+                                            cartActualDeliveryDate = eShopOrder.ActualDeliveryDate__c;
+                                        } else if (eShopOrder.ActualDeliveryDate__c > cartActualDeliveryDate) {
+
+                                            cartActualDeliveryDate = eShopOrder.ActualDeliveryDate__c;
+                                        }
 
                                         eShopOrdersToUpdate.add(eShopOrder);
                                     }
@@ -65,17 +76,28 @@ public with sharing class ScheduledCartStatusChange implements Schedulable {
 
                             if (cart.EShop_Orders__r.size() == deliveredOrdersCounter) {
 
+                                cart.ActualDeliveryDate__c = cartActualDeliveryDate;
                                 cart.Done__c = true;
                                 cartsToUpdate.add(cart);
                             }
                         } else {
 
                             deliveredOrdersCounter = 0;
+                            cartActualDeliveryDate = null;
 
                             for (EShopOrder__c eShopOrder : cart.EShop_Orders__r) {
 
 
                                 if (eShopOrder.ActualDeliveryDate__c <= eShopOrder.EstimatedDeliveryDate__c) {
+
+                                    if (cartActualDeliveryDate == null) {
+
+                                        cartActualDeliveryDate = eShopOrder.ActualDeliveryDate__c;
+                                    } else if (eShopOrder.ActualDeliveryDate__c > cartActualDeliveryDate) {
+
+                                        cartActualDeliveryDate = eShopOrder.ActualDeliveryDate__c;
+                                    }
+
                                     eShopOrder.Done__c = true;
                                     deliveredOrdersCounter++;
 
@@ -87,6 +109,8 @@ public with sharing class ScheduledCartStatusChange implements Schedulable {
                                 }
                             }
                             if (cart.EShop_Orders__r.size() == deliveredOrdersCounter) {
+
+                                cart.ActualDeliveryDate__c = cartActualDeliveryDate;
                                 cart.Done__c = true;
                                 cartsToUpdate.add(cart);
                             }

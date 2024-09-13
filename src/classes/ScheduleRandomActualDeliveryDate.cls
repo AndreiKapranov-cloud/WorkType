@@ -5,7 +5,6 @@
 public with sharing class ScheduleRandomActualDeliveryDate implements Schedulable {
 
 
-
         public void execute(SchedulableContext sC) {
 
             try {

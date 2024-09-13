@@ -10,6 +10,7 @@ public with sharing class CartScheduler {
         String cronExp = '0 0 0 * * ?'; // Cron expression for daily at midnight
 
         System.schedule(jobName, cronExp, new ScheduledCartStatusChange());
+
     }
 
 
@@ -18,23 +19,20 @@ public with sharing class CartScheduler {
         String jobName = 'scheduleRandomActualDeliveryDate';
         String cronExp = '0 0 0 * * ?'; // Cron expression for daily at midnight
 
-
         System.schedule(jobName, cronExp, new ScheduleRandomActualDeliveryDate());
     }
 
 
     public static void abortScheduleCartStatusChangeJob() {
 
-        List<AsyncApexJob> asyncApexJobList = [
-                SELECT ApexClassId, Id, CronTriggerId, JobItemsProcessed, JobType,
-                        Status, NumberOfErrors, MethodName
+        List<AsyncApexJob> asyncApexJobs = [
+                SELECT Id, CronTriggerId
                 FROM AsyncApexJob
                 WHERE ApexClass.Name = :'ScheduledCartStatusChange' AND Status = 'Queued'
         ];
 
-        System.debug(asyncApexJobList);
-        for (AsyncApexJob AsyncApexJob : asyncApexJobList) {
-            System.abortJob(asyncApexJobList[0].CronTriggerId);
+        for (AsyncApexJob asyncApexJob : asyncApexJobs) {
+            System.abortJob(asyncApexJob.CronTriggerId);
         }
     }
 }

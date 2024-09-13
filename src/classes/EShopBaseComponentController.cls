@@ -291,30 +291,22 @@ public with sharing class EShopBaseComponentController {
     @AuraEnabled
     public static List<EShopOrder__c> createEshopOrders(String paramsJSONString) {
 
-        /*    AsyncApexJob asyncApexJob =
-            [SELECT ApexClassId, Id, JobItemsProcessed, JobType,
-                    Status, NumberOfErrors, MethodName
-                    from AsyncApexJob
-            where MethodName =: 'ScheduleCartStatusChange'];
-
-            CartScheduler.scheduleCartStatusChange();*/
-
-
-        /*  List<AsyncApexJob> asyncApexJobList =
-          [SELECT ApexClassId, Id, CronTriggerId, JobItemsProcessed, JobType,
-                  Status, NumberOfErrors, MethodName
-          FROM AsyncApexJob
-          WHERE ApexClass.Name =: 'ScheduledCartStatusChange' AND Status = 'Queued'];
-
-          System.debug(asyncApexJobList);*/
-
-//System.abortJob(asyncApexJob.CronTriggerId);
 
         try {
 
             List<EShopOrder__c> eShopOrders = createOrderWrappersAndOrders(paramsJSONString);
 
             insert eShopOrders;
+
+            List<AsyncApexJob> asyncApexJobs = [
+                    SELECT Id, CronTriggerId
+                    FROM AsyncApexJob
+                    WHERE ApexClass.Name = :'ScheduledCartStatusChange' AND Status = 'Queued'
+            ];
+
+            if (asyncApexJobs.isEmpty()) {
+                CartScheduler.scheduleCartStatusChange();
+            }
 
             changeCartEstimatedDeliveryDate(eShopOrders);
             changeGoodLineItemQuantity(eShopOrders);

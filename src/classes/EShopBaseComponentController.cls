@@ -308,9 +308,10 @@ public with sharing class EShopBaseComponentController {
                 CartScheduler.scheduleCartStatusChange();
             }
 
-            changeCartEstimatedDeliveryDate(eShopOrders);
-            changeGoodLineItemQuantity(eShopOrders);
-
+            if (eShopOrders.size() > 0) {
+                changeCartEstimatedDeliveryDate(eShopOrders);
+                changeGoodLineItemQuantity(eShopOrders);
+            }
             return eShopOrders;
         } catch (Exception e) {
             System.debug('The following exception has occurred: ' + e.getMessage());

@@ -7,121 +7,90 @@ public with sharing class ScheduledCartStatusChange implements Schedulable {
 
     public void execute(SchedulableContext sC) {
 
-
         try {
 
 
-            List <Cart__c> cartsNotDone = [
-                    SELECT Id
+            List<Cart__c> carts = [
+                    SELECT Id, Status__c, Done__c, EstimatedDeliveryDate__c, ActualDeliveryDate__c, (SELECT Id,Status__c,ActualDeliveryDate__c,EstimatedDeliveryDate__c,Done__c FROM EShop_Orders__r)
                     FROM Cart__c
                     WHERE Done__c = FALSE
             ];
 
-            if (cartsNotDone.isEmpty()) {
+
+            if (carts.isEmpty()) {
                 CartScheduler.abortScheduleCartStatusChangeJob();
 
             } else {
 
-                List<Cart__c> carts = [
-                        SELECT Id, Status__c, Done__c, EstimatedDeliveryDate__c, ActualDeliveryDate__c, (SELECT Id,Status__c,ActualDeliveryDate__c,EstimatedDeliveryDate__c FROM EShop_Orders__r)
-                        FROM Cart__c
-                        WHERE Done__c = FALSE
-                        AND EstimatedDeliveryDate__c = :Date.today()
-                ];
 
                 Integer deliveredOrdersCounter = 0;
+                Integer cartUpdateIndicator = 0;
                 Date cartActualDeliveryDate = null;
 
                 List<EShopOrder__c> eShopOrdersToUpdate = new List<EShopOrder__c>();
                 List<Cart__c> cartsToUpdate = new List<Cart__c>();
 
 
-                if (!carts.isEmpty()) {
-
-                    for (Cart__c cart : carts) {
-
-                        if (cart.Status__c == 'Is Late') {
-
-                            deliveredOrdersCounter = 0;
-                            cartActualDeliveryDate = null;
-
-                            for (EShopOrder__c eShopOrder : cart.EShop_Orders__r) {
+                for (Cart__c cart : carts) {
 
 
-                                if (eShopOrder.Done__c != true) {
+                    deliveredOrdersCounter = 0;
+                    cartUpdateIndicator = 0;
+                    cartActualDeliveryDate = null;
 
-                                    if (eShopOrder.ActualDeliveryDate__c <= Date.today()) {
-                                        eShopOrder.Done__c = true;
+                    for (EShopOrder__c eShopOrder : cart.EShop_Orders__r) {
 
-                                        if (cartActualDeliveryDate == null) {
+                        if (eShopOrder.ActualDeliveryDate__c != null && eShopOrder.Done__c != true) {
 
-                                            cartActualDeliveryDate = eShopOrder.ActualDeliveryDate__c;
-                                        } else if (eShopOrder.ActualDeliveryDate__c > cartActualDeliveryDate) {
+                            if (eShopOrder.ActualDeliveryDate__c <= eShopOrder.EstimatedDeliveryDate__c) {
 
-                                            cartActualDeliveryDate = eShopOrder.ActualDeliveryDate__c;
-                                        }
+                                if (cartActualDeliveryDate == null) {
 
-                                        eShopOrdersToUpdate.add(eShopOrder);
-                                    }
+                                    cartActualDeliveryDate = eShopOrder.ActualDeliveryDate__c;
+                                } else if (eShopOrder.ActualDeliveryDate__c > cartActualDeliveryDate) {
+
+                                    cartActualDeliveryDate = eShopOrder.ActualDeliveryDate__c;
                                 }
-                            }
 
-                            for (EShopOrder__c eShopOrder : cart.EShop_Orders__r) {
+                                eShopOrder.Done__c = true;
 
-                                if (eShopOrder.Done__c == true) {
-
-                                    deliveredOrdersCounter++;
-                                }
-                            }
-
-                            if (cart.EShop_Orders__r.size() == deliveredOrdersCounter) {
-
-                                cart.ActualDeliveryDate__c = cartActualDeliveryDate;
-                                cart.Done__c = true;
-                                cartsToUpdate.add(cart);
-                            }
-                        } else {
-
-                            deliveredOrdersCounter = 0;
-                            cartActualDeliveryDate = null;
-
-                            for (EShopOrder__c eShopOrder : cart.EShop_Orders__r) {
-
-
-                                if (eShopOrder.ActualDeliveryDate__c <= eShopOrder.EstimatedDeliveryDate__c) {
-
-                                    if (cartActualDeliveryDate == null) {
-
-                                        cartActualDeliveryDate = eShopOrder.ActualDeliveryDate__c;
-                                    } else if (eShopOrder.ActualDeliveryDate__c > cartActualDeliveryDate) {
-
-                                        cartActualDeliveryDate = eShopOrder.ActualDeliveryDate__c;
-                                    }
-
-                                    eShopOrder.Done__c = true;
-                                    deliveredOrdersCounter++;
-
-                                    eShopOrdersToUpdate.add(eShopOrder);
-                                } else {
+                                eShopOrdersToUpdate.add(eShopOrder);
+                            } else {
+                                if (cart.Status__c != 'Is late') {
 
                                     cart.Status__c = 'Is Late';
-                                    cartsToUpdate.add(cart);
-                                }
-                            }
-                            if (cart.EShop_Orders__r.size() == deliveredOrdersCounter) {
 
-                                cart.ActualDeliveryDate__c = cartActualDeliveryDate;
-                                cart.Done__c = true;
-                                cartsToUpdate.add(cart);
+                                    cartUpdateIndicator++;
+                                }
                             }
                         }
                     }
-                    update cartsToUpdate;
-                    update eShopOrdersToUpdate;
+                    if (cartUpdateIndicator > 0) {
+                        cartsToUpdate.add(cart);
+                    }
+
+
+                    for (EShopOrder__c eShopOrder : cart.EShop_Orders__r) {
+
+                        if (eShopOrder.Done__c == true) {
+
+                            deliveredOrdersCounter++;
+                        }
+                    }
+
+                    if (cart.EShop_Orders__r.size() == deliveredOrdersCounter) {
+
+                        cart.ActualDeliveryDate__c = cartActualDeliveryDate;
+                        cart.Done__c = true;
+                        cartsToUpdate.add(cart);
+                    }
                 }
+                update eShopOrdersToUpdate;
+                update cartsToUpdate;
             }
+
         } catch (Exception e) {
-            System.debug('Error occurred while deleting opportunities ' + e.getMessage());
+            System.debug('Error occurred :' + e.getMessage());
         }
     }
 }

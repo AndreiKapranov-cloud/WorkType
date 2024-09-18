@@ -322,7 +322,6 @@ export default class ViewGoodLineItem extends LightningElement {
                     let eshopOrderObject = {};
 
                     eshopOrderObject.eShopOrderGoodQuantity = selectedLineItem.quantityToAddToCart;
-                    eshopOrderObject.eShopOrderGoodQuantity = selectedLineItem.quantityToAddToCart;
                     eshopOrderObject.estimatedDeliveryDate = selectedLineItem.estimatedDeliveryDate;
                     eshopOrderObject.cartId = this.cartId;
                     eshopOrderObject.goodLineItemId = selectedLineItem.id;
@@ -343,14 +342,18 @@ export default class ViewGoodLineItem extends LightningElement {
 
             this.paramsJSONString = JSON.stringify(this.eshopOrderObjects);
 
+
+            console.log('this.paramsJSONString :' + this.paramsJSONString);
+            console.log('this.namesOfValidItems :' + this.namesOfValidItems);
             createEshopOrders(
                 {
                     paramsJSONString: this.paramsJSONString
                 })
                 .then(result => {
                         console.log('result   : ' + JSON.stringify(result));
-                        this.eshopOrderResultObjects = result;
                         this.genericShowToast('Success!', 'EShop Order Records created Successfully, having names: ' + this.namesOfValidItems, 'success');
+                        this.eshopOrderResultObjects = result;
+
                     }
                 )
                 .catch(error => {

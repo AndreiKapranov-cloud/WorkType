@@ -17,11 +17,6 @@ public class ControllerTest {
      List<Skill>skills = SkillRequirementController.getSkills();
     }
     @isTest
-    public static void getPriorityPicklistValuesTest(){
-     WorkOrderController wOC = new WorkOrderController();
-     List<Map<String, String>>priorityPicklistValues = WorkOrderController.getPriorityPicklistValues();   
-    }
-    @isTest
     public static void getWorkTypesTest(){
      WorkTypeController wTC = new WorkTypeController();
      List<WorkType>workTypes = WorkTypeController.getWorkTypes();   

@@ -4,7 +4,7 @@
 
 public with sharing class CartsJSONWrapper {
 
-    public List<CartWrapper> carts;
+    public List<CreateCartParamsWrapper> carts;
 }
 
 

@@ -187,7 +187,7 @@ public with sharing class EShopBaseComponentController {
      }*/
 
 
-    private static void changeCartEstimatedDeliveryDate(List<EShopOrder__c> eShopOrders) {
+    public static void changeCartEstimatedDeliveryDate(List<EShopOrder__c> eShopOrders) {
         try {
 
             if (eShopOrders.size() > 0) {
@@ -216,7 +216,7 @@ public with sharing class EShopBaseComponentController {
     }
 
 
-    private static void changeGoodLineItemQuantity(List<EShopOrder__c> eShopOrders) {
+    public static void changeGoodLineItemQuantity(List<EShopOrder__c> eShopOrders) {
 
         try {
 
@@ -234,13 +234,14 @@ public with sharing class EShopBaseComponentController {
             for (GoodLineItem__c goodLineItem : goodLineItems) {
 
                 for (EShopOrder__c eShopOrder : eShopOrders) {
-
+                    System.debug('eShopOrder :' + eShopOrder);
                     if (eShopOrder.Good_Line_Item__c == goodLineItem.Id) {
 
                         goodLineItem.Quantity__c -= eShopOrder.Quantity__c;
+                        System.debug('eShopOrder.Quantity__c :' + eShopOrder.Quantity__c);
+                        System.debug('goodLineItem.Quantity__c  :' + goodLineItem.Quantity__c);
                     }
                 }
-
             }
 
             update goodLineItems;
@@ -251,7 +252,7 @@ public with sharing class EShopBaseComponentController {
     }
 
 
-    private static List<EShopOrder__c> createOrderWrappersAndOrders(String paramsJSONString) {
+    public static List<EShopOrder__c> createOrderWrappersAndOrders(String paramsJSONString) {
 
 
         try {

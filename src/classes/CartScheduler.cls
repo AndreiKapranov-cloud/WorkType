@@ -7,7 +7,7 @@ public with sharing class CartScheduler {
     public static void scheduleCartStatusChange() {
 
         String jobName = 'ScheduleCartStatusChange';
-        String cronExp = '0 * * * * ?'; // Cron expression for daily at midnight
+        String cronExp = '0 0 0 * * ?'; // Cron expression for daily at midnight
 
         System.schedule(jobName, cronExp, new ScheduledCartStatusChange());
 

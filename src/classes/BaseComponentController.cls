@@ -6,8 +6,8 @@ public with sharing class BaseComponentController {
 
     @AuraEnabled
     public static List<Map<String, String>> getPicklistValuesUsingApex(String getPicklistValuesParamsJSONString) {
-        getPicklistValuesParamsWrapper wrapper = (getPicklistValuesParamsWrapper) JSON.deserialize(getPicklistValuesParamsJSONString,
-                getPicklistValuesParamsWrapper.class);
+        GetPicklistValuesParamsWrapper wrapper = (GetPicklistValuesParamsWrapper) JSON.deserialize(getPicklistValuesParamsJSONString,
+                GetPicklistValuesParamsWrapper.class);
 
         String sObjectType = wrapper.sObjectType;
         String field = wrapper.field;

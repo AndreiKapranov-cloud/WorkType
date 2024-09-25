@@ -8,24 +8,6 @@ public with sharing class EShopBaseComponentControllerTest {
     static void testCreateEshopOrders() {
 
 
-        /*   Cart__c cart = TestDataFactory.createCart();
-           GoodLineItem__c goodLineItem = TestDataFactory.createGoodLineItem();
-
-
-           CreateEshopOrderParamsWrapper createEshopOrderParamsWrapper = new CreateEshopOrderParamsWrapper();
-           List<CreateEshopOrderParamsWrapper> createEshopOrderParamsWrappers = new List<CreateEshopOrderParamsWrapper>();
-
-           createEshopOrderParamsWrapper.eShopOrderGoodQuantity = 5;
-           createEshopOrderParamsWrapper.estimatedDeliveryDate = Date.today();
-           createEshopOrderParamsWrapper.cartId = cart.Id;
-           createEshopOrderParamsWrapper.registrationDate = Date.today();
-           createEshopOrderParamsWrapper.goodLineItemId = goodLineItem.Id;
-
-           createEshopOrderParamsWrappers.add(createEshopOrderParamsWrapper);
-
-           String paramsJSONString = JSON.serialize(createEshopOrderParamsWrappers);*/
-
-
         List<EShopOrder__c>eShopOrders = EShopBaseComponentController.createEshopOrders(TestDataFactory.createEshopOrderParamsWrapperJSONString());
 
         Integer count = [SELECT COUNT() FROM EShopOrder__c];
@@ -80,38 +62,91 @@ public with sharing class EShopBaseComponentControllerTest {
         Id goodLineItemId = orders[0].Good_Line_Item__c;
 
 
-        GoodLineItem__c goodLineItem = [SELECT Id,Quantity__c FROM GoodLineItem__c WHERE Id =: goodLineItemId];
+        GoodLineItem__c goodLineItem = [SELECT Id,Quantity__c FROM GoodLineItem__c WHERE Id = :goodLineItemId];
 
         System.assertEquals(goodLineItem.Quantity__c, 61);
 
     }
+
+
+    @IsTest
+    static void getRecordsBySOQLTest() {
+
+        List<EShopOrder__c>eShopOrders = TestDataFactory.createEShopOrders();
+
+        String query = 'SELECT Id FROM EShopOrder__c';
+        List<SObject>objects = EShopBaseComponentController.getRecordsBySOQL(query);
+
+        System.assertEquals(objects.size(), 4);
+    }
+
+
+    @IsTest
+    static void getCategoryPicklistValuesUsingApexTest() {
+
+        List<Map<String, String>>pickListEntries = EShopBaseComponentController.getCategoryPicklistValuesUsingApex();
+
+        System.assertEquals(pickListEntries.size(), 3);
+    }
+
+
+    @IsTest
+    static void getGlobalPickListTest() {
+
+
+        Map<String, List <String>> values = EShopBaseComponentController.getGlobalPickList();
+        System.assertEquals(values.size(), 3);
+
+    }
+
+
+    @IsTest
+    static void getSubCategoryPickListValuesByCategoryNameTest() {
+
+        String testCategoryName = 'Sneakers';
+        List<Map<String, String>>values = EShopBaseComponentController.getSubCategoryPickListValuesByCategoryName(testCategoryName);
+
+        System.assertEquals(values.size(), 2);
+    }
+
+
+    @IsTest
+    static void getSubCategoryPickListValuesForSneakersTest() {
+
+        List<Map<String, String>>values = EShopBaseComponentController.getSubCategoryPickListValuesForSneakersCategory();
+
+        System.assertEquals(values.size(), 2);
+
+    }
+
+
+    @IsTest
+    static void getSubCategoryPickListValuesForHoodiesTest() {
+
+        List<Map<String, String>>values = EShopBaseComponentController.getSubCategoryPickListValuesForHoodiesCategory();
+
+        System.assertEquals(values.size(), 2);
+
+    }
+
+
+    @IsTest
+    static void getSubCategoryPickListValuesForCostumesTest() {
+
+        List<Map<String, String>>values = EShopBaseComponentController.getSubCategoryPickListValuesForCostumesCategory();
+
+        System.assertEquals(values.size(), 2);
+
+    }
+
+
+    @IsTest
+    static void getGoodLineItemByIdTest() {
+
+        GoodLineItem__c goodLineItem = TestDataFactory.createGoodLineItem();
+
+        SObject item = EShopBaseComponentController.getGoodLineItemById(goodLineItem.Id);
+
+        System.assertNotEquals(item, null);
+    }
 }
-/*
-
-        try {
-
-            List<String> goodLineItemIds = new List<String>();
-
-            for (EShopOrder__c eShopOrder : eShopOrders) {
-
-                goodLineItemIds.add(eShopOrder.Good_Line_Item__c);
-
-            }
-
-
-            List<GoodLineItem__c> goodLineItems = [SELECT Id,Quantity__c FROM GoodLineItem__c WHERE Id IN:goodLineItemIds];
-
-            for (GoodLineItem__c goodLineItem : goodLineItems) {
-
-                for (EShopOrder__c eShopOrder : eShopOrders) {
-
-                    if (eShopOrder.Good_Line_Item__c == goodLineItem.Id) {
-
-                        goodLineItem.Quantity__c -= eShopOrder.Quantity__c;
-                    }
-                }
-
-            }
-
-            update goodLineItems;
-        }*/

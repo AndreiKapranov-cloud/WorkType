@@ -20,7 +20,7 @@ public with sharing class EShopBaseComponentController {
     public static List<Map<String, String>> getCategoryPicklistValuesUsingApex() {
         List<Map<String, String>> values = new List<Map<String, String>>();
         try {
-            List<Schema.PicklistEntry> entries = Schema.getGlobalDescribe().get('Good__c')?.getDescribe()?.fields?.getMap()?.get('Category__c')?.getDescribe()?.getPickListValues();
+            List<Schema.PicklistEntry> entries = Schema.getGlobalDescribe().get('Good__c')?.getDescribe()?.fields?.getMap()?.get('Category__c')?.getDescribe()?.getPicklistValues();
 
             for (Schema.PicklistEntry entry : entries) {
                 Map<String, String> valueMap = new Map<String, String>();
@@ -38,7 +38,7 @@ public with sharing class EShopBaseComponentController {
     }
 
 
-    private static Map<String, List <String>> getGlobalPickList() {
+    public static Map<String, List <String>> getGlobalPickList() {
 
         try {
             String objectName = 'Good__c';
@@ -105,7 +105,7 @@ public with sharing class EShopBaseComponentController {
 
 
     @AuraEnabled
-    public static List<Map<String, String>> getSubCategoryPickListValuesCategoryName(String categoryName) {
+    public static List<Map<String, String>> getSubCategoryPickListValuesByCategoryName(String categoryName) {
 
         List<Map<String, String>> values = new List<Map<String, String>>();
         try {
@@ -129,19 +129,19 @@ public with sharing class EShopBaseComponentController {
     @AuraEnabled
     public static List<Map<String, String>> getSubCategoryPickListValuesForSneakersCategory() {
 
-        return getSubCategoryPickListValuesCategoryName('Sneakers');
+        return getSubCategoryPickListValuesByCategoryName('Sneakers');
     }
 
     @AuraEnabled
     public static List<Map<String, String>> getSubCategoryPickListValuesForHoodiesCategory() {
 
-        return getSubCategoryPickListValuesCategoryName('Hoodies');
+        return getSubCategoryPickListValuesByCategoryName('Hoodies');
     }
 
     @AuraEnabled
     public static List<Map<String, String>> getSubCategoryPickListValuesForCostumesCategory() {
 
-        return getSubCategoryPickListValuesCategoryName('Costumes');
+        return getSubCategoryPickListValuesByCategoryName('Costumes');
     }
 
     @AuraEnabled
@@ -162,29 +162,6 @@ public with sharing class EShopBaseComponentController {
             throw new AuraHandledException('The following exception has occurred: ' + e.getMessage());
         }
     }
-
-
-    /* @AuraEnabled
-     public static EShopOrder__c createEshopOrder(String paramsJSONString) {
-
-
-         try {
-
-
-             List<EShopOrder__c> eShopOrders = createOrderWrapperAndOrder(paramsJSONString);
-
-
-             insert eShopOrders;
-
-             changeCartEstimatedDeliveryDate(eShopOrders);
-             changeGoodLineItemQuantity(eShopOrders);
-
-             return eShopOrders;
-         } catch (Exception e) {
-             System.debug('The following exception has occurred: ' + e.getMessage());
-             throw new AuraHandledException('The following exception has occurred: ' + e.getMessage());
-         }
-     }*/
 
 
     public static void changeCartEstimatedDeliveryDate(List<EShopOrder__c> eShopOrders) {

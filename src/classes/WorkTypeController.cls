@@ -5,17 +5,6 @@ public with sharing class WorkTypeController {
         WorkType workTypeRecord = new WorkType();
         try {
 
-            /*  public static SamodelkinWrapper createWrapperInstance(String paramsJSONString,SamodelkinWrapper wrapper) {
-              wrapper = (SamodelkinWrapper) JSON.deserialize(paramsJSONString,
-              SamodelkinWrapper.class);
-
-              return wrapper;
-          }*/
-
-
-            //    CreateWorkTypeParamsWrapper wrapper = BaseComponentController.createWrapperInstance(paramsJSONString, CreateWorkTypeParamsWrapper);
-
-
             CreateWorkTypeParamsWrapper wrapper = (CreateWorkTypeParamsWrapper) JSON.deserialize(paramsJSONString,
                     CreateWorkTypeParamsWrapper.class);
 

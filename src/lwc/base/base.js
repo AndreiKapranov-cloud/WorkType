@@ -1,6 +1,4 @@
-/**
- * Created by andrey on 8/9/24.
- */
+
 
 import {api, LightningElement} from 'lwc';
 

@@ -1,6 +1,4 @@
-/**
- * Created by andrey on 9/23/24.
- */
+
 @IsTest
 public with sharing class EShopBaseComponentControllerTest {
 
@@ -23,6 +21,25 @@ public with sharing class EShopBaseComponentControllerTest {
 
 
     @IsTest
+    static void testCreateEshopOrdersFail() {
+
+        Test.startTest();
+
+        try {
+
+            List<EShopOrder__c>eShopOrders = EShopBaseComponentController.createEshopOrders('sdv');
+
+        } catch (AuraHandledException ex) {
+
+            System.assertEquals('Script-thrown exception', ex.getMessage());
+
+        }
+
+        Test.stopTest();
+    }
+
+
+    @IsTest
     static void testCreateOrderWrappersAndOrders() {
 
 
@@ -35,7 +52,26 @@ public with sharing class EShopBaseComponentControllerTest {
 
 
     @IsTest
-    static void changeCartEstimatedDeliveryDateTest() {
+    static void testCreateOrderWrappersAndOrdersFail() {
+
+        Test.startTest();
+
+        try {
+
+            List<EShopOrder__c> eShopOrders = EShopBaseComponentController.createOrderWrappersAndOrders('dvdv');
+
+        } catch (HandledException ex) {
+
+            System.assertEquals('Unexpected character (\'d\' (code 100)): expected a valid value (number, String, array, object, \'true\', \'false\' or \'null\') at input location [1,2]', ex.getMessage());
+
+        }
+
+        Test.stopTest();
+    }
+
+
+    @IsTest
+    static void testChangeCartEstimatedDeliveryDate() {
 
         List<EShopOrder__c>eShopOrders = TestDataFactory.createEShopOrders();
 
@@ -50,7 +86,7 @@ public with sharing class EShopBaseComponentControllerTest {
 
 
     @IsTest
-    static void changeGoodLineItemQuantityTest() {
+    static void testChangeGoodLineItemQuantity() {
 
 
         List<EShopOrder__c> orders = TestDataFactory.createEShopOrders();
@@ -70,7 +106,7 @@ public with sharing class EShopBaseComponentControllerTest {
 
 
     @IsTest
-    static void getRecordsBySOQLTest() {
+    static void testGetRecordsBySOQL() {
 
         List<EShopOrder__c>eShopOrders = TestDataFactory.createEShopOrders();
 
@@ -81,8 +117,29 @@ public with sharing class EShopBaseComponentControllerTest {
     }
 
 
+
     @IsTest
-    static void getCategoryPicklistValuesUsingApexTest() {
+    static void testGetRecordsBySOQLFail() {
+
+
+        Test.startTest();
+
+        try {
+            List<EShopOrder__c>eShopOrders = TestDataFactory.createEShopOrders();
+            String query = 'SELECT Id FROM EShopOrder__c';
+            List<SObject>objects = EShopBaseComponentController.getRecordsBySOQL(query);
+        } catch (HandledException ex) {
+
+            System.assertEquals('Script-thrown exception', ex.getMessage());
+
+        }
+
+        Test.stopTest();
+    }
+
+
+    @IsTest
+    static void testGetCategoryPicklistValuesUsingApex() {
 
         List<Map<String, String>>pickListEntries = EShopBaseComponentController.getCategoryPicklistValuesUsingApex();
 
@@ -91,7 +148,7 @@ public with sharing class EShopBaseComponentControllerTest {
 
 
     @IsTest
-    static void getGlobalPickListTest() {
+    static void testGetGlobalPickList() {
 
 
         Map<String, List <String>> values = EShopBaseComponentController.getGlobalPickList();
@@ -101,7 +158,7 @@ public with sharing class EShopBaseComponentControllerTest {
 
 
     @IsTest
-    static void getSubCategoryPickListValuesByCategoryNameTest() {
+    static void testGetSubCategoryPickListValuesByCategoryName() {
 
         String testCategoryName = 'Sneakers';
         List<Map<String, String>>values = EShopBaseComponentController.getSubCategoryPickListValuesByCategoryName(testCategoryName);
@@ -111,7 +168,27 @@ public with sharing class EShopBaseComponentControllerTest {
 
 
     @IsTest
-    static void getSubCategoryPickListValuesForSneakersTest() {
+    static void testGetSubCategoryPickListValuesByCategoryNameFail() {
+
+
+        Test.startTest();
+
+        try {
+            String testCategoryName = 'Snekers';
+            List<Map<String, String>>values = EShopBaseComponentController.getSubCategoryPickListValuesByCategoryName(testCategoryName);
+
+        } catch (AuraHandledException ex) {
+
+            System.assertEquals('Script-thrown exception', ex.getMessage());
+
+        }
+
+        Test.stopTest();
+    }
+
+
+    @IsTest
+    static void testGetSubCategoryPickListValuesForSneakers() {
 
         List<Map<String, String>>values = EShopBaseComponentController.getSubCategoryPickListValuesForSneakersCategory();
 
@@ -121,7 +198,7 @@ public with sharing class EShopBaseComponentControllerTest {
 
 
     @IsTest
-    static void getSubCategoryPickListValuesForHoodiesTest() {
+    static void testGetSubCategoryPickListValuesForHoodies() {
 
         List<Map<String, String>>values = EShopBaseComponentController.getSubCategoryPickListValuesForHoodiesCategory();
 
@@ -131,7 +208,7 @@ public with sharing class EShopBaseComponentControllerTest {
 
 
     @IsTest
-    static void getSubCategoryPickListValuesForCostumesTest() {
+    static void testGetSubCategoryPickListValuesForCostumes() {
 
         List<Map<String, String>>values = EShopBaseComponentController.getSubCategoryPickListValuesForCostumesCategory();
 
@@ -141,12 +218,30 @@ public with sharing class EShopBaseComponentControllerTest {
 
 
     @IsTest
-    static void getGoodLineItemByIdTest() {
+    static void testGetGoodLineItemById() {
 
         GoodLineItem__c goodLineItem = TestDataFactory.createGoodLineItem();
 
         SObject item = EShopBaseComponentController.getGoodLineItemById(goodLineItem.Id);
 
         System.assertNotEquals(item, null);
+    }
+
+
+    @IsTest
+    static void testGetGoodLineItemByIdFail() {
+
+        Test.startTest();
+
+        try {
+
+            SObject item = EShopBaseComponentController.getGoodLineItemById('d');
+        } catch (AuraHandledException ex) {
+
+            System.assertEquals('Script-thrown exception', ex.getMessage());
+
+        }
+
+        Test.stopTest();
     }
 }

@@ -1,6 +1,4 @@
-/**
- * Created by andrey on 8/20/24.
- */
+ 
 import {LightningElement, track, wire} from 'lwc';
 
 import fetchGoodLineItemsInGlobalSearch

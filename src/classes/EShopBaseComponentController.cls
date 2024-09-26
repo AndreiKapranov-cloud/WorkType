@@ -1,6 +1,4 @@
-/**
- * Created by andrey on 8/20/24.
- */
+
 
 public with sharing class EShopBaseComponentController {
     @AuraEnabled
@@ -245,7 +243,7 @@ public with sharing class EShopBaseComponentController {
 
             for (CreateEshopOrderParamsWrapper wrapper : wrappers) {
 
-                Decimal eShopOrderGoodQuantity = wrapper.eShopOrderGoodQuantity;
+                Integer eShopOrderGoodQuantity = wrapper.eShopOrderGoodQuantity;
                 Date estimatedDeliveryDate = wrapper.estimatedDeliveryDate;
                 Id cartId = wrapper.cartId;
                 Date registrationDate = Date.today();

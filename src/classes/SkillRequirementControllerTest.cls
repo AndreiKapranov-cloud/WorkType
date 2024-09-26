@@ -1,6 +1,4 @@
-/**
- * Created by andrey on 9/25/24.
- */
+
 @IsTest
 public with sharing class SkillRequirementControllerTest {
     @IsTest
@@ -24,7 +22,25 @@ public with sharing class SkillRequirementControllerTest {
 
 
     @IsTest
-    static void testgetSkills() {
+    static void testCreateSkillRequirementApexMethodFail() {
+
+        Test.startTest();
+
+        try {
+
+            SkillRequirement skillRequirement = SkillRequirementController.createSkillRequirementApexMethod('sc');
+        } catch (AuraHandledException ex) {
+
+            System.assertEquals('Script-thrown exception', ex.getMessage());
+
+        }
+
+        Test.stopTest();
+    }
+
+
+    @IsTest
+    static void testGetSkills() {
         List<Skill>skills = SkillRequirementController.getSkills();
             System.assertEquals(skills[0].MasterLabel, 'Wheel replacement');
             System.assertEquals(skills.size(), 3);

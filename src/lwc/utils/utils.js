@@ -1,6 +1,4 @@
-/**
- * Created by andrey on 8/1/24.
- */
+
 
 
 import {ShowToastEvent} from "lightning/platformShowToastEvent";

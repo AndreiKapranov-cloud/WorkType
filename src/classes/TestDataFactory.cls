@@ -1,6 +1,4 @@
-/**
- * Created by andrey on 9/23/24.
- */
+
 @IsTest
 public with sharing class TestDataFactory {
 
@@ -104,7 +102,7 @@ public with sharing class TestDataFactory {
 
     public static Product2 createProduct2() {
 
-        Product2 product2 = new Product2(Name = 'Snickers');
+        Product2 product2 = new Product2(Name = 'Snickers', Description = 'Field Service');
         insert product2;
         return product2;
     }

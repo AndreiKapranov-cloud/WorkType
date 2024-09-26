@@ -1,6 +1,4 @@
-/**
- * Created by andrey on 9/25/24.
- */
+
 @IsTest
 public with sharing class WorkTypeControllerTest {
 
@@ -23,6 +21,23 @@ public with sharing class WorkTypeControllerTest {
         System.assertEquals(workType.Description, 'Good work');
         System.assertEquals(workType.DurationType, 'Minutes');
 
+    }
+
+    @IsTest
+    static void testCreateWorkTypeApexMethodFail() {
+
+        Test.startTest();
+
+        try {
+
+            WorkType workType = WorkTypeController.createWorkTypeApexMethod('sdv');
+        } catch (AuraHandledException ex) {
+
+            System.assertEquals('Script-thrown exception', ex.getMessage());
+
+        }
+
+        Test.stopTest();
     }
 
 
@@ -48,5 +63,24 @@ public with sharing class WorkTypeControllerTest {
         System.assertEquals(workType.Name, workTypeFromBase.get('Name'));
 
     }
+
+
+    @IsTest
+    static void testGetWorkTypeNameByIdFail() {
+
+        Test.startTest();
+
+        try {
+
+            SObject workTypeFromBase = WorkTypeController.getWorkTypeNameById('dvz');
+        } catch (AuraHandledException ex) {
+
+            System.assertEquals('Script-thrown exception', ex.getMessage());
+
+        }
+
+        Test.stopTest();
+    }
+
 }
 

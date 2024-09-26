@@ -1,6 +1,4 @@
-/**
- * Created by andrey on 9/25/24.
- */
+
 @isTest
 public with sharing class WorkOrderLineItemControllerTest {
 
@@ -29,6 +27,23 @@ public with sharing class WorkOrderLineItemControllerTest {
 
     }
 
+    @IsTest
+    static void testCreateWorkOrderLineItemApexMethodFail() {
+
+        Test.startTest();
+
+        try {
+
+            WorkOrderLineItem workOrderLineItem = WorkOrderLineItemController.createWorkOrderLineItemApexMethod('vx');
+        } catch (AuraHandledException ex) {
+
+            System.assertEquals('Script-thrown exception', ex.getMessage());
+
+        }
+
+        Test.stopTest();
+    }
+
 
     @IsTest
     static void testGetWorkOrderNumberById() {
@@ -39,5 +54,22 @@ public with sharing class WorkOrderLineItemControllerTest {
 
         System.assertEquals(workOrders[0], workOrderFromBase);
 
+    }
+
+    @IsTest
+    static void testGetWorkOrderNumberByIdFail() {
+
+        Test.startTest();
+
+        try {
+
+            SObject workOrderFromBase = WorkOrderLineItemController.getWorkOrderNumberById('ds');
+        } catch (System.StringException ex) {
+
+            System.assertEquals('Invalid id: ds', ex.getMessage());
+
+        }
+
+        Test.stopTest();
     }
 }

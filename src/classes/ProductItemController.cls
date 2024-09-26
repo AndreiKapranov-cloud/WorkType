@@ -1,6 +1,4 @@
-/**
- * Created by andrey on 8/1/24.
- */
+
 
 public with sharing class ProductItemController {
 
@@ -32,7 +30,7 @@ public with sharing class ProductItemController {
 
             Id product2Id = wrapper.product2Id;
             Id locationId = wrapper.locationId;
-            Decimal quantityOnHand = wrapper.quantityOnHand;
+            Integer quantityOnHand = wrapper.quantityOnHand;
             String quantityUnitOfMeasure = wrapper.quantityUnitOfMeasure;
             String serialNumber = wrapper.serialNumber;
 

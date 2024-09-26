@@ -1,6 +1,3 @@
-/**
- * Created by andrey on 8/29/24.
- */
 
 public with sharing class GetGoodLineItemsByCategoryParamsWrapper {
 

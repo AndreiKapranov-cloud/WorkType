@@ -1,11 +1,9 @@
-/**
- * Created by andrey on 7/30/24.
- */
+
 @isTest
 public with sharing class ServletJSONWrapperPlayTest {
 
     @isTest
-    public static void playTest() {
+    public static void testPlay() {
         String jsonString = '{\n' +
                 '   "web-app":{\n' +
                 '      "servlet":[\n' +

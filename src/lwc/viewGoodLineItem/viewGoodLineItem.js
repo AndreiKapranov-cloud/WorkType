@@ -1,6 +1,4 @@
-/**
- * Created by andrey on 8/23/24.
- */
+
 import {LightningElement, api, track} from 'lwc';
 
 

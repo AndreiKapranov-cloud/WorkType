@@ -1,6 +1,4 @@
-/**
- * Created by andrey on 9/25/24.
- */
+
 @IsTest
 public with sharing class ProductRequiredControllerTest {
 
@@ -26,6 +24,32 @@ public with sharing class ProductRequiredControllerTest {
 
         System.assertEquals(productsRequiredFromBase[0].quantityRequired, 2);
         System.assertEquals(productsRequiredFromBase[0].quantityUnitOfMeasure, 'Each');
+
+    }
+
+
+    @IsTest
+    static void testCreateProductRequiredApexMethodFail() {
+
+        Test.startTest();
+
+        try {
+
+            ProductRequired productRequired = ProductRequiredController.createProductRequiredApexMethod('dv');
+        } catch (AuraHandledException ex) {
+
+            System.assertEquals('Script-thrown exception', ex.getMessage());
+
+        }
+
+        Test.stopTest();
+    }
+
+    @isTest
+    public static void testGetProduct2s() {
+        Product2 product2 = TestDataFactory.createProduct2();
+        List<Product2>product2s = ProductRequiredController.getProduct2s();
+        System.assertEquals(product2s[0].Name,'Snickers');
 
     }
 }

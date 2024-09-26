@@ -1,6 +1,4 @@
-/**
- * Created by andrey on 9/25/24.
- */
+
 @isTest
 public with sharing class WorkOrderControllerTest {
 
@@ -25,4 +23,22 @@ public with sharing class WorkOrderControllerTest {
         System.assertEquals(workOrder.Subject, 'Soloduha');
         System.assertEquals(workOrder.Description, 'Taburetka');
     }
+
+    @IsTest
+    static void testCreateWorkOrderApexMethodFail() {
+
+        Test.startTest();
+
+        try {
+
+            WorkOrder workOrder = WorkOrderController.createWorkOrderApexMethod('ss');
+        } catch (AuraHandledException ex) {
+
+            System.assertEquals('Script-thrown exception', ex.getMessage());
+
+        }
+
+        Test.stopTest();
+    }
+
 }

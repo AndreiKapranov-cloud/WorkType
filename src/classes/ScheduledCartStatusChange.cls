@@ -1,6 +1,4 @@
-/**
- * Created by andrey on 9/9/24.
- */
+
 
 public with sharing class ScheduledCartStatusChange implements Schedulable {
 

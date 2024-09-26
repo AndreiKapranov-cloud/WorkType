@@ -1,6 +1,4 @@
-/**
- * Created by andrey on 9/17/24.
- */
+
 @RestResource(urlMapping='/Carts/*')
 global with sharing class CartManager {
 
@@ -19,8 +17,8 @@ global with sharing class CartManager {
     }*/
 
     @HttpPost
-    global static String insertCartsAndOrders() {
-
+    global static void insertCartsAndOrders() {
+        System.debug('insertCartsAndOrders zalupa');
         try {
             List<Id> insertedCartRecordsIds = new List<Id>();
             List<Id> insertedOrderRecordsIds = new List<Id>();
@@ -90,18 +88,18 @@ global with sharing class CartManager {
 
 
             RestResponse res = RestContext.response;
-
+            res.responseBody = Blob.valueOf('Success. Inserted Carts, having Ids: ' + insertedCartRecordsIds + '  Inserted Orders, having Ids: ' + insertedOrderRecordsIds);
             res.statusCode = 201;
 
-
-            return 'Code 201. Inserted Carts, having Ids: ' + insertedCartRecordsIds + '  Inserted Orders, having Ids: ' + insertedOrderRecordsIds;
+        //    return  Blob.valueOf('Success. Inserted Carts, having Ids: ' + insertedCartRecordsIds + '  Inserted Orders, having Ids: ' + insertedOrderRecordsIds);
 
 
         } catch (Exception e) {
 
             System.debug('The following exception has occurred: ' + e.getMessage());
+            System.debug('Stack trace ' + e.getStackTraceString());
 
-            throw new HandledException('The following exception has occurred: ' + e.getMessage());
+            throw new HandledException('The following exception has occurred: ' + e.getMessage() + e.getStackTraceString());
         }
     }
 }

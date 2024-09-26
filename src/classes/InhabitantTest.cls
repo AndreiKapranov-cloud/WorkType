@@ -1,11 +1,9 @@
-/**
- * Created by andrey on 7/29/24.
- */
+
 @isTest
 public with sharing class InhabitantTest {
 
     @isTest
-    public static void parseInhabitantFromJSONTest(){
+    public static void testParseInhabitantFromJSON(){
         final String JSON_STRING = '{\n' +
                 '  "men" : {\n' +
                 '    "yellow" : {\n' +
@@ -44,7 +42,7 @@ public with sharing class InhabitantTest {
     }
 
     @isTest
-    public static void soloduhaTest() {
+    public static void testSoloduha() {
 
         String jsonString = '{\n' +
                 '  "men" : {\n' +
@@ -115,6 +113,5 @@ public with sharing class InhabitantTest {
             System.debug(item);
         }
 
-       // System.debug(JSON.serializePretty(inhabitant));
     }
 }

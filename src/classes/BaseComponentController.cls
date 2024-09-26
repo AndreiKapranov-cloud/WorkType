@@ -1,6 +1,4 @@
-/**
- * Created by andrey on 8/12/24.
- */
+
 
 public with sharing class BaseComponentController {
 
@@ -28,10 +26,11 @@ public with sharing class BaseComponentController {
             System.debug('The following exception has occurred: ' + e.getMessage());
 
             throw new AuraHandledException('The following exception has occurred: ' + e.getMessage());
+
         }
     }
 
-    @AuraEnabled
+
     public static List<SObject> getRecordsBySOQL(String query) {
         List<SObject> records = new List<SObject>();
         try {

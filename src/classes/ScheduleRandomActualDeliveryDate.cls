@@ -1,6 +1,3 @@
-/**
- * Created by andrey on 9/12/24.
- */
 
 public with sharing class ScheduleRandomActualDeliveryDate implements Schedulable {
 

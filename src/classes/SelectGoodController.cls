@@ -1,6 +1,3 @@
-/**
- * Created by andrey on 8/27/24.
- */
 
 public with sharing class SelectGoodController {
 
@@ -86,7 +83,7 @@ public with sharing class SelectGoodController {
 
                 goodLineItemWrapper.id = goodLineItem.Id;
                 goodLineItemWrapper.name = goodLineItem.Good__r.Name;
-                goodLineItemWrapper.quantity = goodLineItem.Quantity__c;
+                goodLineItemWrapper.quantity = (Integer) goodLineItem.Quantity__c;
                 goodLineItemWrapper.supplierName = goodLineItem.Supplier__r.Name;
                 goodLineItemWrapper.size = goodLineItem.Good__r.Size__c;
                 goodLineItemWrapper.colour = goodLineItem.Good__r.Colour__c;

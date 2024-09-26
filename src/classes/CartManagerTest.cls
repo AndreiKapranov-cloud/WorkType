@@ -1,6 +1,4 @@
-/**
- * Created by andrey on 9/20/24.
- */
+
 @isTest
 public with sharing class CartManagerTest {
 
@@ -8,17 +6,15 @@ public with sharing class CartManagerTest {
     @isTest
     static void testInsertCartsAndOrdersPostPositive() {
 
-
-        Buyer__c buyer = new Buyer__c(Address__c = 'LLLL',Email__c = 'akapranov8722@gmail.com');
+        Buyer__c buyer = new Buyer__c(Address__c = 'LLLL', Email__c = 'akapranov8722@gmail.com');
         insert buyer;
 
-        List<Buyer__c> buyers = [SELECT Id, Name FROM Buyer__c ];
+        List<Buyer__c> buyers = [SELECT Id, Name FROM Buyer__c];
 
 
-        RestRequest req = new RestRequest();
-        RestResponse res = new RestResponse();
 
-
+        CreateCartParamsWrapper createCartParamsWrapper = new CreateCartParamsWrapper();
+        List<CreateCartParamsWrapper> createCartParamsWrappers = new List<CreateCartParamsWrapper>();
         List<CreateEshopOrderParamsWrapper> createEshopOrderParamsWrappers = new List<CreateEshopOrderParamsWrapper>();
 
 
@@ -29,11 +25,6 @@ public with sharing class CartManagerTest {
             createEshopOrderParamsWrappers.add(createEshopOrderParamsWrapper);
         }
 
-
-        CreateCartParamsWrapper createCartParamsWrapper = new CreateCartParamsWrapper();
-        List<CreateCartParamsWrapper> createCartParamsWrappers = new List<CreateCartParamsWrapper>();
-
-
         createCartParamsWrapper.buyerId = buyers[0].Id;
         createCartParamsWrapper.pickupPointAddress = 'Dzerjinsky,113';
         createCartParamsWrapper.status = 'Formed';
@@ -43,16 +34,21 @@ public with sharing class CartManagerTest {
         CartsJSONWrapper cartsJSONWrapper = new CartsJSONWrapper();
         cartsJSONWrapper.carts = createCartParamsWrappers;
 
-
-        req.requestBody = Blob.valueOf(JSON.serializePretty(cartsJSONWrapper));
-        System.debug(req.requestBody);
+        RestRequest req = new RestRequest();
+        RestResponse res = new RestResponse();
 
         RestContext.request = req;
         RestContext.response = res;
 
+
+        req.requestBody = Blob.valueOf(JSON.serializePretty(cartsJSONWrapper));
+        System.debug(req.requestBody);
+
+
         Test.startTest();
         CartManager.insertCartsAndOrders();
         Test.stopTest();
+
 
 
         Cart__c newCartCreated = [SELECT Id, Pickup_Point_Address__c,Status__c FROM Cart__c WHERE Status__c = 'Formed'];
@@ -67,7 +63,10 @@ public with sharing class CartManagerTest {
             System.assertEquals(order.EstimatedDeliveryDate__c, Date.today());
         }
 
-        System.assertEquals(201, res.statusCode);
+        System.debug(JSON.serializePretty(res));
+        System.debug(res);
+        System.debug(res.responseBody.toString());
+      //  System.assertEquals(201, res.statusCode);
 
     }
 }

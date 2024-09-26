@@ -1,6 +1,4 @@
-/**
- * Created by andrey on 9/25/24.
- */
+
 @IsTest
 public with sharing class SelectGoodControllerTest {
 
@@ -36,8 +34,9 @@ public with sharing class SelectGoodControllerTest {
         System.assertEquals(goodLineItemWrappersEmpty.isEmpty(), true);
     }
 
+
     @IsTest
-    static void testfetchGoodLineItemsInCategory() {
+    static void testFetchGoodLineItemsInCategory() {
         GoodLineItem__c goodLineItem = TestDataFactory.createGoodLineItem();
 
         List<GoodLineItemWrapper>goodLineItemWrappers = SelectGoodController.fetchGoodLineItemsInCategory('oo', 'Hoodies');
@@ -46,8 +45,9 @@ public with sharing class SelectGoodControllerTest {
 
     }
 
+
     @IsTest
-    static void testfetchGoodLineItemsInSubCategory() {
+    static void testFetchGoodLineItemsInSubCategory() {
         GoodLineItem__c goodLineItem = TestDataFactory.createGoodLineItem();
 
         List<GoodLineItemWrapper>goodLineItemWrappers = SelectGoodController.fetchGoodLineItemsInSubCategory('oo', 'With cowl');

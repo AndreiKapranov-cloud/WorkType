@@ -1,6 +1,4 @@
-/**
- * Created by andrey on 8/19/24.
- */
+
 import {LightningElement, track} from 'lwc';
 import createCartApexMethod
     from '@salesforce/apex/CartController.createCartApexMethod';

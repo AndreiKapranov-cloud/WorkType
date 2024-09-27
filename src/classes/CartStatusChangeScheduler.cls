@@ -1,6 +1,6 @@
 
 
-public with sharing class ScheduledCartStatusChange implements Schedulable {
+public with sharing class CartStatusChangeScheduler implements Schedulable {
 
 
     public void execute(SchedulableContext sC) {

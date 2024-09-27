@@ -20,10 +20,10 @@ public with sharing class ProductRequiredControllerTest {
 
         ProductRequired productRequired = ProductRequiredController.createProductRequiredApexMethod(paramsJSONString);
 
-        List<ProductRequired> productsRequiredFromBase = [SELECT Id,QuantityUnitOfMeasure,QuantityRequired FROM ProductRequired];
+       ProductRequired productRequiredFromBase = [SELECT Id,QuantityUnitOfMeasure,QuantityRequired FROM ProductRequired LIMIT 1];
 
-        System.assertEquals(productsRequiredFromBase[0].quantityRequired, 2);
-        System.assertEquals(productsRequiredFromBase[0].quantityUnitOfMeasure, 'Each');
+        System.assertEquals(productRequiredFromBase.quantityRequired, 2);
+        System.assertEquals(productRequiredFromBase.quantityUnitOfMeasure, 'Each');
 
     }
 
@@ -36,9 +36,9 @@ public with sharing class ProductRequiredControllerTest {
         try {
 
             ProductRequired productRequired = ProductRequiredController.createProductRequiredApexMethod('dv');
-        } catch (AuraHandledException ex) {
+        } catch (HandledException ex) {
 
-            System.assertEquals('Script-thrown exception', ex.getMessage());
+            System.assertEquals('The following exception has occurred: Unexpected character (\'d\' (code 100)): expected a valid value (number, String, array, object, \'true\', \'false\' or \'null\') at input location [1,2]', ex.getMessage());
 
         }
 

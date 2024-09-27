@@ -19,7 +19,7 @@ public with sharing class WorkTypeController {
             insert workTypeRecord;
         } catch (Exception e) {
             System.debug('The following exception has occurred: ' + e.getMessage());
-            throw new AuraHandledException('The following exception has occurred: ' + e.getMessage());
+            throw new HandledException('The following exception has occurred: ' + e.getMessage());
         }
         return workTypeRecord;
     }
@@ -51,7 +51,7 @@ public with sharing class WorkTypeController {
             return (BaseComponentController.getRecordsBySOQL(query))[0];
         } catch (Exception e) {
             System.debug('The following exception has occurred: ' + e.getMessage());
-            throw new AuraHandledException('The following exception has occurred: ' + e.getMessage());
+            throw new HandledException('The following exception has occurred: ' + e.getMessage());
         }
     }
 }

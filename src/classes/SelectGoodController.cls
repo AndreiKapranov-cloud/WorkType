@@ -74,7 +74,7 @@ public with sharing class SelectGoodController {
         }
     }
 
-
+    @TestVisible
     private static List<GoodLineItemWrapper> getGoodLineItemWrapperList(List<GoodLineItem__c>goodLineItems) {
         List<GoodLineItemWrapper> wrapperList = new List<GoodLineItemWrapper>();
         try {

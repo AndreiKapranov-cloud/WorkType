@@ -2,19 +2,6 @@
 @RestResource(urlMapping='/Carts/*')
 global with sharing class CartManager {
 
-    /*@HttpPost
-    global static Id createCart(String buyer, String pickupPointAddress,
-            String status, Boolean done) {
-        Cart__c cart = new Cart__c(
-                Buyer__c = buyer,
-                Pickup_Point_Address__c = pickupPointAddress,
-                Status__c = status,
-                Done__c = done);
-        insert cart;
-
-        return cart.Id;
-
-    }*/
 
     @HttpPost
     global static void insertCartsAndOrders() {
@@ -90,9 +77,6 @@ global with sharing class CartManager {
             RestResponse res = RestContext.response;
             res.responseBody = Blob.valueOf('Success. Inserted Carts, having Ids: ' + insertedCartRecordsIds + '  Inserted Orders, having Ids: ' + insertedOrderRecordsIds);
             res.statusCode = 201;
-
-        //    return  Blob.valueOf('Success. Inserted Carts, having Ids: ' + insertedCartRecordsIds + '  Inserted Orders, having Ids: ' + insertedOrderRecordsIds);
-
 
         } catch (Exception e) {
 

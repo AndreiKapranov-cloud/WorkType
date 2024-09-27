@@ -1,17 +1,17 @@
 
 
 public with sharing class EShopBaseComponentController {
-    @AuraEnabled
-    public static List<SObject> getRecordsBySOQL(String query) {
 
-        try {
-            return Database.query(query);
+    /* public static List<SObject> getRecordsBySOQL(String query) {
 
-        } catch (Exception e) {
-            System.debug('The following exception has occurred: ' + e.getMessage());
-            throw new HandledException('The following exception has occurred: ' + e.getMessage());
-        }
-    }
+         try {
+             return Database.query(query);
+
+         } catch (Exception e) {
+             System.debug('The following exception has occurred: ' + e.getMessage());
+             throw new HandledException('The following exception has occurred: ' + e.getMessage());
+         }
+     }*/
 
 
     @AuraEnabled
@@ -35,8 +35,8 @@ public with sharing class EShopBaseComponentController {
         }
     }
 
-
-    public static Map<String, List <String>> getGlobalPickList() {
+    @TestVisible
+    private static Map<String, List <String>> getGlobalPickList() {
 
         try {
             String objectName = 'Good__c';
@@ -54,6 +54,12 @@ public with sharing class EShopBaseComponentController {
                 controllingInfo.put(controllingValue.getLabel(), new List<String>());
             }
 
+            String jsonString2 = JSON.serialize(dependentValues);
+            System.debug(jsonString2);
+
+            List<MyPiclistInfo> infos = (List<MyPiclistInfo>) JSON.deserialize(jsonString2, List<MyPiclistInfo>.class);
+
+            System.debug('infos:' + infos);
             for (Schema.PicklistEntry currDependentValue : dependentValues) {
 
                 String jsonString = JSON.serialize(currDependentValue);
@@ -102,8 +108,8 @@ public with sharing class EShopBaseComponentController {
     }
 
 
-    @AuraEnabled
-    public static List<Map<String, String>> getSubCategoryPickListValuesByCategoryName(String categoryName) {
+    @TestVisible
+    private static List<Map<String, String>> getSubCategoryPickListValuesByCategoryName(String categoryName) {
 
         List<Map<String, String>> values = new List<Map<String, String>>();
         try {
@@ -120,7 +126,7 @@ public with sharing class EShopBaseComponentController {
 
             System.debug('The following exception has occurred: ' + e.getMessage());
 
-            throw new AuraHandledException('The following exception has occurred: ' + e.getMessage());
+            throw new HandledException('The following exception has occurred: ' + e.getMessage());
         }
     }
 
@@ -142,7 +148,7 @@ public with sharing class EShopBaseComponentController {
         return getSubCategoryPickListValuesByCategoryName('Costumes');
     }
 
-    @AuraEnabled
+    /*@AuraEnabled
     public static SObject getGoodLineItemById(String goodLineItemId) {
 
         SObject goodLineItem;
@@ -157,12 +163,12 @@ public with sharing class EShopBaseComponentController {
             return goodLineItem;
         } catch (Exception e) {
             System.debug('The following exception has occurred: ' + e.getMessage());
-            throw new AuraHandledException('The following exception has occurred: ' + e.getMessage());
+            throw new HandledException('The following exception has occurred: ' + e.getMessage());
         }
     }
-
-
-    public static void changeCartEstimatedDeliveryDate(List<EShopOrder__c> eShopOrders) {
+*/
+    @TestVisible
+    private static void changeCartEstimatedDeliveryDate(List<EShopOrder__c> eShopOrders) {
         try {
 
             if (eShopOrders.size() > 0) {
@@ -190,8 +196,8 @@ public with sharing class EShopBaseComponentController {
 
     }
 
-
-    public static void changeGoodLineItemQuantity(List<EShopOrder__c> eShopOrders) {
+    @TestVisible
+    private static void changeGoodLineItemQuantity(List<EShopOrder__c> eShopOrders) {
 
         try {
 
@@ -226,18 +232,14 @@ public with sharing class EShopBaseComponentController {
         }
     }
 
-
-    public static List<EShopOrder__c> createOrderWrappersAndOrders(String paramsJSONString) {
+    @TestVisible
+    private static List<EShopOrder__c> createOrderWrappersAndOrders(String paramsJSONString) {
 
 
         try {
             List<CreateEshopOrderParamsWrapper> wrappers = (List<CreateEshopOrderParamsWrapper>) JSON.deserialize(paramsJSONString,
                     List<CreateEshopOrderParamsWrapper>.class);
 
-
-            /*   CreateEshopOrderParamsWrapper wrapper = (CreateEshopOrderParamsWrapper) JSON.deserialize(paramsJSONString,
-                       CreateEshopOrderParamsWrapper.class);
-   */
 
             List<EShopOrder__c> eshopOrders = new List<EShopOrder__c>();
 
@@ -267,7 +269,6 @@ public with sharing class EShopBaseComponentController {
     @AuraEnabled
     public static List<EShopOrder__c> createEshopOrders(String paramsJSONString) {
 
-
         try {
 
             List<EShopOrder__c> eShopOrders = createOrderWrappersAndOrders(paramsJSONString);
@@ -277,7 +278,7 @@ public with sharing class EShopBaseComponentController {
             List<AsyncApexJob> asyncApexJobs = [
                     SELECT Id, CronTriggerId
                     FROM AsyncApexJob
-                    WHERE ApexClass.Name = :'ScheduledCartStatusChange' AND Status = 'Queued'
+                    WHERE ApexClass.Name = :'CartStatusChangeScheduler' AND Status = 'Queued'
             ];
 
             if (asyncApexJobs.isEmpty()) {
@@ -291,7 +292,7 @@ public with sharing class EShopBaseComponentController {
             return eShopOrders;
         } catch (Exception e) {
             System.debug('The following exception has occurred: ' + e.getMessage());
-            throw new AuraHandledException('The following exception has occurred: ' + e.getMessage());
+            throw new HandledException('The following exception has occurred: ' + e.getMessage());
         }
     }
 }

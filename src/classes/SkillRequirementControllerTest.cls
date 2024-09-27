@@ -5,12 +5,12 @@ public with sharing class SkillRequirementControllerTest {
     static void testCreateSkillRequirementApexMethod() {
 
         WorkOrder workOrder = TestDataFactory.createWorkOrder();
-        List<Skill>skills = [SELECT Id FROM Skill];
+        Skill skill = [SELECT Id FROM Skill LIMIT 1];
 
 
         CreateSkillRequirementParamsWrapper wrapper = new CreateSkillRequirementParamsWrapper();
         wrapper.relatedRecordId = workOrder.Id;
-        wrapper.skillId = skills[0].Id;
+        wrapper.skillId = skill.Id;
         wrapper.skillLevel = 5;
         String paramsJSONString = JSON.serialize(wrapper);
 
@@ -29,9 +29,9 @@ public with sharing class SkillRequirementControllerTest {
         try {
 
             SkillRequirement skillRequirement = SkillRequirementController.createSkillRequirementApexMethod('sc');
-        } catch (AuraHandledException ex) {
+        } catch (HandledException ex) {
 
-            System.assertEquals('Script-thrown exception', ex.getMessage());
+            System.assertEquals('The following exception has occurred: Unexpected character (\'s\' (code 115)): expected a valid value (number, String, array, object, \'true\', \'false\' or \'null\') at input location [1,2]', ex.getMessage());
 
         }
 

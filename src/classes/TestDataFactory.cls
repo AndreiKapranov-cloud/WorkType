@@ -62,6 +62,8 @@ public with sharing class TestDataFactory {
 
         GoodLineItem__c goodLineItem = new GoodLineItem__c(Name = 'Hoodie', Quantity__c = 77, Good__c = good.Id);
 
+
+
         insert goodLineItem;
 
         return goodLineItem;

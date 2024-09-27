@@ -33,9 +33,9 @@ public with sharing class BaseComponentControllerTest {
 
             List<Map<String, String>>values = BaseComponentController.getPicklistValuesUsingApex(getStatusPicklistValuesParamsJSONString);
 
-        } catch (Exception ex) {
+        } catch (HandledException ex) {
 
-            System.assertEquals('Script-thrown exception', ex.getMessage());
+            System.assertEquals('The following exception has occurred: Attempt to de-reference a null object', ex.getMessage());
 
         }
 

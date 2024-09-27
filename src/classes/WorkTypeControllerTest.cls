@@ -31,9 +31,9 @@ public with sharing class WorkTypeControllerTest {
         try {
 
             WorkType workType = WorkTypeController.createWorkTypeApexMethod('sdv');
-        } catch (AuraHandledException ex) {
+        } catch (HandledException ex) {
 
-            System.assertEquals('Script-thrown exception', ex.getMessage());
+            System.assertEquals('The following exception has occurred: Unexpected character (\'s\' (code 115)): expected a valid value (number, String, array, object, \'true\', \'false\' or \'null\') at input location [1,2]', ex.getMessage());
 
         }
 
@@ -73,9 +73,9 @@ public with sharing class WorkTypeControllerTest {
         try {
 
             SObject workTypeFromBase = WorkTypeController.getWorkTypeNameById('dvz');
-        } catch (AuraHandledException ex) {
+        } catch (HandledException ex) {
 
-            System.assertEquals('Script-thrown exception', ex.getMessage());
+            System.assertEquals('The following exception has occurred: The following exception has occurred: invalid ID field: dvz', ex.getMessage());
 
         }
 

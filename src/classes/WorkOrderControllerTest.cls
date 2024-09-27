@@ -32,9 +32,9 @@ public with sharing class WorkOrderControllerTest {
         try {
 
             WorkOrder workOrder = WorkOrderController.createWorkOrderApexMethod('ss');
-        } catch (AuraHandledException ex) {
+        } catch (HandledException ex) {
 
-            System.assertEquals('Script-thrown exception', ex.getMessage());
+            System.assertEquals('The following exception has occurred: Unexpected character (\'s\' (code 115)): expected a valid value (number, String, array, object, \'true\', \'false\' or \'null\') at input location [1,2]', ex.getMessage());
 
         }
 

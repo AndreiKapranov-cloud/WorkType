@@ -38,7 +38,7 @@
         <members>SamodelkinUtilClass</members>
         <members>SamodelkinWrapper</members>
         <members>ScheduleRandomDelivery</members>
-        <members>ScheduledCartStatusChange</members>
+        <members>CartStatusChangeScheduler</members>
         <members>SelectGoodController</members>
         <members>ServletJSONWrapper</members>
         <members>ServletJSONWrapperPlay</members>

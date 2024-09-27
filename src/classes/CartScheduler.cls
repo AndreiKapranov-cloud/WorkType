@@ -1,6 +1,4 @@
-/**
- * Created by andrey on 9/9/24.
- */
+
 
 public with sharing class CartScheduler {
 
@@ -9,7 +7,7 @@ public with sharing class CartScheduler {
         String jobName = 'ScheduleCartStatusChange';
         String cronExp = '0 0 0 * * ?'; // Cron expression for daily at midnight
 
-        System.schedule(jobName, cronExp, new ScheduledCartStatusChange());
+        System.schedule(jobName, cronExp, new CartStatusChangeScheduler());
 
     }
 
@@ -19,7 +17,7 @@ public with sharing class CartScheduler {
         String jobName = 'scheduleRandomActualDeliveryDate';
         String cronExp = '0 0 0 * * ?'; // Cron expression for daily at midnight
 
-        System.schedule(jobName, cronExp, new ScheduleRandomActualDeliveryDate());
+        System.schedule(jobName, cronExp, new RandomActualDeliveryDateScheduler());
     }
 
 
@@ -28,7 +26,7 @@ public with sharing class CartScheduler {
         List<AsyncApexJob> asyncApexJobs = [
                 SELECT Id, CronTriggerId
                 FROM AsyncApexJob
-                WHERE ApexClass.Name = :'ScheduledCartStatusChange' AND Status = 'Queued'
+                WHERE ApexClass.Name = :'CartStatusChangeScheduler' AND Status = 'Queued'
         ];
 
         for (AsyncApexJob asyncApexJob : asyncApexJobs) {

@@ -51,7 +51,7 @@ public with sharing class CartManagerTest {
 
 
 
-        Cart__c newCartCreated = [SELECT Id, Pickup_Point_Address__c,Status__c FROM Cart__c WHERE Status__c = 'Formed'];
+        Cart__c newCartCreated = [SELECT Id, Pickup_Point_Address__c,Status__c FROM Cart__c WHERE Status__c = 'Formed' LIMIT 1];
         List<EShopOrder__c> newOrdersCreated = [SELECT Id, EstimatedDeliveryDate__c,RegistrationDate__c FROM EShopOrder__c WHERE Cart__c = :newCartCreated.Id];
 
 
@@ -66,7 +66,7 @@ public with sharing class CartManagerTest {
         System.debug(JSON.serializePretty(res));
         System.debug(res);
         System.debug(res.responseBody.toString());
-      //  System.assertEquals(201, res.statusCode);
+        System.assertEquals(201, res.statusCode);
 
     }
 }

@@ -20,7 +20,7 @@ public with sharing class CartControllerTest {
 
         Cart__c cart = CartController.createCartApexMethod(paramsJSONString);
 
-        Cart__c cartFromSOQL = [SELECT Id,Pickup_Point_Address__c FROM Cart__c];
+        Cart__c cartFromSOQL = [SELECT Id,Pickup_Point_Address__c FROM Cart__c LIMIT 1];
 
         System.assertEquals(cartFromSOQL.Pickup_Point_Address__c, 'Grodno');
 
@@ -46,9 +46,9 @@ public with sharing class CartControllerTest {
             String paramsJSONString = JSON.serialize(cartParamsWrapper);
 
             Cart__c cart = CartController.createCartApexMethod(paramsJSONString);
-        } catch (AuraHandledException ex) {
+        } catch (HandledException ex) {
 
-            System.assertEquals('Script-thrown exception', ex.getMessage());
+            System.assertEquals('The following exception has occurred: Insert failed. First exception on row 0; first error: INVALID_OR_NULL_FOR_RESTRICTED_PICKLIST, Status: bad value for restricted picklist field: Foormed: [Status__c]', ex.getMessage());
 
         }
 

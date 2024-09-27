@@ -17,9 +17,9 @@ public with sharing class SelectGoodControllerTest {
         GoodLineItemWrapper goodLineItemWrapper = goodLineItemWrappers[0];
 
 
-        System.assertEquals(good.Name, goodLineItemWrappers[0].name);
-        System.assertEquals(good.Category__c, goodLineItemWrappers[0].category);
-        System.assertEquals(good.Colour__c, goodLineItemWrappers[0].colour);
+        System.assertEquals(good.Name, goodLineItemWrapper.name);
+        System.assertEquals(good.Category__c, goodLineItemWrapper.category);
+        System.assertEquals(good.Colour__c, goodLineItemWrapper.colour);
 
     }
 
@@ -40,8 +40,9 @@ public with sharing class SelectGoodControllerTest {
         GoodLineItem__c goodLineItem = TestDataFactory.createGoodLineItem();
 
         List<GoodLineItemWrapper>goodLineItemWrappers = SelectGoodController.fetchGoodLineItemsInCategory('oo', 'Hoodies');
-        System.assertEquals(goodLineItemWrappers[0].name, 'Hoodie');
-        System.assertEquals(goodLineItemWrappers[0].quantity, 77);
+        GoodLineItemWrapper goodLineItemWrapper = goodLineItemWrappers[0];
+        System.assertEquals(goodLineItemWrapper.name, 'Hoodie');
+        System.assertEquals(goodLineItemWrapper.quantity, 77);
 
     }
 
@@ -51,11 +52,28 @@ public with sharing class SelectGoodControllerTest {
         GoodLineItem__c goodLineItem = TestDataFactory.createGoodLineItem();
 
         List<GoodLineItemWrapper>goodLineItemWrappers = SelectGoodController.fetchGoodLineItemsInSubCategory('oo', 'With cowl');
-        System.assertEquals(goodLineItemWrappers[0].name, 'Hoodie');
-        System.assertEquals(goodLineItemWrappers[0].quantity, 77);
+        GoodLineItemWrapper goodLineItemWrapper = goodLineItemWrappers[0];
+        System.assertEquals(goodLineItemWrapper.name, 'Hoodie');
+        System.assertEquals(goodLineItemWrapper.quantity, 77);
+
+    }
+
+
+    @IsTest
+    static void testGetGoodLineItemWrapperList() {
+        GoodLineItem__c goodLineItem = TestDataFactory.createGoodLineItem();
+        List<GoodLineItem__c> goodLineItems = new List<GoodLineItem__c>();
+        goodLineItems.add(goodLineItem);
+
+        List<GoodLineItemWrapper> goodLineItemWrappers = SelectGoodController.getGoodLineItemWrapperList(goodLineItems);
+        System.debug(goodLineItemWrappers);
+
+        GoodLineItemWrapper goodLineItemWrapper = goodLineItemWrappers[0];
+        System.assertEquals(goodLineItemWrapper.quantity, 77);
 
     }
 }
+
 
 
 

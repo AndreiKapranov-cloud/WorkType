@@ -17,12 +17,11 @@ public with sharing class CartController {
             String status = wrapper.status;
 
             cart = new Cart__c(Buyer__c = buyerId, EstimatedDeliveryDate__c = estimatedDeliveryDate,
-
                     Status__c = status, Pickup_Point_Address__c = pickupPointAddress);
             insert cart;
         } catch (Exception e) {
             System.debug('The following exception has occurred: ' + e.getMessage());
-            throw new AuraHandledException('The following exception has occurred: ' + e.getMessage());
+            throw new HandledException('The following exception has occurred: ' + e.getMessage());
         }
         return cart;
     }

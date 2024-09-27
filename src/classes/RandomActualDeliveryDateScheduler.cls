@@ -1,5 +1,5 @@
 
-public with sharing class ScheduleRandomActualDeliveryDate implements Schedulable {
+public with sharing class RandomActualDeliveryDateScheduler implements Schedulable {
 
 
         public void execute(SchedulableContext sC) {

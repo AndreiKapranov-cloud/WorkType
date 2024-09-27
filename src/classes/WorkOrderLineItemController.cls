@@ -21,7 +21,7 @@ public with sharing class WorkOrderLineItemController {
             insert workOrderLineItem;
         } catch (Exception e) {
             System.debug('The following exception has occurred: ' + e.getMessage());
-            throw new AuraHandledException('The following exception has occurred: ' + e.getMessage());
+            throw new HandledException('The following exception has occurred: ' + e.getMessage());
         }
         return workOrderLineItem;
     }

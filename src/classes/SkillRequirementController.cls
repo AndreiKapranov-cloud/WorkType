@@ -18,7 +18,7 @@ public with sharing class SkillRequirementController {
 
         } catch (Exception e) {
             System.debug('The following exception has occurred: ' + e.getMessage());
-            throw new AuraHandledException('The following exception has occurred: ' + e.getMessage());
+            throw new HandledException('The following exception has occurred: ' + e.getMessage());
         }
         return skillRequirement;
     }

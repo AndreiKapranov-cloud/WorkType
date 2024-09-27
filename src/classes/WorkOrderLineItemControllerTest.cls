@@ -35,9 +35,9 @@ public with sharing class WorkOrderLineItemControllerTest {
         try {
 
             WorkOrderLineItem workOrderLineItem = WorkOrderLineItemController.createWorkOrderLineItemApexMethod('vx');
-        } catch (AuraHandledException ex) {
+        } catch (HandledException ex) {
 
-            System.assertEquals('Script-thrown exception', ex.getMessage());
+            System.assertEquals('The following exception has occurred: Unexpected character (\'v\' (code 118)): expected a valid value (number, String, array, object, \'true\', \'false\' or \'null\') at input location [1,2]', ex.getMessage());
 
         }
 
@@ -49,10 +49,10 @@ public with sharing class WorkOrderLineItemControllerTest {
     static void testGetWorkOrderNumberById() {
 
         WorkOrder workOrder = TestDataFactory.createWorkOrder();
-        List<WorkOrder> workOrders= [SELECT Id,WorkOrderNumber FROM WorkOrder];
+       WorkOrder workOrderFromSOQL = [SELECT Id,WorkOrderNumber FROM WorkOrder LIMIT 1];
         SObject workOrderFromBase = WorkOrderLineItemController.getWorkOrderNumberById(workOrder.Id);
 
-        System.assertEquals(workOrders[0], workOrderFromBase);
+        System.assertEquals(workOrderFromSOQL, workOrderFromBase);
 
     }
 

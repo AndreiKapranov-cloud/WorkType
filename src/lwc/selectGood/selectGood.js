@@ -221,7 +221,7 @@ export default class SelectGood extends LightningElement {
                     try {
                         //   this.goodLineItemsDisplayedInTable.filter(goodLineItem => goodLineItem.name = 'Hoodie');       //.contains(this.globalSearchText));
                        this.goodLineItemsCopy.filter(goodLineItem => goodLineItem.name.toString().includes(this.globalSearchText));
-                      
+
 
 
 

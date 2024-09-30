@@ -11,8 +11,8 @@ public with sharing class CartScheduler {
 
     }
 
-
-    public static void scheduleRandomActualDeliveryDate() {
+    @TestVisible
+    private static void scheduleRandomActualDeliveryDate() {
 
         String jobName = 'scheduleRandomActualDeliveryDate';
         String cronExp = '0 0 0 * * ?'; // Cron expression for daily at midnight

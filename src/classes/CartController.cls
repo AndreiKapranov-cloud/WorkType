@@ -30,7 +30,6 @@ public with sharing class CartController {
     public static List<Buyer__c> getBuyers() {
         List<Buyer__c> buyersList = new List<Buyer__c>();
         try {
-
             buyersList = [SELECT Id, Name FROM Buyer__c];
         } catch (Exception e) {
             System.debug('The following exception has occurred: ' + e.getMessage());

@@ -14,9 +14,7 @@ global with sharing class CartManager {
             List<EShopOrder__c> ordersToInsert = new List<EShopOrder__c>();
             List<SObject> cartsAndOrdersToInsert = new List<SObject>();
 
-
             CartsJSONWrapper cartsJSONWrapper = (CartsJSONWrapper) JSON.deserialize(RestContext.request?.requestBody?.toString(), CartsJSONWrapper.class);
-
 
             for (CreateCartParamsWrapper cartWrapper : cartsJSONWrapper?.carts) {
 
@@ -24,24 +22,19 @@ global with sharing class CartManager {
                 String keyHex = EncodingUtil.convertToHex(key);
                 String guid = keyHex.substring(0, 8) + '-' + keyHex.substring(8, 12) + '-' + keyHex.substring(12, 16) + '-' + keyHex.substring(16, 20) + '-' + keyHex.substring(20);
 
-
                 Cart__c cartReference = new Cart__c(
                         ExtId__c = guid);
 
 
                 List <CreateEshopOrderParamsWrapper> orderWrappers = cartWrapper?.orders;
 
-
                 for (CreateEshopOrderParamsWrapper eshopOrderWrapper : orderWrappers) {
-
                     EShopOrder__c eShopOrder = new EShopOrder__c();
                     eShopOrder.EstimatedDeliveryDate__c = eshopOrderWrapper.estimatedDeliveryDate;
                     eShopOrder.RegistrationDate__c = eshopOrderWrapper.registrationDate;
                     eShopOrder.Cart__r = cartReference;
                     ordersToInsert.add(eShopOrder);
-
                 }
-
 
                 Cart__c cart = new Cart__c(
                         ExtId__c = guid,
@@ -59,20 +52,13 @@ global with sharing class CartManager {
             insert cartsAndOrdersToInsert;
 
             for (Cart__c cart : cartsToInsert) {
-
-
                 insertedCartRecordsIds.add(cart.Id);
-
             }
 
 
             for (EShopOrder__c eShopOrder : ordersToInsert) {
-
-
                 insertedOrderRecordsIds.add(eShopOrder.Id);
-
             }
-
 
             RestResponse res = RestContext.response;
             res.responseBody = Blob.valueOf('Success. Inserted Carts, having Ids: ' + insertedCartRecordsIds + '  Inserted Orders, having Ids: ' + insertedOrderRecordsIds);

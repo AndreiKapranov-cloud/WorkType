@@ -2,7 +2,7 @@
 public with sharing class SelectGoodController {
 
 
-    @AuraEnabled(Cacheable=true)
+    @AuraEnabled
     public static List<GoodLineItemWrapper> fetchGoodLineItems() {
         List<GoodLineItemWrapper> goodLineItemWrappers = new List<GoodLineItemWrapper>();
 

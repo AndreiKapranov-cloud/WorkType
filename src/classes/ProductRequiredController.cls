@@ -30,7 +30,7 @@ public with sharing class ProductRequiredController {
             productList = [
                     SELECT Id,Name
                     FROM Product2
-                    where Description = 'Field Service'
+                    WHERE Description = 'Field Service'
             ];
         } catch (Exception e) {
             System.debug('The following exception has occurred: ' + e.getMessage());

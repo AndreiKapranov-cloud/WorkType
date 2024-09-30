@@ -2,7 +2,6 @@
 @isTest
 public with sharing class CartManagerTest {
 
-
     @isTest
     static void testInsertCartsAndOrdersPostPositive() {
 
@@ -11,12 +10,9 @@ public with sharing class CartManagerTest {
 
         List<Buyer__c> buyers = [SELECT Id, Name FROM Buyer__c];
 
-
-
         CreateCartParamsWrapper createCartParamsWrapper = new CreateCartParamsWrapper();
         List<CreateCartParamsWrapper> createCartParamsWrappers = new List<CreateCartParamsWrapper>();
         List<CreateEshopOrderParamsWrapper> createEshopOrderParamsWrappers = new List<CreateEshopOrderParamsWrapper>();
-
 
         for (Integer i = 0; i < 4; i++) {
             CreateEshopOrderParamsWrapper createEshopOrderParamsWrapper = new CreateEshopOrderParamsWrapper();
@@ -49,11 +45,8 @@ public with sharing class CartManagerTest {
         CartManager.insertCartsAndOrders();
         Test.stopTest();
 
-
-
         Cart__c newCartCreated = [SELECT Id, Pickup_Point_Address__c,Status__c FROM Cart__c WHERE Status__c = 'Formed' LIMIT 1];
         List<EShopOrder__c> newOrdersCreated = [SELECT Id, EstimatedDeliveryDate__c,RegistrationDate__c FROM EShopOrder__c WHERE Cart__c = :newCartCreated.Id];
-
 
         System.assertEquals(newCartCreated.Pickup_Point_Address__c, 'Dzerjinsky,113');
 
@@ -63,9 +56,11 @@ public with sharing class CartManagerTest {
             System.assertEquals(order.EstimatedDeliveryDate__c, Date.today());
         }
 
+        System.debug('LOG');
         System.debug(JSON.serializePretty(res));
         System.debug(res);
         System.debug(res.responseBody.toString());
+        System.debug('LOG');
         System.assertEquals(201, res.statusCode);
 
     }

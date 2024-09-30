@@ -15,13 +15,9 @@ public with sharing class CartSchedulerTest {
             actualDeliveryDates.add(eShopOrder.ActualDeliveryDate__c);
         }
 
-//        RandomActualDeliveryDateScheduler randomActualDeliveryDateScheduler = new RandomActualDeliveryDateScheduler();
-
         Test.startTest();
         CartScheduler.scheduleRandomActualDeliveryDate();
         Test.stopTest();
-        //   scheduleRandomActualDeliveryDate.execute(null);
-
 
         List<EShopOrder__c> processedOrders = [SELECT Id, ActualDeliveryDate__c, EstimatedDeliveryDate__c FROM EShopOrder__c ORDER BY Id];
 
@@ -36,18 +32,20 @@ public with sharing class CartSchedulerTest {
     @IsTest
     static void testScheduleCartStatusChange() {
 
-        Buyer__c buyer = new Buyer__c(Address__c = 'LLLL', Email__c = 'akapranov8722@gmail.com');
-        insert buyer;
 
-        Cart__c cart = new Cart__c(Buyer__c = buyer.Id, Pickup_Point_Address__c = 'Grodno', Status__c = 'Formed', Done__c = false);
+        List<EShopOrder__c> orders = TestDataFactory.createEShopOrders();
 
 
-        insert cart;
+        System.debug(orders[0].EstimatedDeliveryDate__c);
 
-        EShopOrder__c eShopOrder = new EShopOrder__c(RegistrationDate__c = Date.today(), ActualDeliveryDate__c = Date.today().addDays(2), EstimatedDeliveryDate__c = Date.today().addDays(3), Cart__c = cart.Id, Done__c = false);
+       for(EShopOrder__c order : orders){
+           order.ActualDeliveryDate__c = Date.today().addDays(2);
+           order.EstimatedDeliveryDate__c = Date.today().addDays(3);
+       }
 
-        insert eShopOrder;
+        System.debug(orders[0].EstimatedDeliveryDate__c);
 
+        update orders;
 
         Test.startTest();
 
@@ -63,21 +61,15 @@ public with sharing class CartSchedulerTest {
 
     }
 
+
     @IsTest
     static void testScheduleCartStatusChangeToIsLate() {
 
-        Buyer__c buyer = new Buyer__c(Address__c = 'LLLL', Email__c = 'akapranov8722@gmail.com');
-        insert buyer;
-
-        Cart__c cart = new Cart__c(Buyer__c = buyer.Id, Pickup_Point_Address__c = 'Grodno', Status__c = 'Formed', Done__c = false);
-
-
-        insert cart;
-
-        EShopOrder__c eShopOrder = new EShopOrder__c(RegistrationDate__c = Date.today(), ActualDeliveryDate__c = Date.today().addDays(2), EstimatedDeliveryDate__c = Date.today().addDays(1), Cart__c = cart.Id, Done__c = false);
-
-        insert eShopOrder;
-
+        List<EShopOrder__c> orders = TestDataFactory.createEShopOrders();
+        EShopOrder__c order = orders[0];
+        order.ActualDeliveryDate__c = Date.today().addDays(2);
+        order.EstimatedDeliveryDate__c = Date.today().addDays(1);
+        update order;
 
         Test.startTest();
 

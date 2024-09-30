@@ -2,18 +2,6 @@
 
 public with sharing class EShopBaseComponentController {
 
-    /* public static List<SObject> getRecordsBySOQL(String query) {
-
-         try {
-             return Database.query(query);
-
-         } catch (Exception e) {
-             System.debug('The following exception has occurred: ' + e.getMessage());
-             throw new HandledException('The following exception has occurred: ' + e.getMessage());
-         }
-     }*/
-
-
     @AuraEnabled
     public static List<Map<String, String>> getCategoryPicklistValuesUsingApex() {
         List<Map<String, String>> values = new List<Map<String, String>>();
@@ -148,25 +136,6 @@ public with sharing class EShopBaseComponentController {
         return getSubCategoryPickListValuesByCategoryName('Costumes');
     }
 
-    /*@AuraEnabled
-    public static SObject getGoodLineItemById(String goodLineItemId) {
-
-        SObject goodLineItem;
-        try {
-
-            String query = 'SELECT Id,Name,Quantity__c,Supplier__r.Name,Good__r.Size__c,Good__r.Name,Good__r.Colour__c FROM GoodLineItem__c WHERE Id = ' + '\'' + goodLineItemId + '\' LIMIT 1';
-
-            List<SObject>GoodLineItemList = getRecordsBySOQL(query);
-            if (!GoodLineItemList.isEmpty()) {
-                goodLineItem = GoodLineItemList[0];
-            }
-            return goodLineItem;
-        } catch (Exception e) {
-            System.debug('The following exception has occurred: ' + e.getMessage());
-            throw new HandledException('The following exception has occurred: ' + e.getMessage());
-        }
-    }
-*/
     @TestVisible
     private static void changeCartEstimatedDeliveryDate(List<EShopOrder__c> eShopOrders) {
         try {
@@ -200,15 +169,10 @@ public with sharing class EShopBaseComponentController {
     private static void changeGoodLineItemQuantity(List<EShopOrder__c> eShopOrders) {
 
         try {
-
             List<String> goodLineItemIds = new List<String>();
-
             for (EShopOrder__c eShopOrder : eShopOrders) {
-
                 goodLineItemIds.add(eShopOrder.Good_Line_Item__c);
-
             }
-
 
             List<GoodLineItem__c> goodLineItems = [SELECT Id,Quantity__c FROM GoodLineItem__c WHERE Id IN:goodLineItemIds];
 
@@ -217,7 +181,6 @@ public with sharing class EShopBaseComponentController {
                 for (EShopOrder__c eShopOrder : eShopOrders) {
                     System.debug('eShopOrder :' + eShopOrder);
                     if (eShopOrder.Good_Line_Item__c == goodLineItem.Id) {
-
                         goodLineItem.Quantity__c -= eShopOrder.Quantity__c;
                         System.debug('eShopOrder.Quantity__c :' + eShopOrder.Quantity__c);
                         System.debug('goodLineItem.Quantity__c  :' + goodLineItem.Quantity__c);
@@ -234,8 +197,6 @@ public with sharing class EShopBaseComponentController {
 
     @TestVisible
     private static List<EShopOrder__c> createOrderWrappersAndOrders(String paramsJSONString) {
-
-
         try {
             List<CreateEshopOrderParamsWrapper> wrappers = (List<CreateEshopOrderParamsWrapper>) JSON.deserialize(paramsJSONString,
                     List<CreateEshopOrderParamsWrapper>.class);

@@ -15,7 +15,7 @@ public with sharing class TestDataFactory {
         return workOrder;
     }
 
-    public static Cart__c createCart() {
+    private static Cart__c createCart() {
 
         Buyer__c buyer = createBuyer();
 
@@ -44,7 +44,8 @@ public with sharing class TestDataFactory {
         List<EShopOrder__c> orders = new List<EShopOrder__c>();
 
         for (Integer i = 0; i < 4; i++) {
-            EShopOrder__c eShopOrder = new EShopOrder__c(RegistrationDate__c = Date.today(), Quantity__c = 4, EstimatedDeliveryDate__c = Date.today().addDays(1), Cart__c = cart.Id, Good_Line_Item__c = goodLineItem.Id, Done__c = false);
+            EShopOrder__c eShopOrder = new EShopOrder__c(RegistrationDate__c = Date.today(), Quantity__c = 4,
+                    EstimatedDeliveryDate__c = Date.today().addDays(1), Cart__c = cart.Id, Good_Line_Item__c = goodLineItem.Id, Done__c = false);
             orders.add(eShopOrder);
         }
 

@@ -1,4 +1,3 @@
- 
 import {LightningElement, track, wire} from 'lwc';
 
 import fetchGoodLineItemsInGlobalSearch
@@ -32,7 +31,7 @@ const columns = [
 export default class SelectGood extends LightningElement {
 
     genericShowToast = genericShowToast.bind(this);
-
+    @track goodLineItemNames = [];
     @track goodLineItems = [];
     @track selectedItemsCopyWithoutBackslashes = [];
     @track selectedOption = 'Global Search';
@@ -78,9 +77,11 @@ export default class SelectGood extends LightningElement {
         fetchGoodLineItems()
             .then(result => {
                 this.goodLineItems = result;
+                console.log('result : ' + result);
                 this.goodLineItemsCopy = JSON.parse(JSON.stringify(this.goodLineItems));
                 this.goodLineItemsDisplayedInTable = JSON.parse(JSON.stringify(this.goodLineItems));
 
+                console.log('this.goodLineItemsDisplayedInTable : ' + JSON.stringify(this.goodLineItemsDisplayedInTable));
                 if (!this.goodLineItems.length) {
                     this.genericShowToast('The E-Shop is Empty', 'No Goods', 'error');
                 }
@@ -212,19 +213,75 @@ export default class SelectGood extends LightningElement {
                     this.displayCategoryOrSubCategoryItems(this.subCategory, this.category);
                 } else {
 
-                    fetchGoodLineItemsInGlobalSearch
-                    ({
-                        searchText: this.globalSearchText
-                    })
-                        .then(result => {
-                                this.processSearchResult(result);
-                            }
-                        )
-                        .catch(error => {
-                            console.log(error);
-                            this.genericShowToast('Error fetching GoodLineItems', error.body.message, 'error');
-                            console.log('Error fetching GoodLineItems', error);
-                        })
+                    /*   fetchGoodLineItemsInGlobalSearch
+                       ({
+                           searchText: this.globalSearchText
+                       })*/
+
+                    try {
+                        //   this.goodLineItemsDisplayedInTable.filter(goodLineItem => goodLineItem.name = 'Hoodie');       //.contains(this.globalSearchText));
+                       this.goodLineItemsCopy.filter(goodLineItem => goodLineItem.name.toString().includes(this.globalSearchText));
+                      
+
+
+
+                        this.processSearchResult( this.goodLineItemsCopy);
+                        //           this.itemsFromSearchResult = result;
+                        //   this.goodLineItemsCopyForSearch = JSON.parse(JSON.stringify(this.itemsFromSearchResult));
+
+                     /*   this.goodLineItemsDisplayedInTable = [];
+
+                        this.itemsFromSearchResult.forEach(item => {
+                            this.itemFromSearch = this.goodLineItemsCopy.filter(e => e.id === item.id);
+
+                            this.goodLineItemsDisplayedInTable.push(this.goodLineItemsCopy.find(e => e.id === item.id));
+
+                        });*/
+
+
+                        //   this.goodLineItemsDisplayedInTable.forEach(item => this.goodLineItemNames.push(item.name));
+                        //    this.goodLineItemsDisplayedInTable = this.goodLineItemsCopy.filter(goodLineItemCopy => goodLineItemCopy.name.includes(this.globalSearchText));
+                        //   console.log(this.goodLineItemNames);
+
+
+                        //   this.goodLineItemsDisplayedInTable.forEach(this.goodLineItemNames.push(goodLineItem.name));
+
+                        //      this.selectedItems = this.selectedItems.filter(e => e !== this.goodLineItemsDisplayedInTable[i].id);
+                    } catch (e) {
+                        console.error("An error occurred" + e); //This will not be executed
+                    }
+
+
+                    /*   this.goodLineItemsCopy.forEach(e => {
+                           if (e.id === event.detail.selectedRows[i].id) {
+                               e.checked = true;
+                           }*/
+
+
+                    /*
+                                             this.itemsFromSearchResult = result;
+                                             this.goodLineItemsCopyForSearch = JSON.parse(JSON.stringify(this.itemsFromSearchResult));
+
+                                             this.goodLineItemsDisplayedInTable = [];
+
+                                             this.itemsFromSearchResult.forEach(item => {
+                                                 this.itemFromSearch = this.goodLineItemsCopy.filter(e => e.id === item.id);
+
+                                                 this.goodLineItemsDisplayedInTable.push(this.goodLineItemsCopy.find(e => e.id === item.id));
+
+                                             this.itemFromSearch = this.goodLineItemsCopy.filter(e => e.id === item.id);
+
+                                             this.goodLineItemsDisplayedInTable.push(this.goodLineItemsCopy.find(e => e.id === item.id))
+
+                                            .then(result => {
+                                                    this.processSearchResult(result);
+                                                }
+                                            )
+                                            .catch(error => {
+                                                console.log(error);
+                                                this.genericShowToast('Error fetching GoodLineItems', error.body.message, 'error');
+                                                console.log('Error fetching GoodLineItems', error);
+                                            })*/
                 }
                 console.log('global');
             }

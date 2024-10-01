@@ -1,4 +1,3 @@
-
 import {LightningElement, api, track} from 'lwc';
 
 
@@ -16,7 +15,6 @@ export default class ViewGoodLineItem extends LightningElement {
     @api selectedItemsIds = [];
     @api lineItems;
 
-
     @track eshopOrderWrapperList = [];
     @track clonedLineItems = [];
     @track selectedLineItemsDeepCopy = [];
@@ -29,7 +27,6 @@ export default class ViewGoodLineItem extends LightningElement {
     @track namesOfItemsNotValid = [];
     @track lineItemsNotValid = [];
     @track namesOfValidItems = [];
-
 
     lineItem;
     quantity;
@@ -54,7 +51,6 @@ export default class ViewGoodLineItem extends LightningElement {
     estimatedDeliveryDateTarget;
     quantityTarget;
 
-
     connectedCallback() {
 
         this.isLoading = true;
@@ -69,7 +65,6 @@ export default class ViewGoodLineItem extends LightningElement {
 
         this.isLoading = false;
     }
-
 
     handleEShopOrderGoodQuantityChange(e) {
         try {
@@ -108,7 +103,6 @@ export default class ViewGoodLineItem extends LightningElement {
             console.log(e.message)
         }
     }
-
 
     handleOrderEstimatedDeliveryDateChange(e) {
 
@@ -153,20 +147,17 @@ export default class ViewGoodLineItem extends LightningElement {
         return goodQuantityInput.checkValidity() && this.isQuantityValid;
     }
 
-
     validateEstimatedDeliveryDate() {
         let estimatedDeliveryDateInput = this.template.querySelector(".estimatedDeliveryDate");
         estimatedDeliveryDateInput.reportValidity();
         return estimatedDeliveryDateInput.checkValidity() && this.isEstimatedDeliveryDateValid;
     }
 
-
     checkEShopOrderInputFields() {
         let isOrderGoodQuantityValid = this.validateOrderGoodQuantity();
         let estimatedDeliveryDateValid = this.validateEstimatedDeliveryDate()
         return isOrderGoodQuantityValid && estimatedDeliveryDateValid;
     }
-
 
     checkIfButtonIsDisabledDependingOnIndex() {
         this.goToPreviousEShopOrderButtonDisabled = this.index <= 0;
@@ -179,12 +170,8 @@ export default class ViewGoodLineItem extends LightningElement {
         }
     }
 
-
     goToNextEShopOrder() {
 
-
-        // this.template.querySelector("c-line-item-input").sendValuesToParent();
-        // if (this.checkEShopOrderInputFields()) {
         if (this.index < this.selectedLineItemsDeepCopy.length - 1) {
             this.index += 1;
             this.incrementedIndex += 1;
@@ -192,34 +179,21 @@ export default class ViewGoodLineItem extends LightningElement {
             this.checkIfButtonIsDisabledDependingOnIndex();
 
         }
-        /*  } else {
-              this.genericShowToast('Input not valid.', 'Please, complete required fields properly.', 'error');
-          }*/
-
     }
-
 
     goToPreviousEShopOrder() {
 
-        // this.template.querySelector("c-line-item-input").sendValuesToParent();
-        //  if (this.checkEShopOrderInputFields()) {
         if (this.index > 0) {
             this.index -= 1;
             this.incrementedIndex -= 1;
             this.lineItem = this.selectedLineItemsDeepCopy[this.index];
             this.checkIfButtonIsDisabledDependingOnIndex();
 
-            /* } else {
-
-                 this.genericShowToast('Input not valid.', 'Please, complete required fields properly.', 'error');
-
-             }*/
         }
     }
 
-
     addNewEShopOrderToCart() {
-        // this.template.querySelector("c-line-item-input").sendValuesToParent();
+
         if (this.checkEShopOrderInputFields()) {
             this.eshopOrderObjects = [];
             this.paramsJSONString = [];
@@ -272,7 +246,7 @@ export default class ViewGoodLineItem extends LightningElement {
 
 
     addAllOrdersToCart() {
-        // this.template.querySelector("c-line-item-input").sendValuesToParent();
+
         if (this.checkEShopOrderInputFields()) {
             this.paramsJSONString = [];
             this.indexesOfOrdersNotValid = [];
@@ -280,7 +254,6 @@ export default class ViewGoodLineItem extends LightningElement {
             this.namesOfItemsNotValid = [];
             this.namesOfValidItems = [];
             this.isLoading = true;
-
 
             this.selectedLineItemsDeepCopy.forEach((selectedLineItem, index) => {
 
@@ -297,7 +270,6 @@ export default class ViewGoodLineItem extends LightningElement {
                     this.isDeliveryDateValid = false;
                 }
 
-
                 if (selectedLineItem.quantityToAddToCart) {
                     const isWhitespaceString = str => !str.replace(/\s/g, '').length;
 
@@ -306,7 +278,6 @@ export default class ViewGoodLineItem extends LightningElement {
                     this.isWareHouseQuantityEnough = selectedLineItem.quantityToAddToCart <= selectedLineItem.quantity;
 
                 }
-
 
                 if (!this.isDeliveryDateValid || this.isOrderQuantityBlank || !this.isWareHouseQuantityEnough || !selectedLineItem.estimatedDeliveryDate || !selectedLineItem.quantityToAddToCart) {
 
@@ -327,7 +298,6 @@ export default class ViewGoodLineItem extends LightningElement {
                     this.namesOfValidItems.push(selectedLineItem.name);
 
                     this.eshopOrderObjects.push(eshopOrderObject);
-
                 }
             });
 
@@ -337,9 +307,7 @@ export default class ViewGoodLineItem extends LightningElement {
                     this.namesOfItemsNotValid, 'error');
             }
 
-
             this.paramsJSONString = JSON.stringify(this.eshopOrderObjects);
-
 
             console.log('this.paramsJSONString :' + this.paramsJSONString);
             console.log('this.namesOfValidItems :' + this.namesOfValidItems);
@@ -349,9 +317,10 @@ export default class ViewGoodLineItem extends LightningElement {
                 })
                 .then(result => {
                         console.log('result   : ' + JSON.stringify(result));
-                        this.genericShowToast('Success!', 'EShop Order Records created Successfully, having names: ' + this.namesOfValidItems, 'success');
+
                         this.eshopOrderResultObjects = result;
 
+                        this.genericShowToast('Success!', 'EShop Order Records created Successfully, having names: ' + this.namesOfValidItems, 'success');
                     }
                 )
                 .catch(error => {
@@ -375,7 +344,6 @@ export default class ViewGoodLineItem extends LightningElement {
         }
         this.isLoading = false;
     }
-
 
     returnToNewCart() {
 
@@ -411,14 +379,5 @@ export default class ViewGoodLineItem extends LightningElement {
         if (this.selectedLineItemsDeepCopy.length === 0) {
             this.returnToSelectGood();
         }
-    }
-
-    handleValuesFromLineItemInput(event) {
-
-        this.lineitem = event.detail.lineItem;
-        this.selectedLineItemsDeepCopy[this.index].estimatedDeliveryDate = this.lineitem.estimatedDeliveryDate;
-        this.selectedLineItemsDeepCopy[this.index].quantityToAddToCart = this.lineitem.quantityToAddToCart;
-        console.log('this.lineitem from child   :' + JSON.stringify(this.lineitem));
-
     }
 }

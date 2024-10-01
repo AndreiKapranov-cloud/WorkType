@@ -2,7 +2,6 @@
 @IsTest
 public with sharing class SelectGoodControllerTest {
 
-
     @IsTest
     static void testFetchGoodLineItems() {
 
@@ -23,7 +22,6 @@ public with sharing class SelectGoodControllerTest {
 
     }
 
-
     @IsTest
     static void testFetchGoodLineItemsInGlobalSearch() {
         GoodLineItem__c goodLineItem = TestDataFactory.createGoodLineItem();
@@ -33,7 +31,6 @@ public with sharing class SelectGoodControllerTest {
         List<GoodLineItemWrapper>goodLineItemWrappersEmpty = SelectGoodController.fetchGoodLineItemsInGlobalSearch('k');
         System.assertEquals(goodLineItemWrappersEmpty.isEmpty(), true);
     }
-
 
     @IsTest
     static void testFetchGoodLineItemsInCategory() {
@@ -46,7 +43,6 @@ public with sharing class SelectGoodControllerTest {
 
     }
 
-
     @IsTest
     static void testFetchGoodLineItemsInSubCategory() {
         GoodLineItem__c goodLineItem = TestDataFactory.createGoodLineItem();
@@ -57,7 +53,6 @@ public with sharing class SelectGoodControllerTest {
         System.assertEquals(goodLineItemWrapper.quantity, 77);
 
     }
-
 
     @IsTest
     static void testGetGoodLineItemWrapperList() {
@@ -70,7 +65,6 @@ public with sharing class SelectGoodControllerTest {
 
         GoodLineItemWrapper goodLineItemWrapper = goodLineItemWrappers[0];
         System.assertEquals(goodLineItemWrapper.quantity, 77);
-
     }
 }
 

@@ -1,6 +1,5 @@
 
-
-public with sharing class CreateWorkOrderLineItemParamsWrapper {
+public with sharing class WorkOrderLineItemCreationParamsWrapper {
 
     public String status;
     public Id workOrderId;

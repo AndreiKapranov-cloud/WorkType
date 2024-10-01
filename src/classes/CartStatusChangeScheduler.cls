@@ -1,7 +1,5 @@
 
-
 public with sharing class CartStatusChangeScheduler implements Schedulable {
-
 
     public void execute(SchedulableContext sC) {
 
@@ -12,7 +10,6 @@ public with sharing class CartStatusChangeScheduler implements Schedulable {
                     FROM Cart__c
                     WHERE Done__c = FALSE
             ];
-
 
             if (carts.isEmpty()) {
                 CartScheduler.abortScheduleCartStatusChangeJob();
@@ -42,7 +39,7 @@ public with sharing class CartStatusChangeScheduler implements Schedulable {
                                 eShopOrder.Done__c = true;
                                 eShopOrdersToUpdate.add(eShopOrder);
                             } else {
-                                if (cart.Status__c != 'Is late') {
+                                if (cart.Status__c != 'Is Late') {
                                     cart.Status__c = 'Is Late';
                                     cartUpdateIndicator++;
                                 }
@@ -52,7 +49,6 @@ public with sharing class CartStatusChangeScheduler implements Schedulable {
                     if (cartUpdateIndicator > 0) {
                         cartsToUpdate.add(cart);
                     }
-
 
                     for (EShopOrder__c eShopOrder : cart.EShop_Orders__r) {
                         if (eShopOrder.Done__c == true) {
@@ -69,7 +65,6 @@ public with sharing class CartStatusChangeScheduler implements Schedulable {
                 update eShopOrdersToUpdate;
                 update cartsToUpdate;
             }
-
         } catch (Exception e) {
             System.debug('Error occurred :' + e.getMessage());
         }

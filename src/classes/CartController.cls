@@ -1,15 +1,12 @@
 
-
 public with sharing class CartController {
-
 
     @AuraEnabled
     public static Cart__c createCartApexMethod(String paramsJSONString) {
         Cart__c cart = new Cart__c();
         try {
-
-            CreateCartParamsWrapper wrapper = (CreateCartParamsWrapper) JSON.deserialize(paramsJSONString,
-                    CreateCartParamsWrapper.class);
+            CartCreationParamsWrapper wrapper = (CartCreationParamsWrapper) JSON.deserialize(paramsJSONString,
+                    CartCreationParamsWrapper.class);
 
             Id buyerId = wrapper.buyerId;
             Date estimatedDeliveryDate = wrapper.estimatedDeliveryDate;
@@ -51,7 +48,6 @@ public with sharing class CartController {
                 valueMap.put('value', entry.getValue());
                 values.add(valueMap);
             }
-
         } catch (Exception e) {
 
             System.debug('The following exception has occurred: ' + e.getMessage());

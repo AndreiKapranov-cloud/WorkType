@@ -1,5 +1,4 @@
 
-
 public with sharing class GoodLineItemWrapper {
 
     @AuraEnabled public Id id;

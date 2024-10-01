@@ -4,7 +4,7 @@ public with sharing class ServletJSONWrapperPlayTest {
 
     @isTest
     public static void testPlay() {
-        String jsonString = '{\n' +
+        String JSONString = '{\n' +
                 '   "web-app":{\n' +
                 '      "servlet":[\n' +
                 '         {\n' +
@@ -105,6 +105,6 @@ public with sharing class ServletJSONWrapperPlayTest {
                 '   }\n' +
                 '}';
 
-        ServletJSONWrapperPlay.play(jsonString);
+        ServletJSONWrapperPlay.play(JSONString);
     }
 }

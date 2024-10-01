@@ -1,6 +1,5 @@
 
-
-public with sharing class CreateProductRequiredParamsWrapper {
+public with sharing class ProductRequiredCreationParamsWrapper {
 
     public Id parentRecordId;
     public Id product2Id;

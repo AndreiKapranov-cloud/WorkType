@@ -2,15 +2,12 @@
 @IsTest
 public with sharing class CartControllerTest {
 
-
     @IsTest
     static void testCreateCartApexMethod() {
 
-
         Buyer__c buyer = TestDataFactory.createBuyer();
 
-
-        CreateCartParamsWrapper cartParamsWrapper = new CreateCartParamsWrapper();
+        CartCreationParamsWrapper cartParamsWrapper = new CartCreationParamsWrapper();
         cartParamsWrapper.buyerId = buyer.Id;
         cartParamsWrapper.estimatedDeliveryDate = Date.today();
         cartParamsWrapper.pickupPointAddress = 'Grodno';
@@ -24,7 +21,6 @@ public with sharing class CartControllerTest {
 
         System.assertEquals(cartFromSOQL.Pickup_Point_Address__c, 'Grodno');
 
-
     }
 
     @IsTest
@@ -36,8 +32,7 @@ public with sharing class CartControllerTest {
 
             Buyer__c buyer = TestDataFactory.createBuyer();
 
-
-            CreateCartParamsWrapper cartParamsWrapper = new CreateCartParamsWrapper();
+            CartCreationParamsWrapper cartParamsWrapper = new CartCreationParamsWrapper();
             cartParamsWrapper.buyerId = buyer.Id;
             cartParamsWrapper.estimatedDeliveryDate = Date.today();
             cartParamsWrapper.pickupPointAddress = 'Grodno';
@@ -53,7 +48,6 @@ public with sharing class CartControllerTest {
         }
 
         Test.stopTest();
-
     }
 
         @IsTest
@@ -63,12 +57,10 @@ public with sharing class CartControllerTest {
 
         List<Buyer__c> buyers = CartController.getBuyers();
 
-
         Buyer__c buyersFromSOQL = [SELECT Id, Address__c, Email__c FROM Buyer__c LIMIT 1];
 
         System.assertEquals(buyersFromSOQL.Address__c, 'LLLL');
         System.assertEquals(buyersFromSOQL.Email__c, 'akapranov8722@gmail.com');
-
     }
 
     @IsTest
@@ -78,5 +70,4 @@ public with sharing class CartControllerTest {
 
         System.assertEquals(pickListEntries.size(), 8);
     }
-
 }

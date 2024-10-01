@@ -8,7 +8,6 @@ public with sharing class TestDataFactory {
         return workType;
     }
 
-
     public static WorkOrder createWorkOrder() {
         WorkOrder workOrder = new WorkOrder();
         insert workOrder;
@@ -34,17 +33,15 @@ public with sharing class TestDataFactory {
         return buyer;
     }
 
-
     public static List<EShopOrder__c> createEShopOrders() {
 
         Cart__c cart = createCart();
         GoodLineItem__c goodLineItem = createGoodLineItem();
 
-
         List<EShopOrder__c> orders = new List<EShopOrder__c>();
 
         for (Integer i = 0; i < 4; i++) {
-            EShopOrder__c eShopOrder = new EShopOrder__c(RegistrationDate__c = Date.today(), Quantity__c = 4,
+            EShopOrder__c eShopOrder = new EShopOrder__c(RegistrationDate__c = Date.today(), Quantity__c = 4,ActualDeliveryDate__c = Date.today().addDays(5),
                     EstimatedDeliveryDate__c = Date.today().addDays(1), Cart__c = cart.Id, Good_Line_Item__c = goodLineItem.Id, Done__c = false);
             orders.add(eShopOrder);
         }
@@ -55,7 +52,6 @@ public with sharing class TestDataFactory {
 
     }
 
-
     public static GoodLineItem__c createGoodLineItem() {
 
         Good__c good = new Good__c(Price__c = 5, Category__c = 'Hoodies', Name = 'Hoodie', Colour__c = 'Black', Subcategory__c = 'With cowl', Size__c = '2');
@@ -63,34 +59,30 @@ public with sharing class TestDataFactory {
 
         GoodLineItem__c goodLineItem = new GoodLineItem__c(Name = 'Hoodie', Quantity__c = 77, Good__c = good.Id);
 
-
-
         insert goodLineItem;
 
         return goodLineItem;
 
     }
 
-
     public static String createEshopOrderParamsWrapperJSONString() {
-        CreateEshopOrderParamsWrapper createEshopOrderParamsWrapper = new CreateEshopOrderParamsWrapper();
-        List<CreateEshopOrderParamsWrapper> createEshopOrderParamsWrappers = new List<CreateEshopOrderParamsWrapper>();
+        EshopOrderCreationParamsWrapper EshopOrderCreationParamsWrapper = new EshopOrderCreationParamsWrapper();
+        List<EshopOrderCreationParamsWrapper> EshopOrderCreationParamsWrappers = new List<EshopOrderCreationParamsWrapper>();
 
 
         Cart__c cart = TestDataFactory.createCart();
         GoodLineItem__c goodLineItem = TestDataFactory.createGoodLineItem();
 
-        createEshopOrderParamsWrapper.eShopOrderGoodQuantity = 5;
-        createEshopOrderParamsWrapper.estimatedDeliveryDate = Date.today();
-        createEshopOrderParamsWrapper.cartId = cart.Id;
-        createEshopOrderParamsWrapper.registrationDate = Date.today();
-        createEshopOrderParamsWrapper.goodLineItemId = goodLineItem.Id;
+        EshopOrderCreationParamsWrapper.eShopOrderGoodQuantity = 5;
+        EshopOrderCreationParamsWrapper.estimatedDeliveryDate = Date.today();
+        EshopOrderCreationParamsWrapper.cartId = cart.Id;
+        EshopOrderCreationParamsWrapper.registrationDate = Date.today();
+        EshopOrderCreationParamsWrapper.goodLineItemId = goodLineItem.Id;
 
-        createEshopOrderParamsWrappers.add(createEshopOrderParamsWrapper);
+        EshopOrderCreationParamsWrappers.add(EshopOrderCreationParamsWrapper);
 
-        return JSON.serialize(createEshopOrderParamsWrappers);
+        return JSON.serialize(EshopOrderCreationParamsWrappers);
     }
-
 
     public static Schema.Location createLocation() {
         Schema.Location loc = new Schema.Location();

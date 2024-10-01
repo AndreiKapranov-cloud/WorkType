@@ -14,34 +14,30 @@ public with sharing class ProductItemControllerTest {
 
     }
 
-
     @IsTest
     static void testCreateProductItemApexMethod() {
 
         Schema.Location loc = TestDataFactory.createLocation();
         Product2 product2 = TestDataFactory.createProduct2();
 
-        CreateProductItemParamsWrapper createProductItemParamsWrapper = new CreateProductItemParamsWrapper();
+        ProductItemCreationParamsWrapper ProductItemCreationParamsWrapper = new ProductItemCreationParamsWrapper();
 
-        createProductItemParamsWrapper.product2Id = product2.Id;
-        createProductItemParamsWrapper.locationId = loc.Id;
-        createProductItemParamsWrapper.quantityOnHand = 2;
-        createProductItemParamsWrapper.quantityUnitOfMeasure = 'Each';
-        createProductItemParamsWrapper.serialNumber = '1';
+        ProductItemCreationParamsWrapper.product2Id = product2.Id;
+        ProductItemCreationParamsWrapper.locationId = loc.Id;
+        ProductItemCreationParamsWrapper.quantityOnHand = 2;
+        ProductItemCreationParamsWrapper.quantityUnitOfMeasure = 'Each';
+        ProductItemCreationParamsWrapper.serialNumber = '1';
 
-        String paramsJSONString = JSON.serialize(createProductItemParamsWrapper);
-
+        String paramsJSONString = JSON.serialize(ProductItemCreationParamsWrapper);
 
         ProductItem productItem = ProductItemController.createProductItemApexMethod(paramsJSONString);
 
         ProductItem productItemFromBase = [SELECT Id,SerialNumber,QuantityUnitOfMeasure FROM ProductItem LIMIT 1];
 
-
         System.assertEquals(productItemFromBase.SerialNumber, '1');
         System.assertEquals(productItemFromBase.QuantityUnitOfMeasure, 'Each');
 
     }
-
 
     @IsTest
     static void testCreateProductItemApexMethodFail() {

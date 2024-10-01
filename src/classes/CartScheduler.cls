@@ -1,5 +1,4 @@
 
-
 public with sharing class CartScheduler {
 
     public static void scheduleCartStatusChange() {
@@ -19,7 +18,6 @@ public with sharing class CartScheduler {
 
         System.schedule(jobName, cronExp, new RandomActualDeliveryDateScheduler());
     }
-
 
     public static void abortScheduleCartStatusChangeJob() {
 

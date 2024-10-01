@@ -5,8 +5,7 @@ public with sharing class WorkTypeControllerTest {
     @IsTest
     static void testCreateWorkTypeApexMethod() {
 
-
-        CreateWorkTypeParamsWrapper wrapper = new CreateWorkTypeParamsWrapper();
+        WorkTypeCreationParamsWrapper wrapper = new WorkTypeCreationParamsWrapper();
 
         wrapper.workTypeName = 'handkerchief';
         wrapper.description = 'Good work';
@@ -40,7 +39,6 @@ public with sharing class WorkTypeControllerTest {
         Test.stopTest();
     }
 
-
     @IsTest
     static void testgetWorkTypes() {
 
@@ -50,7 +48,6 @@ public with sharing class WorkTypeControllerTest {
         System.assertEquals(workTypes.size(), 1);
 
     }
-
 
     @IsTest
     static void testGetWorkTypeNameById() {
@@ -63,7 +60,6 @@ public with sharing class WorkTypeControllerTest {
         System.assertEquals(workType.Name, workTypeFromBase.get('Name'));
 
     }
-
 
     @IsTest
     static void testGetWorkTypeNameByIdFail() {

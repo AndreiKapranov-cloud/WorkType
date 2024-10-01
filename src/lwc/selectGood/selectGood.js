@@ -1,4 +1,4 @@
-import {LightningElement, track, wire} from 'lwc';
+import {LightningElement, track} from 'lwc';
 
 import fetchGoodLineItemsInGlobalSearch
     from '@salesforce/apex/SelectGoodController.fetchGoodLineItemsInGlobalSearch';
@@ -42,6 +42,7 @@ export default class SelectGood extends LightningElement {
     @track goodLineItemsDisplayedInTable = [];
     @track itemsFromSearchResult = [];
     @track goodLineItemsCopyForSearch = [];
+    @track goodLineItemsCopyForSearch = [];
     @track deselectedRows = [];
 
     buyerId;
@@ -55,7 +56,6 @@ export default class SelectGood extends LightningElement {
     sneakersSubCategoryPicklistValues = [];
     hoodiesSubCategoryPicklistValues = [];
     costumesSubCategoryPicklistValues = [];
-    goodLineItemId;
     columns = columns;
     item;
     globalSearchText = '';
@@ -69,7 +69,7 @@ export default class SelectGood extends LightningElement {
     lineItems = [];
     isTableLoading = true;
     itemFromSearch;
-
+    searchTerm = '';
 
     connectedCallback() {
         this.isTableLoading = true;
@@ -79,6 +79,7 @@ export default class SelectGood extends LightningElement {
                 this.goodLineItems = result;
                 console.log('result : ' + result);
                 this.goodLineItemsCopy = JSON.parse(JSON.stringify(this.goodLineItems));
+                this.goodLineItemsCopyForSearch = JSON.parse(JSON.stringify(this.goodLineItems));
                 this.goodLineItemsDisplayedInTable = JSON.parse(JSON.stringify(this.goodLineItems));
 
                 console.log('this.goodLineItemsDisplayedInTable : ' + JSON.stringify(this.goodLineItemsDisplayedInTable));
@@ -136,7 +137,6 @@ export default class SelectGood extends LightningElement {
         this.isTableLoading = false;
     }
 
-
     handleCategoryChangeAction(event) {
         this.isTableLoading = true;
 
@@ -183,7 +183,6 @@ export default class SelectGood extends LightningElement {
         this.isTableLoading = false;
     }
 
-
     get options() {
         return [
             {label: 'Global Search', value: 'Global Search'},
@@ -213,75 +212,23 @@ export default class SelectGood extends LightningElement {
                     this.displayCategoryOrSubCategoryItems(this.subCategory, this.category);
                 } else {
 
-                    /*   fetchGoodLineItemsInGlobalSearch
-                       ({
-                           searchText: this.globalSearchText
-                       })*/
-
                     try {
-                        //   this.goodLineItemsDisplayedInTable.filter(goodLineItem => goodLineItem.name = 'Hoodie');       //.contains(this.globalSearchText));
-                       this.goodLineItemsCopy.filter(goodLineItem => goodLineItem.name.toString().includes(this.globalSearchText));
 
+                       /* this.goodLineItemsDisplayedInTable = this.goodLineItems.filter(record =>
+                            Object.values(record).some(value =>
+                                value.toString().toLowerCase().includes(this.globalSearchText.toLowerCase())
+                            )
+                        );*/
+                        this.goodLineItemsDisplayedInTable = this.goodLineItems.filter(record =>
+                            Object.values(record).some(value =>
+                                value.toString().toLowerCase().includes(this.globalSearchText.toLowerCase())
+                            )
+                        );
+                        this.processSearchResult(this.goodLineItemsDisplayedInTable);
 
-
-
-                        this.processSearchResult( this.goodLineItemsCopy);
-                        //           this.itemsFromSearchResult = result;
-                        //   this.goodLineItemsCopyForSearch = JSON.parse(JSON.stringify(this.itemsFromSearchResult));
-
-                     /*   this.goodLineItemsDisplayedInTable = [];
-
-                        this.itemsFromSearchResult.forEach(item => {
-                            this.itemFromSearch = this.goodLineItemsCopy.filter(e => e.id === item.id);
-
-                            this.goodLineItemsDisplayedInTable.push(this.goodLineItemsCopy.find(e => e.id === item.id));
-
-                        });*/
-
-
-                        //   this.goodLineItemsDisplayedInTable.forEach(item => this.goodLineItemNames.push(item.name));
-                        //    this.goodLineItemsDisplayedInTable = this.goodLineItemsCopy.filter(goodLineItemCopy => goodLineItemCopy.name.includes(this.globalSearchText));
-                        //   console.log(this.goodLineItemNames);
-
-
-                        //   this.goodLineItemsDisplayedInTable.forEach(this.goodLineItemNames.push(goodLineItem.name));
-
-                        //      this.selectedItems = this.selectedItems.filter(e => e !== this.goodLineItemsDisplayedInTable[i].id);
                     } catch (e) {
-                        console.error("An error occurred" + e); //This will not be executed
+                        console.error("An error occurred" + e);
                     }
-
-
-                    /*   this.goodLineItemsCopy.forEach(e => {
-                           if (e.id === event.detail.selectedRows[i].id) {
-                               e.checked = true;
-                           }*/
-
-
-                    /*
-                                             this.itemsFromSearchResult = result;
-                                             this.goodLineItemsCopyForSearch = JSON.parse(JSON.stringify(this.itemsFromSearchResult));
-
-                                             this.goodLineItemsDisplayedInTable = [];
-
-                                             this.itemsFromSearchResult.forEach(item => {
-                                                 this.itemFromSearch = this.goodLineItemsCopy.filter(e => e.id === item.id);
-
-                                                 this.goodLineItemsDisplayedInTable.push(this.goodLineItemsCopy.find(e => e.id === item.id));
-
-                                             this.itemFromSearch = this.goodLineItemsCopy.filter(e => e.id === item.id);
-
-                                             this.goodLineItemsDisplayedInTable.push(this.goodLineItemsCopy.find(e => e.id === item.id))
-
-                                            .then(result => {
-                                                    this.processSearchResult(result);
-                                                }
-                                            )
-                                            .catch(error => {
-                                                console.log(error);
-                                                this.genericShowToast('Error fetching GoodLineItems', error.body.message, 'error');
-                                                console.log('Error fetching GoodLineItems', error);
-                                            })*/
                 }
                 console.log('global');
             }
@@ -295,17 +242,26 @@ export default class SelectGood extends LightningElement {
 
                     this.displayCategoryOrSubCategoryItems(this.subCategory, this.category);
                 } else {
-                    fetchGoodLineItemsInCategory({searchText: this.categorySearchText, category: this.category})
-                        .then(result => {
-                                this.processSearchResult(result);
-                            }
+
+                    this.goodLineItemsCopyForSearch = this.goodLineItemsCopy.filter(e => e.category === this.category);
+                    this.goodLineItemsDisplayedInTable = this.goodLineItemsCopyForSearch.filter(record =>
+                        Object.values(record).some(value =>
+                            value.toString().toLowerCase().includes(this.categorySearchText.toLowerCase())
                         )
-                        .catch(error => {
-                            console.log(error);
-                            this.genericShowToast('Error fetching GoodLineItems', error.body.message, 'error');
-                            console.log('Error fetching GoodLineItems', error);
-                        })
-                    console.log('in Category');
+                    );
+                    this.processSearchResult(this.goodLineItemsDisplayedInTable);
+
+                    /*   fetchGoodLineItemsInCategory({searchText: this.categorySearchText, category: this.category})
+                           .then(result => {
+                                   this.processSearchResult(result);
+                               }
+                           )
+                           .catch(error => {
+                               console.log(error);
+                               this.genericShowToast('Error fetching GoodLineItems', error.body.message, 'error');
+                               console.log('Error fetching GoodLineItems', error);
+                           })
+                       console.log('in Category');*/
                 }
                 this.isTableLoading = false;
                 break;
@@ -318,20 +274,28 @@ export default class SelectGood extends LightningElement {
 
                     this.displayCategoryOrSubCategoryItems(this.subCategory, this.category);
                 } else {
-                    fetchGoodLineItemsInSubCategory(({
-                        searchText: this.subCategorySearchText,
-                        subCategory: this.subCategory
-                    }))
-                        .then(result => {
-                                this.processSearchResult(result);
 
-                            }
+                    this.goodLineItemsCopyForSearch = this.goodLineItemsCopy.filter(e => e.subCategory === this.subCategory);
+                    this.goodLineItemsDisplayedInTable = this.goodLineItemsCopyForSearch.filter(record =>
+                        Object.values(record).some(value =>
+                            value.toString().toLowerCase().includes(this.subCategorySearchText.toLowerCase())
                         )
-                        .catch(error => {
-                            console.log(error);
-                            this.genericShowToast('Error fetching GoodLineItems', error.body.message, 'error');
-                        })
-                    console.log('in SubCategory');
+                    );
+                    this.processSearchResult(this.goodLineItemsDisplayedInTable);
+                    /*     fetchGoodLineItemsInSubCategory(({
+                             searchText: this.subCategorySearchText,
+                             subCategory: this.subCategory
+                         }))
+                             .then(result => {
+                                     this.processSearchResult(result);
+
+                                 }
+                             )
+                             .catch(error => {
+                                 console.log(error);
+                                 this.genericShowToast('Error fetching GoodLineItems', error.body.message, 'error');
+                             })
+                         console.log('in SubCategory');*/
                 }
                 this.isTableLoading = false;
                 break;
@@ -344,14 +308,12 @@ export default class SelectGood extends LightningElement {
         }
     }
 
-
     displayCategoryOrSubCategoryItems(subCategory, category) {
         if (subCategory) {
             this.filterItemsBySubCategory(subCategory);
         } else if (category)
             this.filterItemsByCategory(category);
     }
-
 
     processSearchResult(result) {
         this.itemsFromSearchResult = result;
@@ -367,7 +329,6 @@ export default class SelectGood extends LightningElement {
         );
         this.populatePreselectedRows();
     }
-
 
     handleRowSelection(event) {
         this.isTableLoading = true;
@@ -441,7 +402,6 @@ export default class SelectGood extends LightningElement {
         this.isTableLoading = false;
     }
 
-
     handleSubCategoryChange(event) {
         this.isTableLoading = true;
         this.subCategory = event.detail.name;
@@ -451,20 +411,17 @@ export default class SelectGood extends LightningElement {
         this.isTableLoading = false;
     }
 
-
     filterItemsByCategory(category) {
         this.goodLineItemsDisplayedInTable = this.goodLineItemsCopy.filter(e => e.category === category);
 
         this.populatePreselectedRows();
     }
 
-
     filterItemsBySubCategory(subCategory) {
         this.goodLineItemsDisplayedInTable = this.goodLineItemsCopy.filter(e => e.subCategory === subCategory);
 
         this.populatePreselectedRows();
     }
-
 
     populatePreselectedRows() {
         this.preselectedRows = [];
@@ -474,7 +431,6 @@ export default class SelectGood extends LightningElement {
             }
         });
     }
-
 
     displayViewGoodLineItemInBase() {
         this.isLoading = true;
@@ -499,16 +455,13 @@ export default class SelectGood extends LightningElement {
         }
     }
 
-
     handlePickupPointAddressChange(e) {
         this.pickupPointAddress = e.target.value;
     }
 
-
     handleStatusChange(e) {
         this.status = e.target.value;
     }
-
 
     returnToNewCart() {
 

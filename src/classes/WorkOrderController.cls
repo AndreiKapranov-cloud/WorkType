@@ -7,8 +7,8 @@ public with sharing class WorkOrderController {
 
         try {
 
-            CreateWorkOrderParamsWrapper wrapper = (CreateWorkOrderParamsWrapper) JSON.deserialize(paramsJSONString,
-                    CreateWorkOrderParamsWrapper.class);
+            WorkOrderCreationParamsWrapper wrapper = (WorkOrderCreationParamsWrapper) JSON.deserialize(paramsJSONString,
+                    WorkOrderCreationParamsWrapper.class);
 
             Id workTypeId = wrapper.workTypeId;
             String status = wrapper.status;

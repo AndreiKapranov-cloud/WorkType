@@ -1,6 +1,6 @@
 
 
-public with sharing class CreateEshopOrderParamsWrapper {
+public with sharing class EshopOrderCreationParamsWrapper {
 
     public Integer eShopOrderGoodQuantity;
     public Date estimatedDeliveryDate;

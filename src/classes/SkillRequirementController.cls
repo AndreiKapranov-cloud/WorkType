@@ -6,8 +6,8 @@ public with sharing class SkillRequirementController {
         SkillRequirement skillRequirement = new SkillRequirement();
 
         try {
-            CreateSkillRequirementParamsWrapper wrapper = (CreateSkillRequirementParamsWrapper) JSON.deserialize(paramsJSONString,
-                    CreateSkillRequirementParamsWrapper.class);
+            SkillRequirementCreationParamsWrapper wrapper = (SkillRequirementCreationParamsWrapper) JSON.deserialize(paramsJSONString,
+                    SkillRequirementCreationParamsWrapper.class);
 
             Id relatedRecordId = wrapper.relatedRecordId;
             Id skillId = wrapper.skillId;

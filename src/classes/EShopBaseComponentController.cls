@@ -1,5 +1,4 @@
 
-
 public with sharing class EShopBaseComponentController {
 
     @AuraEnabled
@@ -31,37 +30,34 @@ public with sharing class EShopBaseComponentController {
             String controllingField = 'Category__c';
             String dependentField = 'SubCategory__c';
 
-            Map<String, List<String>> controllingInfo = new Map<String, List<String>>();
+            Map<String, List<String>> picklistData = new Map<String, List<String>>();
 
-            List<Schema.PicklistEntry> controllingValues = Schema.getGlobalDescribe().get(objectName).getDescribe().fields.getMap().get(controllingField).getDescribe().getPicklistValues();
+            List<Schema.PicklistEntry> controllingPicklistValues = Schema.getGlobalDescribe().get(objectName).getDescribe().fields.getMap().get(controllingField).getDescribe().getPicklistValues();
 
-            List<Schema.PicklistEntry> dependentValues
+            List<Schema.PicklistEntry> dependentPicklistValues
                     = Schema.getGlobalDescribe().get(objectName).getDescribe().fields.getMap().get(dependentField).getDescribe().getPicklistValues();
 
-            for (Schema.PicklistEntry controllingValue : controllingValues) {
-                controllingInfo.put(controllingValue.getLabel(), new List<String>());
+            for (Schema.PicklistEntry controllingValue : controllingPicklistValues) {
+                picklistData.put(controllingValue.getLabel(), new List<String>());
             }
 
-            String jsonString2 = JSON.serialize(dependentValues);
-            System.debug(jsonString2);
+            String dependentPicklistValuesJSON = JSON.serialize(dependentPicklistValues);
+            System.debug(dependentPicklistValuesJSON);
 
-            List<MyPiclistInfo> infos = (List<MyPiclistInfo>) JSON.deserialize(jsonString2, List<MyPiclistInfo>.class);
+            for (Schema.PicklistEntry currDependentValue : dependentPicklistValues) {
 
-            System.debug('infos:' + infos);
-            for (Schema.PicklistEntry currDependentValue : dependentValues) {
+                String currDependentValueJSON = JSON.serialize(currDependentValue);
 
-                String jsonString = JSON.serialize(currDependentValue);
+                System.debug(currDependentValueJSON);
+                ValidForFieldWrapper ValidForFieldWrapper = (ValidForFieldWrapper) JSON.deserialize(currDependentValueJSON, ValidForFieldWrapper.class);
 
-                System.debug(jsonString);
-                MyPiclistInfo info = (MyPiclistInfo) JSON.deserialize(jsonString, MyPiclistInfo.class);
+                System.debug(ValidForFieldWrapper);
 
-                System.debug(info);
+                String validForFieldValueHex = EncodingUtil.convertToHex(EncodingUtil.base64Decode(ValidForFieldWrapper.validFor)).toUpperCase();
 
-                String hexString = EncodingUtil.convertToHex(EncodingUtil.base64Decode(info.validFor)).toUpperCase();
-
-                System.debug(hexString);
+                System.debug(validForFieldValueHex);
                 Integer baseCount = 0;
-                for (Integer curr : hexString.getChars()) {
+                for (Integer curr : validForFieldValueHex.getChars()) {
 
                     Integer val = 0;
 
@@ -71,22 +67,22 @@ public with sharing class EShopBaseComponentController {
                         val = curr - 48;
                     }
                     if ((val & 8) == 8) {
-                        controllingInfo.get(controllingValues[baseCount + 0].getLabel()).add(currDependentValue.getLabel());
+                        picklistData.get(controllingPicklistValues[baseCount + 0].getLabel()).add(currDependentValue.getLabel());
                     }
                     if ((val & 4) == 4) {
-                        controllingInfo.get(controllingValues[baseCount + 1].getLabel()).add(currDependentValue.getLabel());
+                        picklistData.get(controllingPicklistValues[baseCount + 1].getLabel()).add(currDependentValue.getLabel());
                     }
                     if ((val & 2) == 2) {
-                        controllingInfo.get(controllingValues[baseCount + 2].getLabel()).add(currDependentValue.getLabel());
+                        picklistData.get(controllingPicklistValues[baseCount + 2].getLabel()).add(currDependentValue.getLabel());
                     }
                     if ((val & 1) == 1) {
-                        controllingInfo.get(controllingValues[baseCount + 3].getLabel()).add(currDependentValue.getLabel());
+                        picklistData.get(controllingPicklistValues[baseCount + 3].getLabel()).add(currDependentValue.getLabel());
                     }
                     baseCount += 4;
                 }
             }
-            System.debug(controllingInfo);
-            return controllingInfo;
+            System.debug(picklistData);
+            return picklistData;
         } catch (Exception e) {
 
             System.debug('The following exception has occurred: ' + e.getMessage());
@@ -94,7 +90,6 @@ public with sharing class EShopBaseComponentController {
             throw new AuraHandledException('The following exception has occurred: ' + e.getMessage());
         }
     }
-
 
     @TestVisible
     private static List<Map<String, String>> getSubCategoryPickListValuesByCategoryName(String categoryName) {
@@ -139,14 +134,11 @@ public with sharing class EShopBaseComponentController {
     @TestVisible
     private static void changeCartEstimatedDeliveryDate(List<EShopOrder__c> eShopOrders) {
         try {
-
-            if (eShopOrders.size() > 0) {
                 Cart__c cart = [
                         SELECT Id,EstimatedDeliveryDate__c
                         FROM Cart__c
                         WHERE Id = :eShopOrders[0].Cart__c
                 ];
-
 
                 for (EShopOrder__c eShopOrder : eShopOrders) {
 
@@ -157,12 +149,10 @@ public with sharing class EShopBaseComponentController {
                 }
 
                 update cart;
-            }
         } catch (Exception e) {
             System.debug('The following exception has occurred: ' + e.getMessage());
             throw new HandledException(e.getMessage());
         }
-
     }
 
     @TestVisible
@@ -171,7 +161,7 @@ public with sharing class EShopBaseComponentController {
         try {
             List<String> goodLineItemIds = new List<String>();
             for (EShopOrder__c eShopOrder : eShopOrders) {
-                goodLineItemIds.add(eShopOrder.Good_Line_Item__c);
+             goodLineItemIds.add(eShopOrder.Good_Line_Item__c);
             }
 
             List<GoodLineItem__c> goodLineItems = [SELECT Id,Quantity__c FROM GoodLineItem__c WHERE Id IN:goodLineItemIds];
@@ -179,11 +169,8 @@ public with sharing class EShopBaseComponentController {
             for (GoodLineItem__c goodLineItem : goodLineItems) {
 
                 for (EShopOrder__c eShopOrder : eShopOrders) {
-                    System.debug('eShopOrder :' + eShopOrder);
                     if (eShopOrder.Good_Line_Item__c == goodLineItem.Id) {
                         goodLineItem.Quantity__c -= eShopOrder.Quantity__c;
-                        System.debug('eShopOrder.Quantity__c :' + eShopOrder.Quantity__c);
-                        System.debug('goodLineItem.Quantity__c  :' + goodLineItem.Quantity__c);
                     }
                 }
             }
@@ -198,13 +185,12 @@ public with sharing class EShopBaseComponentController {
     @TestVisible
     private static List<EShopOrder__c> createOrderWrappersAndOrders(String paramsJSONString) {
         try {
-            List<CreateEshopOrderParamsWrapper> wrappers = (List<CreateEshopOrderParamsWrapper>) JSON.deserialize(paramsJSONString,
-                    List<CreateEshopOrderParamsWrapper>.class);
-
+            List<EshopOrderCreationParamsWrapper> wrappers = (List<EshopOrderCreationParamsWrapper>) JSON.deserialize(paramsJSONString,
+                    List<EshopOrderCreationParamsWrapper>.class);
 
             List<EShopOrder__c> eshopOrders = new List<EShopOrder__c>();
 
-            for (CreateEshopOrderParamsWrapper wrapper : wrappers) {
+            for (EshopOrderCreationParamsWrapper wrapper : wrappers) {
 
                 Integer eShopOrderGoodQuantity = wrapper.eShopOrderGoodQuantity;
                 Date estimatedDeliveryDate = wrapper.estimatedDeliveryDate;
@@ -218,14 +204,12 @@ public with sharing class EShopBaseComponentController {
                 eshopOrders.add(eshopOrder);
             }
 
-
             return eshopOrders;
         } catch (Exception e) {
             System.debug('The following exception has occurred: ' + e.getMessage());
             throw new HandledException(e.getMessage());
         }
     }
-
 
     @AuraEnabled
     public static List<EShopOrder__c> createEshopOrders(String paramsJSONString) {

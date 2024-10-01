@@ -44,7 +44,7 @@ public with sharing class InhabitantTest {
     @isTest
     public static void testSoloduha() {
 
-        String jsonString = '{\n' +
+        String JSONString = '{\n' +
                 '  "men" : {\n' +
                 '    "yellow" : {\n' +
                 '      "chineese" : [ "man3", "man4" ],\n' +
@@ -75,7 +75,7 @@ public with sharing class InhabitantTest {
                 '  }\n' +
                 '}';
 
-        Inhabitant inhabitant = (Inhabitant)JSON.deserialize(jsonString,Inhabitant.class);
+        Inhabitant inhabitant = (Inhabitant)JSON.deserialize(JSONString,Inhabitant.class);
         String coalaInhabitant = inhabitant.animals.mammals.australianMammals[1];
 
         System.assertEquals(coalaInhabitant,'koala','oooo');

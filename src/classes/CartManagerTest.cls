@@ -10,25 +10,25 @@ public with sharing class CartManagerTest {
 
         List<Buyer__c> buyers = [SELECT Id, Name FROM Buyer__c];
 
-        CreateCartParamsWrapper createCartParamsWrapper = new CreateCartParamsWrapper();
-        List<CreateCartParamsWrapper> createCartParamsWrappers = new List<CreateCartParamsWrapper>();
-        List<CreateEshopOrderParamsWrapper> createEshopOrderParamsWrappers = new List<CreateEshopOrderParamsWrapper>();
+        CartCreationParamsWrapper CartCreationParamsWrapper = new CartCreationParamsWrapper();
+        List<CartCreationParamsWrapper> CartCreationParamsWrappers = new List<CartCreationParamsWrapper>();
+        List<EshopOrderCreationParamsWrapper> EshopOrderCreationParamsWrappers = new List<EshopOrderCreationParamsWrapper>();
 
         for (Integer i = 0; i < 4; i++) {
-            CreateEshopOrderParamsWrapper createEshopOrderParamsWrapper = new CreateEshopOrderParamsWrapper();
-            createEshopOrderParamsWrapper.registrationDate = Date.today();
-            createEshopOrderParamsWrapper.estimatedDeliveryDate = Date.today();
-            createEshopOrderParamsWrappers.add(createEshopOrderParamsWrapper);
+            EshopOrderCreationParamsWrapper EshopOrderCreationParamsWrapper = new EshopOrderCreationParamsWrapper();
+            EshopOrderCreationParamsWrapper.registrationDate = Date.today();
+            EshopOrderCreationParamsWrapper.estimatedDeliveryDate = Date.today();
+            EshopOrderCreationParamsWrappers.add(EshopOrderCreationParamsWrapper);
         }
 
-        createCartParamsWrapper.buyerId = buyers[0].Id;
-        createCartParamsWrapper.pickupPointAddress = 'Dzerjinsky,113';
-        createCartParamsWrapper.status = 'Formed';
-        createCartParamsWrapper.orders = createEshopOrderParamsWrappers;
-        createCartParamsWrappers.add(createCartParamsWrapper);
+        CartCreationParamsWrapper.buyerId = buyers[0].Id;
+        CartCreationParamsWrapper.pickupPointAddress = 'Dzerjinsky,113';
+        CartCreationParamsWrapper.status = 'Formed';
+        CartCreationParamsWrapper.orders = EshopOrderCreationParamsWrappers;
+        CartCreationParamsWrappers.add(CartCreationParamsWrapper);
 
         CartsJSONWrapper cartsJSONWrapper = new CartsJSONWrapper();
-        cartsJSONWrapper.carts = createCartParamsWrappers;
+        cartsJSONWrapper.carts = CartCreationParamsWrappers;
 
         RestRequest req = new RestRequest();
         RestResponse res = new RestResponse();
@@ -36,10 +36,8 @@ public with sharing class CartManagerTest {
         RestContext.request = req;
         RestContext.response = res;
 
-
         req.requestBody = Blob.valueOf(JSON.serializePretty(cartsJSONWrapper));
         System.debug(req.requestBody);
-
 
         Test.startTest();
         CartManager.insertCartsAndOrders();

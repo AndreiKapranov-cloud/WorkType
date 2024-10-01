@@ -7,19 +7,16 @@ public with sharing class SkillRequirementControllerTest {
         WorkOrder workOrder = TestDataFactory.createWorkOrder();
         Skill skill = [SELECT Id FROM Skill LIMIT 1];
 
-
-        CreateSkillRequirementParamsWrapper wrapper = new CreateSkillRequirementParamsWrapper();
+        SkillRequirementCreationParamsWrapper wrapper = new SkillRequirementCreationParamsWrapper();
         wrapper.relatedRecordId = workOrder.Id;
         wrapper.skillId = skill.Id;
         wrapper.skillLevel = 5;
         String paramsJSONString = JSON.serialize(wrapper);
 
-
         SkillRequirement skillRequirement = SkillRequirementController.createSkillRequirementApexMethod(paramsJSONString);
         System.assertEquals(skillRequirement.SkillLevel, 5);
 
     }
-
 
     @IsTest
     static void testCreateSkillRequirementApexMethodFail() {
@@ -37,7 +34,6 @@ public with sharing class SkillRequirementControllerTest {
 
         Test.stopTest();
     }
-
 
     @IsTest
     static void testGetSkills() {

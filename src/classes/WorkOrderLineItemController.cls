@@ -1,5 +1,4 @@
 
-
 public with sharing class WorkOrderLineItemController {
 
     @AuraEnabled
@@ -8,8 +7,8 @@ public with sharing class WorkOrderLineItemController {
         WorkOrderLineItem workOrderLineItem = new WorkOrderLineItem();
 
         try {
-            CreateWorkOrderLineItemParamsWrapper wrapper = (CreateWorkOrderLineItemParamsWrapper) JSON.deserialize(paramsJSONString,
-                    CreateWorkOrderLineItemParamsWrapper.class);
+            WorkOrderLineItemCreationParamsWrapper wrapper = (WorkOrderLineItemCreationParamsWrapper) JSON.deserialize(paramsJSONString,
+                    WorkOrderLineItemCreationParamsWrapper.class);
 
             String status = wrapper.status;
             Id workOrderId = wrapper.workOrderId;

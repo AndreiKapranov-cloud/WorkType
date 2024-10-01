@@ -4,44 +4,30 @@ public with sharing class CartSchedulerTest {
     @IsTest
     static void testScheduleRandomActualDeliveryDate() {
 
-        List<Date> actualDeliveryDates = new List<Date>();
-        List<Date> actualDeliveryDatesAfterProcessing = new List<Date>();
-
         List<EShopOrder__c> orders = TestDataFactory.createEShopOrders();
-
-        List<EShopOrder__c> createdOrders = [SELECT Id, ActualDeliveryDate__c,EstimatedDeliveryDate__c FROM EShopOrder__c ORDER BY Id];
-
-        for (EShopOrder__c eShopOrder : createdOrders) {
-            actualDeliveryDates.add(eShopOrder.ActualDeliveryDate__c);
-        }
+        EShopOrder__c eShopOrderBeforeProcessing = orders[0];
 
         Test.startTest();
         CartScheduler.scheduleRandomActualDeliveryDate();
         Test.stopTest();
 
-        List<EShopOrder__c> processedOrders = [SELECT Id, ActualDeliveryDate__c, EstimatedDeliveryDate__c FROM EShopOrder__c ORDER BY Id];
-
-        for (EShopOrder__c eShopOrder : processedOrders) {
-            actualDeliveryDatesAfterProcessing.add(eShopOrder.ActualDeliveryDate__c);
-        }
-
-        System.debug(actualDeliveryDates);
-        System.debug(actualDeliveryDatesAfterProcessing);
-        System.assertNotEquals(actualDeliveryDates, actualDeliveryDatesAfterProcessing);
+        EShopOrder__c orderAfterProcessing = [SELECT Id,ActualDeliveryDate__c FROM EShopOrder__c WHERE Id =: eShopOrderBeforeProcessing.Id ];
+        System.debug(eShopOrderBeforeProcessing.ActualDeliveryDate__c);
+        System.debug(orderAfterProcessing.ActualDeliveryDate__c);
+        System.assertNotEquals(eShopOrderBeforeProcessing.ActualDeliveryDate__c, orderAfterProcessing.ActualDeliveryDate__c);
     }
+
     @IsTest
     static void testScheduleCartStatusChange() {
 
-
         List<EShopOrder__c> orders = TestDataFactory.createEShopOrders();
-
 
         System.debug(orders[0].EstimatedDeliveryDate__c);
 
-       for(EShopOrder__c order : orders){
-           order.ActualDeliveryDate__c = Date.today().addDays(2);
-           order.EstimatedDeliveryDate__c = Date.today().addDays(3);
-       }
+        for (EShopOrder__c order : orders) {
+            order.ActualDeliveryDate__c = Date.today().addDays(2);
+            order.EstimatedDeliveryDate__c = Date.today().addDays(3);
+        }
 
         System.debug(orders[0].EstimatedDeliveryDate__c);
 
@@ -55,12 +41,10 @@ public with sharing class CartSchedulerTest {
 
         Cart__c modifiedCart = [SELECT Id, Done__c,ActualDeliveryDate__c FROM Cart__c WHERE Pickup_Point_Address__c = 'Grodno' LIMIT 1];
 
-
         System.assertEquals(modifiedCart.Done__c, true);
         System.assertEquals(modifiedCart.ActualDeliveryDate__c, Date.today().addDays(2));
 
     }
-
 
     @IsTest
     static void testScheduleCartStatusChangeToIsLate() {
@@ -79,7 +63,6 @@ public with sharing class CartSchedulerTest {
 
         Cart__c modifiedCart = [SELECT Id, Done__c,ActualDeliveryDate__c,Status__c FROM Cart__c WHERE Pickup_Point_Address__c = 'Grodno' LIMIT 1];
 
-
         System.assertEquals(modifiedCart.Status__c, 'Is Late');
 
     }
@@ -88,7 +71,6 @@ public with sharing class CartSchedulerTest {
     static void testAbortScheduleCartStatusChangeJob() {
 
         List<EShopOrder__c> orders = TestDataFactory.createEShopOrders();
-
 
         CartStatusChangeScheduler scheduledCartStatusChange = new CartStatusChangeScheduler();
 

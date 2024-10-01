@@ -1,5 +1,4 @@
 
-
 public with sharing class BaseComponentController {
 
     @AuraEnabled
@@ -30,9 +29,7 @@ public with sharing class BaseComponentController {
         }
     }
 
-
     public static List<SObject> getRecordsBySOQL(String query) {
-        List<SObject> records = new List<SObject>();
         try {
             return Database.query(query);
 

@@ -6,7 +6,7 @@ public with sharing class WorkOrderControllerTest {
     static void testCreateWorkOrderApexMethod() {
 
         WorkType workType = TestDataFactory.createWorkType();
-        CreateWorkOrderParamsWrapper wrapper = new CreateWorkOrderParamsWrapper();
+        WorkOrderCreationParamsWrapper wrapper = new WorkOrderCreationParamsWrapper();
 
         wrapper.workTypeId = workType.Id;
         wrapper.status = 'On Hold';

@@ -1,5 +1,4 @@
 
-
 public with sharing class ProductItemController {
 
     @AuraEnabled
@@ -25,8 +24,8 @@ public with sharing class ProductItemController {
         ProductItem productItem = new ProductItem();
 
         try {
-            CreateProductItemParamsWrapper wrapper = (CreateProductItemParamsWrapper) JSON.deserialize(paramsJSONString,
-                    CreateProductItemParamsWrapper.class);
+            ProductItemCreationParamsWrapper wrapper = (ProductItemCreationParamsWrapper) JSON.deserialize(paramsJSONString,
+                    ProductItemCreationParamsWrapper.class);
 
             Id product2Id = wrapper.product2Id;
             Id locationId = wrapper.locationId;

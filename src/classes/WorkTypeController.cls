@@ -5,8 +5,8 @@ public with sharing class WorkTypeController {
         WorkType workTypeRecord = new WorkType();
         try {
 
-            CreateWorkTypeParamsWrapper wrapper = (CreateWorkTypeParamsWrapper) JSON.deserialize(paramsJSONString,
-                    CreateWorkTypeParamsWrapper.class);
+            WorkTypeCreationParamsWrapper wrapper = (WorkTypeCreationParamsWrapper) JSON.deserialize(paramsJSONString,
+                    WorkTypeCreationParamsWrapper.class);
 
             String workTypeName = wrapper.workTypeName;
             String description = wrapper.description;
@@ -41,7 +41,6 @@ public with sharing class WorkTypeController {
     @AuraEnabled
     public static SObject getWorkTypeNameById(String id) {
         SObject workType = new WorkType();
-        //  String workTypeIdString = id.to15();
 
         System.debug('Id from getWorkTypeNameById :' + id);
         try {

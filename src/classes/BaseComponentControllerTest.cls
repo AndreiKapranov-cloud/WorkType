@@ -2,7 +2,6 @@
 @IsTest
 public with sharing class BaseComponentControllerTest {
 
-
     @IsTest
     static void testGetPicklistValuesUsingApex() {
 
@@ -11,7 +10,6 @@ public with sharing class BaseComponentControllerTest {
         wrapper.field = 'Status';
 
         String getStatusPicklistValuesParamsJSONString = JSON.serialize(wrapper);
-
 
         List<Map<String, String>>values = BaseComponentController.getPicklistValuesUsingApex(getStatusPicklistValuesParamsJSONString);
 
@@ -40,9 +38,7 @@ public with sharing class BaseComponentControllerTest {
         }
 
         Test.stopTest();
-
     }
-
 
     @IsTest
     static void testGetRecordsBySOQL() {
@@ -62,7 +58,6 @@ public with sharing class BaseComponentControllerTest {
 
         String query = 'SELECw Id FROM EShopOrder__c';
 
-
         Test.startTest();
 
         try {
@@ -75,7 +70,6 @@ public with sharing class BaseComponentControllerTest {
         }
 
         Test.stopTest();
-
 
     }
 }

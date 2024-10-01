@@ -1,10 +1,8 @@
 
-
 public with sharing class ServletJSONWrapperPlay {
-    public static void play(String jSONString) {
+    public static void play(String JSONString) {
 
-
-        Map<String, Object> fatherMap = (Map<String, Object>) JSON.deserializeUntyped(jsonString);
+        Map<String, Object> fatherMap = (Map<String, Object>) JSON.deserializeUntyped(JSONString);
 
 
         Map<String, Object> webAppMap = (Map<String, Object>) fatherMap.get('web-app');
@@ -14,8 +12,6 @@ public with sharing class ServletJSONWrapperPlay {
         Map<String, Object> servletMappingMap = (Map<String, Object>) webAppMap.get('servlet-mapping');
 
         Map<String, Object> tagLibMap = (Map<String, Object>) webAppMap.get('taglib');
-
-
 
         List< Map<String, Object>> modifiedServletList = new List< Map<String, Object>>();
 
@@ -27,7 +23,6 @@ public with sharing class ServletJSONWrapperPlay {
             for (String servMapKey : servletMap.keySet()) {
                 Object servMapvalue = servletMap.get(servMapKey);
                 modifiedServletMap.put(servMapKey.replace('-', '_'), servMapvalue);
-
 
                 Map<String, Object> initParamMap = (Map<String, Object>) servletMap.get('init-param');
 
@@ -46,11 +41,8 @@ public with sharing class ServletJSONWrapperPlay {
                     }
                 }
             }
-
             modifiedServletList.add(modifiedServletMap);
         }
-
-
 
         Map<String, Object> modifiedFatherMap = new Map<String, Object>();
 
@@ -61,7 +53,6 @@ public with sharing class ServletJSONWrapperPlay {
 
         }
 
-
         Map<String, Object> modifiedWebAppMap = new Map<String, Object>();
 
         for(String webAppMapKey : webAppMap.keySet()) {
@@ -70,7 +61,6 @@ public with sharing class ServletJSONWrapperPlay {
             modifiedWebAppMap.put(webAppMapKey.replace('-', '_'), servMapValue);
 
         }
-
 
         Map<String, Object> modifiedServletMappingMap = new Map<String, Object>();
 
@@ -90,7 +80,6 @@ public with sharing class ServletJSONWrapperPlay {
 
         }
 
-
         modifiedWebAppMap.put('servlet',modifiedServletList);
         modifiedWebAppMap.put('servlet_mapping',modifiedServletMappingMap);
         modifiedWebAppMap.put('taglib',modifiedTagLibMap);
@@ -99,18 +88,10 @@ public with sharing class ServletJSONWrapperPlay {
 
         String modifiedJSON = JSON.serialize(modifiedFatherMap);
 
-
         ServletJSONWrapper servletJSONWrapper = (ServletJSONWrapper)JSON.deserialize(modifiedJSON,
                 ServletJSONWrapper.class);
 
-
         System.debug(JSON.serializePretty(servletJSONWrapper,true));
-
-//        useJSP
-
-      //  Boolean useJSP = servletJSONWrapper.web_app.servlet[0].init_param.useJSP;
-    //    System.debug('useJSP =' + useJSP);
-
 
         System.debug(servletJSONWrapper.web_app.servlet.size());
         System.debug('adminGroupId: ' + servletJSONWrapper.web_app.servlet[servletJSONWrapper.web_app.servlet.size()-1].init_param.adminGroupID);

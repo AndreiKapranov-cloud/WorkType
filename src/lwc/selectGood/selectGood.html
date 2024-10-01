@@ -1,5 +1,3 @@
-
-
 <template>
     <div lwc:if={isLoading} class="style-of-spinner">
         <lightning-spinner variant="base" size="medium"></lightning-spinner>
@@ -107,7 +105,9 @@
 
                                 <lightning-input label="Good Line Items" type="search"
                                                  placeholder="Search good line item by Name..."
-                                                 onchange={handleChangeSearchText}></lightning-input>
+                                                 onchange={handleChangeSearchText}
+                                                 value={searchTerm}
+                                ></lightning-input>
                             </div>
                         </div>
                     </div>

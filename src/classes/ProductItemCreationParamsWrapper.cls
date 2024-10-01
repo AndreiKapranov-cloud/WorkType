@@ -1,6 +1,5 @@
 
-
-public with sharing class CreateProductItemParamsWrapper {
+public with sharing class ProductItemCreationParamsWrapper {
 
     public Id product2Id;
     public Id locationId;

@@ -2,7 +2,6 @@
 @isTest
 public with sharing class WorkOrderLineItemControllerTest {
 
-
     @IsTest
     static void testCreateWorkOrderLineItemApexMethod() {
 
@@ -10,7 +9,7 @@ public with sharing class WorkOrderLineItemControllerTest {
         WorkType workType = TestDataFactory.createWorkType();
 
 
-        CreateWorkOrderLineItemParamsWrapper wrapper = new CreateWorkOrderLineItemParamsWrapper();
+        WorkOrderLineItemCreationParamsWrapper wrapper = new WorkOrderLineItemCreationParamsWrapper();
 
         wrapper.status = 'New';
         wrapper.workOrderId = workOrder.Id;
@@ -43,7 +42,6 @@ public with sharing class WorkOrderLineItemControllerTest {
 
         Test.stopTest();
     }
-
 
     @IsTest
     static void testGetWorkOrderNumberById() {

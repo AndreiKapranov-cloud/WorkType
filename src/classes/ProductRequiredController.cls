@@ -1,3 +1,4 @@
+
 public with sharing class ProductRequiredController {
 
     @AuraEnabled
@@ -5,8 +6,8 @@ public with sharing class ProductRequiredController {
 
         ProductRequired productRequired = new ProductRequired();
         try {
-            CreateProductRequiredParamsWrapper wrapper = (CreateProductRequiredParamsWrapper) JSON.deserialize(paramsJSONString,
-                    CreateProductRequiredParamsWrapper.class);
+            ProductRequiredCreationParamsWrapper wrapper = (ProductRequiredCreationParamsWrapper) JSON.deserialize(paramsJSONString,
+                    ProductRequiredCreationParamsWrapper.class);
 
             Id parentRecordId = wrapper.parentRecordId;
             Id product2Id = wrapper.product2Id;

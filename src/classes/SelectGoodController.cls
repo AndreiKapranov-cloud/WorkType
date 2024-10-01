@@ -1,7 +1,6 @@
 
 public with sharing class SelectGoodController {
 
-
     @AuraEnabled
     public static List<GoodLineItemWrapper> fetchGoodLineItems() {
         List<GoodLineItemWrapper> goodLineItemWrappers = new List<GoodLineItemWrapper>();
@@ -18,7 +17,6 @@ public with sharing class SelectGoodController {
             throw new AuraHandledException('The following exception has occurred: ' + e.getMessage());
         }
     }
-
 
     @AuraEnabled
     public static List<GoodLineItemWrapper> fetchGoodLineItemsInGlobalSearch(String searchText) {
@@ -91,9 +89,7 @@ public with sharing class SelectGoodController {
                 goodLineItemWrapper.subCategory = goodLineItem.Good__r.Subcategory__c;
                 goodLineItemWrapper.checked = false;
 
-
                 wrapperList.add(goodLineItemWrapper);
-
             }
             return wrapperList;
         } catch (Exception e) {

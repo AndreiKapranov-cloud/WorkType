@@ -2,14 +2,12 @@
 @IsTest
 public with sharing class ProductRequiredControllerTest {
 
-
     @IsTest
     static void testCreateProductRequiredApexMethod() {
         WorkOrder workOrder = new WorkOrder();
         insert workOrder;
 
-
-        CreateProductRequiredParamsWrapper cParamsWrapper = new CreateProductRequiredParamsWrapper();
+        ProductRequiredCreationParamsWrapper cParamsWrapper = new ProductRequiredCreationParamsWrapper();
 
         cParamsWrapper.parentRecordId = workOrder.Id;
         cParamsWrapper.product2Id = TestDataFactory.createProduct2().Id;
@@ -26,7 +24,6 @@ public with sharing class ProductRequiredControllerTest {
         System.assertEquals(productRequiredFromBase.quantityUnitOfMeasure, 'Each');
 
     }
-
 
     @IsTest
     static void testCreateProductRequiredApexMethodFail() {

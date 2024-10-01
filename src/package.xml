@@ -8,14 +8,14 @@
         <members>CartController</members>
         <members>CartScheduler</members>
         <members>ControllerTest</members>
-        <members>CreateCartParamsWrapper</members>
-        <members>CreateEshopOrderParamsWrapper</members>
-        <members>CreateProductItemParamsWrapper</members>
-        <members>CreateProductRequiredParamsWrapper</members>
-        <members>CreateSkillRequirementParamsWrapper</members>
-        <members>CreateWorkOrderLineItemParamsWrapper</members>
-        <members>CreateWorkOrderParamsWrapper</members>
-        <members>CreateWorkTypeParamsWrapper</members>
+        <members>CartCreationParamsWrapper</members>
+        <members>EshopOrderCreationParamsWrapper</members>
+        <members>ProductItemCreationParamsWrapper</members>
+        <members>ProductRequiredCreationParamsWrapper</members>
+        <members>SkillRequirementCreationParamsWrapper</members>
+        <members>WorkOrderLineItemCreationParamsWrapper</members>
+        <members>WorkOrderCreationParamsWrapper</members>
+        <members>WorkTypeCreationParamsWrapper</members>
         <members>EShopBaseComponentController</members>
         <members>EShopOrderTriggerHandler</members>
         <members>Fish</members>
@@ -31,7 +31,7 @@
         <members>LocationController</members>
         <members>Mammal</members>
         <members>Man</members>
-        <members>MyPiclistInfo</members>
+        <members>ValidForFieldWrapper</members>
         <members>Predator</members>
         <members>ProductItemController</members>
         <members>ProductRequiredController</members>

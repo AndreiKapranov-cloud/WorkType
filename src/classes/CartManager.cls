@@ -2,10 +2,9 @@
 @RestResource(urlMapping='/Carts/*')
 global with sharing class CartManager {
 
-
     @HttpPost
     global static void insertCartsAndOrders() {
-        System.debug('insertCartsAndOrders zalupa');
+
         try {
             List<Id> insertedCartRecordsIds = new List<Id>();
             List<Id> insertedOrderRecordsIds = new List<Id>();
@@ -16,7 +15,7 @@ global with sharing class CartManager {
 
             CartsJSONWrapper cartsJSONWrapper = (CartsJSONWrapper) JSON.deserialize(RestContext.request?.requestBody?.toString(), CartsJSONWrapper.class);
 
-            for (CreateCartParamsWrapper cartWrapper : cartsJSONWrapper?.carts) {
+            for (CartCreationParamsWrapper cartWrapper : cartsJSONWrapper?.carts) {
 
                 Blob key = Crypto.generateAesKey(128);
                 String keyHex = EncodingUtil.convertToHex(key);
@@ -25,10 +24,9 @@ global with sharing class CartManager {
                 Cart__c cartReference = new Cart__c(
                         ExtId__c = guid);
 
+                List <EshopOrderCreationParamsWrapper> orderWrappers = cartWrapper?.orders;
 
-                List <CreateEshopOrderParamsWrapper> orderWrappers = cartWrapper?.orders;
-
-                for (CreateEshopOrderParamsWrapper eshopOrderWrapper : orderWrappers) {
+                for (EshopOrderCreationParamsWrapper eshopOrderWrapper : orderWrappers) {
                     EShopOrder__c eShopOrder = new EShopOrder__c();
                     eShopOrder.EstimatedDeliveryDate__c = eshopOrderWrapper.estimatedDeliveryDate;
                     eShopOrder.RegistrationDate__c = eshopOrderWrapper.registrationDate;
@@ -54,7 +52,6 @@ global with sharing class CartManager {
             for (Cart__c cart : cartsToInsert) {
                 insertedCartRecordsIds.add(cart.Id);
             }
-
 
             for (EShopOrder__c eShopOrder : ordersToInsert) {
                 insertedOrderRecordsIds.add(eShopOrder.Id);

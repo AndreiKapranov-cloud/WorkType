@@ -5,7 +5,7 @@ public with sharing class BaseComponentControllerTest {
     @IsTest
     static void testGetPicklistValuesUsingApex() {
 
-        GetPicklistValuesParamsWrapper wrapper = new GetPicklistValuesParamsWrapper();
+        PicklistValuesGettingParamsWrapper wrapper = new PicklistValuesGettingParamsWrapper();
         wrapper.sObjectType = 'WorkOrder';
         wrapper.field = 'Status';
 
@@ -19,7 +19,7 @@ public with sharing class BaseComponentControllerTest {
     @IsTest
     static void testGetPicklistValuesUsingApexFail() {
 
-        GetPicklistValuesParamsWrapper wrapper = new GetPicklistValuesParamsWrapper();
+        PicklistValuesGettingParamsWrapper wrapper = new PicklistValuesGettingParamsWrapper();
         wrapper.sObjectType = 'Fail';
         wrapper.field = 'Fail';
 

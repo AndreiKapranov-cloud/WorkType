@@ -49,7 +49,7 @@
         <members>WorkOrderLineItemController</members>
         <members>WorkTypeController</members>
         <members>Yellow</members>
-        <members>getPicklistValuesParamsWrapper</members>
+        <members>PicklistValuesGettingParamsWrapper</members>
         <members>getRecordsWrapper</members>
         <name>ApexClass</name>
     </types>

@@ -42,7 +42,6 @@ export default class SelectGood extends LightningElement {
     @track goodLineItemsDisplayedInTable = [];
     @track itemsFromSearchResult = [];
     @track goodLineItemsCopyForSearch = [];
-    @track goodLineItemsCopyForSearch = [];
     @track deselectedRows = [];
 
     buyerId;
@@ -70,6 +69,7 @@ export default class SelectGood extends LightningElement {
     isTableLoading = true;
     itemFromSearch;
     searchTerm = '';
+    searchableFields = ['name'];
 
     connectedCallback() {
         this.isTableLoading = true;
@@ -213,20 +213,20 @@ export default class SelectGood extends LightningElement {
                 } else {
 
                     try {
+                        /* this.goodLineItemsDisplayedInTable = this.goodLineItemsCopyForSearch.filter(goodLineItem =>
+                             Object.values(goodLineItem).some(value =>
+                                 value.toString().toLowerCase().includes(this.categorySearchText.toLowerCase())
+                             )
+                         );*/
 
-                       /* this.goodLineItemsDisplayedInTable = this.goodLineItems.filter(record =>
-                            Object.values(record).some(value =>
-                                value.toString().toLowerCase().includes(this.globalSearchText.toLowerCase())
-                            )
-                        );*/
-                        this.goodLineItemsDisplayedInTable = this.goodLineItems.filter(record =>
-                            Object.values(record).some(value =>
-                                value.toString().toLowerCase().includes(this.globalSearchText.toLowerCase())
-                            )
+                        this.goodLineItemsDisplayedInTable = this.goodLineItems.filter(goodLineItem =>
+                            String(goodLineItem.name).toLowerCase().includes(this.globalSearchText.toLowerCase())
                         );
+
                         this.processSearchResult(this.goodLineItemsDisplayedInTable);
 
-                    } catch (e) {
+                    } catch
+                        (e) {
                         console.error("An error occurred" + e);
                     }
                 }
@@ -235,7 +235,8 @@ export default class SelectGood extends LightningElement {
                 this.isTableLoading = false;
                 break;
             case
-            'Search in Category': {
+            'Search in Category'
+            : {
                 this.categorySearchText = event.target.value;
 
                 if (this.categorySearchText === '') {
@@ -243,11 +244,15 @@ export default class SelectGood extends LightningElement {
                     this.displayCategoryOrSubCategoryItems(this.subCategory, this.category);
                 } else {
 
-                    this.goodLineItemsCopyForSearch = this.goodLineItemsCopy.filter(e => e.category === this.category);
-                    this.goodLineItemsDisplayedInTable = this.goodLineItemsCopyForSearch.filter(record =>
-                        Object.values(record).some(value =>
-                            value.toString().toLowerCase().includes(this.categorySearchText.toLowerCase())
-                        )
+                    this.goodLineItemsCopyForSearch = this.goodLineItemsCopy.filter(goodLineItem => goodLineItem.category === this.category);
+                    /*  this.goodLineItemsDisplayedInTable = this.goodLineItemsCopyForSearch.filter(goodLineItem =>
+                          Object.values(goodLineItem).some(value =>
+                              value.toString().toLowerCase().includes(this.categorySearchText.toLowerCase())
+                          )
+                      );*/
+
+                    this.goodLineItemsDisplayedInTable = this.goodLineItemsCopyForSearch.filter(goodLineItem =>
+                        String(goodLineItem.name).toLowerCase().includes(this.categorySearchText.toLowerCase())
                     );
                     this.processSearchResult(this.goodLineItemsDisplayedInTable);
 
@@ -267,7 +272,8 @@ export default class SelectGood extends LightningElement {
                 break;
             }
             case
-            'Search in SubCategory': {
+            'Search in SubCategory'
+            : {
                 this.subCategorySearchText = event.target.value;
 
                 if (this.subCategorySearchText === '') {
@@ -275,11 +281,14 @@ export default class SelectGood extends LightningElement {
                     this.displayCategoryOrSubCategoryItems(this.subCategory, this.category);
                 } else {
 
-                    this.goodLineItemsCopyForSearch = this.goodLineItemsCopy.filter(e => e.subCategory === this.subCategory);
-                    this.goodLineItemsDisplayedInTable = this.goodLineItemsCopyForSearch.filter(record =>
-                        Object.values(record).some(value =>
-                            value.toString().toLowerCase().includes(this.subCategorySearchText.toLowerCase())
-                        )
+                    this.goodLineItemsCopyForSearch = this.goodLineItemsCopy.filter(goodLineItem => goodLineItem.subCategory === this.subCategory);
+                    /*  this.goodLineItemsDisplayedInTable = this.goodLineItemsCopyForSearch.filter(goodLineItem =>
+                          Object.values(goodLineItem).some(value =>
+                              value.toString().toLowerCase().includes(this.subCategorySearchText.toLowerCase())
+                          )
+                      );*/
+                    this.goodLineItemsDisplayedInTable = this.goodLineItemsCopyForSearch.filter(goodLineItem =>
+                        String(goodLineItem.name).toLowerCase().includes(this.subCategorySearchText.toLowerCase())
                     );
                     this.processSearchResult(this.goodLineItemsDisplayedInTable);
                     /*     fetchGoodLineItemsInSubCategory(({

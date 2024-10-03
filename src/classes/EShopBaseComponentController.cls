@@ -134,21 +134,21 @@ public with sharing class EShopBaseComponentController {
     @TestVisible
     private static void changeCartEstimatedDeliveryDate(List<EShopOrder__c> eShopOrders) {
         try {
-                Cart__c cart = [
-                        SELECT Id,EstimatedDeliveryDate__c
-                        FROM Cart__c
-                        WHERE Id = :eShopOrders[0].Cart__c
-                ];
+            Cart__c cart = [
+                    SELECT Id,EstimatedDeliveryDate__c
+                    FROM Cart__c
+                    WHERE Id = :eShopOrders[0].Cart__c
+            ];
 
-                for (EShopOrder__c eShopOrder : eShopOrders) {
+            for (EShopOrder__c eShopOrder : eShopOrders) {
 
-                    if (cart.EstimatedDeliveryDate__c == null || cart.EstimatedDeliveryDate__c < eShopOrder.EstimatedDeliveryDate__c) {
+                if (cart.EstimatedDeliveryDate__c == null || cart.EstimatedDeliveryDate__c < eShopOrder.EstimatedDeliveryDate__c) {
 
-                        cart.EstimatedDeliveryDate__c = eShopOrder.EstimatedDeliveryDate__c;
-                    }
+                    cart.EstimatedDeliveryDate__c = eShopOrder.EstimatedDeliveryDate__c;
                 }
+            }
 
-                update cart;
+            update cart;
         } catch (Exception e) {
             System.debug('The following exception has occurred: ' + e.getMessage());
             throw new HandledException(e.getMessage());
@@ -160,8 +160,9 @@ public with sharing class EShopBaseComponentController {
 
         try {
             List<String> goodLineItemIds = new List<String>();
+
             for (EShopOrder__c eShopOrder : eShopOrders) {
-             goodLineItemIds.add(eShopOrder.Good_Line_Item__c);
+                goodLineItemIds.add(eShopOrder.Good_Line_Item__c);
             }
 
             List<GoodLineItem__c> goodLineItems = [SELECT Id,Quantity__c FROM GoodLineItem__c WHERE Id IN:goodLineItemIds];

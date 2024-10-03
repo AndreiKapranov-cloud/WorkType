@@ -219,8 +219,13 @@ export default class SelectGood extends LightningElement {
                              )
                          );*/
 
+                       // this.goodLineItemsDisplayedInTable = this.goodLineItems.filter(goodLineItem =>
+                           // String(goodLineItem.name).toLowerCase().includes(this.globalSearchText.toLowerCase())
+                       // );
+
+                        console.log("zalupa");
                         this.goodLineItemsDisplayedInTable = this.goodLineItems.filter(goodLineItem =>
-                            String(goodLineItem.name).toLowerCase().includes(this.globalSearchText.toLowerCase())
+                            goodLineItem.name.toLowerCase().includes(this.globalSearchText.toLowerCase())
                         );
 
                         this.processSearchResult(this.goodLineItemsDisplayedInTable);

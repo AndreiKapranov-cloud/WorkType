@@ -1,0 +1,19 @@
+{
+  "packageDirectories": [
+    {
+      "versionName": "ver 0.1",
+      "versionNumber": "0.1.0.NEXT",
+      "path": "src",
+      "default": true,
+      "package": "Workkk Type",
+      "versionDescription": ""
+    }
+  ],
+  "name": "WorkType",
+  "namespace": "sucsuccraft",
+  "sfdcLoginUrl": "https://login.salesforce.com",
+  "sourceApiVersion": "61.0",
+  "packageAliases": {
+    "Workkk Type": "0HodL0000000VtRSAU"
+  }
+}
